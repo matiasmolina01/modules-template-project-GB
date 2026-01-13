@@ -7,16 +7,39 @@ int main(int argc, char *argv[]) {
 
     ofile = stdout; // Default output to stdout
     ofile = set_output_test_file(PROJOUTFILENAME);
-
-    fprintf(ofile, "Starting module args ...\n");
-    process_arguments(argc, argv);
-    fprintf(ofile, "Finished module args!!\n");
-
-    fprintf(ofile, "Starting module 2 ...\n");
-    n = fib(FIBNUM);
-    fprintf(ofile, "Fibonacci of %d is: %d\n", FIBNUM, n);
-    fprintf(ofile, "Finished module 2!!\n");
     
+    fprintf(ofile, "Starting module_args ...\n");
+    process_arguments(argc, argv); 
+    fprintf(ofile, "Finished module_args!!\n");
+
+    fprintf(ofile, "Starting module_classifier ...\n");
+    classifier(argc, argv);
+    fprintf(ofile, "Finished module_classifier!!\n");
+
+    fprintf(ofile, "Starting module_input_handler ...\n");
+    input_handler(argc, argv);
+    fprintf(ofile, "Finished module_input_handler!!\n");
+
+    fprintf(ofile, "Starting module_output_handler ...\n");
+    output_handler(argc, argv);
+    fprintf(ofile, "Finished module_output_handler!!\n");
+    
+    fprintf(ofile, "Starting module_recursivity_handler ...\n");
+    recursivity_handler(argc, argv);
+    fprintf(ofile, "Finished module_recursivity_handler!!\n");
+
+    fprintf(ofile, "Starting module_symbol_resolver ...\n");
+    module_symbol_resolver(argc, argv);
+    fprintf(ofile, "Finished module_symbol_resolver!!\n");
+
+    fprintf(ofile, "Starting module_symbol_table ...\n");
+    module_symbol_table(argc, argv);
+    fprintf(ofile, "Finished module_symbol_table!!\n");
+
+    fprintf(ofile, "Starting module_text_normalizer ...\n");
+    module_text_normalizer(argc, argv);
+    fprintf(ofile, "Finished module_text_normalizer!!\n");
+
     printf("All modules executed successfully!\n\n");
     fprintf(ofile, "All modules executed successfully!\n\n");
 
