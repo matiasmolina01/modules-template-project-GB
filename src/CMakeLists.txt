@@ -26,7 +26,14 @@ message(STATUS "   - (${PROJECT_NAME}) Added utils library")
 
 # Add modules subdirectories
 add_subdirectory(module_args)
-add_subdirectory(module_2)
+add_subdirectory(module_classifier)
+add_subdirectory(module_input_handler)
+add_subdirectory(module_output_handler)
+add_subdirectory(module_recursivity_handler)
+add_subdirectory(module_symbol_resolver)
+add_subdirectory(module_symbol_table)
+add_subdirectory(module_text_normalizer)
+
 message(STATUS "   - (${PROJECT_NAME}) Added modules subdirectories")
 
 message(STATUS "(${PROJECT_NAME}) Finished including module subdirectories.")
