@@ -14,6 +14,19 @@
 
 #include "./module_input_handler.h"
 
-int input_handler(int n) {
-    printf("Input Handler module, still to be implemented\n");
+
+bool ih_open(const char *path) {
+    print("Input Handler module, still to be implemented\n");
+}
+bool ih_close(int fd) {
+    print("Input Handler module, still to be implemented\n");
+}
+int ih_read_line(int fd, char *buffer, size_t max) {
+    print("Input Handler module, still to be implemented\n");
+}
+int ih_write_line(int fd, char *buffer) {
+    print("Input Handler module, still to be implemented\n");
+}
+int ih_read_line(int fd, char *buffer, size_t max) {
+    print("Input Handler module, still to be implemented\n");
 }

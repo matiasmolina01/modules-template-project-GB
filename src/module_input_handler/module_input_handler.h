@@ -3,7 +3,12 @@
 
 #include "../main.h"
 
-int input_handler(int n);
+bool ih_open(const char *path);
+bool ih_close(int fd);
+int ih_read_line(int fd, char *buffer, size_t max);
+int ih_write_line(int fd, char *buffer);
+int ih_read_line(int fd, char *buffer, size_t max);
+
 
 #endif
  
