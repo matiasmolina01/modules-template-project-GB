@@ -2,6 +2,7 @@
 #define MAIN_H
  
 #include <stdio.h>
+#include <stdbool.h>
 #include "./utils_files.h"
 #include "./module_args/module_args.h"
 #include "./module_classifier/module_classifier.h"
