@@ -17,11 +17,11 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_classifier!!\n");
 
     fprintf(ofile, "Starting module_input_handler ...\n");
-    input_handler(n);
+    ih_open("/test");
     fprintf(ofile, "Finished module_input_handler!!\n");
 
     fprintf(ofile, "Starting module_output_handler ...\n");
-    output_handler(n);
+    oh_open("/test");
     fprintf(ofile, "Finished module_output_handler!!\n");
     
     fprintf(ofile, "Starting module_recursivity_handler ...\n");
