@@ -3,11 +3,15 @@
 
 #include "../main.h"
 
+#define IH_MAX_LINE_LENGTH 1024
+
+
 bool ih_open(const char *path);
-bool ih_close(int fd);
-int ih_read_line(int fd, char *buffer, size_t max);
-int ih_write_line(int fd, char *buffer);
-int ih_read_line(int fd, char *buffer, size_t max);
+bool ih_close();
+int ih_read_line(char *buffer, size_t max);
+int ih_read_word(char *buffer, size_t max);
+int ih_get_line_number();
+bool ih_is_eof();
 
 
 #endif
