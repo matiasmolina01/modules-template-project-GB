@@ -3,7 +3,13 @@
 
 #include "../main.h"
 
-int text_normalizer(int n);
+typedef struct {
+    int in_block_comment;  // 0 = outside, 1 = inside /* */
+} TextNormalizerState;
+
+char* text_normalizer(
+    const char* input_line,
+    TextNormalizerState* state
+);
 
 #endif
- 
