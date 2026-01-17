@@ -7,7 +7,7 @@
  * - `ih_close`: Closes the currently opened input file.
  * - `ih_read_line`: Reads a line from the input file into a buffer.
  * - `ih_read_word`: Reads a word from the input file into a buffer.
- * - `ih_get_line_number`: Returns the current line number being read.
+ * - `ih_line_number`: Returns the current line number being read.
  * - `ih_is_eof`: Checks if the end of the file has been reached.
  * 
  * Usage:

@@ -10,7 +10,7 @@ bool ih_open(const char *path);
 bool ih_close();
 int ih_read_line(char *buffer, size_t max);
 int ih_read_word(char *buffer, size_t max);
-int ih_get_line_number();
+int ih_line_number();
 bool ih_is_eof();
 
 

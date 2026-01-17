@@ -5,6 +5,7 @@
 #include <stdlib.h>     // To set env for time zone
 #include <string.h>     // For filename manipulation    
 #include <time.h>       // For time-stamp of output logs filenames
+#include <ctype.h>      // For isprint()
 
 // Global defines
 #define MAXFILENAME 256 // Maximum length of the filename for output logs
