@@ -53,5 +53,15 @@ message(STATUS " - (${PROJECT_NAME}) Added tests/ directory")
 # This executable links together all module libraries.
 # (to have modular test for each module in parallel)
 add_executable(modules_template_main src/main.c)
-target_link_libraries(modules_template_main PRIVATE module_args module_2 utils)
+target_link_libraries(modules_template_main PRIVATE
+  utils
+  module_args
+  module_classifier
+  module_input_handler
+  module_output_handler
+  module_recursivity_handler
+  module_symbol_resolver
+  module_symbol_table
+  module_text_normalizer
+)
 message(STATUS " - (${PROJECT_NAME}) Modules Template Main executable 'modules_template_main' linked with module_args and module_2")
