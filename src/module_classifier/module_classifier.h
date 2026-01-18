@@ -2,8 +2,6 @@
 #define MODULE_CLASSIFIER_H
 
 #include "../main.h"
-#include "../module_io_handler/module_io_handler.h"
-#include "../module_text_normalizer/module_text_normalizer.h"
 #include <string.h>
 
 typedef enum {
@@ -18,13 +16,20 @@ typedef enum {
 #define IFDEF_STR "#ifdef" 
 #define MAX_SIZE 100
 
+typedef struct MacroTable MacroTable;
+typedef struct TextNormalizerState TextNormalizerState;
+
+typedef struct GlobalState{
+	TextNormalizerState* tn_state;
+	MacroTable* macro_table;
+} GlobalState;
+
 Directive cl_directive_type(char* word);
-char* cl_get_next_word();
-char* cl_process_line(char* line);
-int cl_define_handler(char* line);
-int cl_include_handler(char* line);
-int cl_ifdef_handler(char* line);
-int cl_write_to_output(char* line);
+char* cl_normalize_word(char* word);
+int cl_define_handler();
+int cl_include_handler();
+int cl_ifdef_handler();
+GlobalState* cl_init_datastructures();
 int cl_classifier(char* file_path);
 
 #endif

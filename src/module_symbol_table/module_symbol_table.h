@@ -20,7 +20,7 @@ typedef struct{
 } MacroEntry;
 
 // Macro table structure
-typedef struct{
+typedef struct MacroTable{
     MacroEntry *entries; 
     size_t size;  
 } MacroTable;

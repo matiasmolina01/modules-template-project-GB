@@ -46,7 +46,7 @@ Directive cl_directive_type(char* word){
         Raw Word from the input file
 */
 
-char* cl_process_word(char* word){
+char* cl_normalize_word(char* word){
     printf(" - Function: cl_process_line Not implemented.");
 }
 
@@ -54,19 +54,53 @@ char* cl_process_word(char* word){
 /*
     Uses the symbol table module to handle a define directive from the input file
 
-    Parameters:
-        char* line: input file line.
+    Returns:
+        1 if success, 0 otherwise.
+*/
+int cl_define_handler(){
+    printf(" - Function: cl_define_handler Not implemented.");
+}
+
+
+/*
+    Handles the include directives with the help of the recursivity handler
 
     Returns:
         1 if success, 0 otherwise.
 */
-int cl_define_handler(char* line){
-    printf(" - Function: cl_define_handler Not implemented.");
+int cl_include_handler(){
+    printf(" - Function: cl_include_handler Not implemented.");
 }
 
-int cl_init_datastructures(){
-    TextNormalizerState* tn_state;
-    // tn_state = init()
+
+/*
+    Handles the ifdef directives with the help of the recursivity handler
+
+    Returns:
+        1 if success, 0 otherwise.
+*/
+int cl_ifdef_handler(){
+    printf(" - Function: cl_ifdef_handler Not implemented.");
+}
+
+/*
+    Initializes other modules datastructures and stores them in the GlobalState.
+
+    Returns:
+        GlobalState* global state datastructure.
+*/
+GlobalState* cl_init_datastructures(){
+    GlobalState* global_state = (GlobalState*) malloc(sizeof(GlobalState));
+
+    TextNormalizerState* tn_state = (TextNormalizerState*) malloc(sizeof(TextNormalizerState));
+    text_normalizer_init(tn_state);
+    
+    MacroTable *macro_table = st_init();
+
+    global_state->tn_state = tn_state;
+    global_state->macro_table = macro_table;
+
+    return global_state;
 }
 
 /*
@@ -74,7 +108,8 @@ int cl_init_datastructures(){
     Reads the input file using the input handler module
     and interacts with the rest to process the output.
 
-    Parameters: input file's path
+    Parameters: 
+        file_path: input file's path
 
     Returns: 0 if everithing worked out correctly
             1 otherwise
@@ -82,32 +117,35 @@ int cl_init_datastructures(){
 */
 int cl_classifier(char* file_path) {
 
-    // cl_init_datastructures();
-    TextNormalizerState* tn_state;
+    GlobalState* global_state =  cl_init_datastructures();
 
     ioh_open(file_path);
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(next_word, sizeof(next_word)) > 0){
 
-        char* normalized_word = text_normalizer(next_word, tn_state);
+        char* normalized_word = text_normalizer(next_word, global_state->tn_state);
 
-        // TODO if not in comment
-        switch(cl_directive_type(normalized_word)){
-            case INCLUDE:
-            // call recursivity handler - include
-            break;
-    
-            case IFDEF:
-            // call recusrivity handler - ifdef
-            break;
-    
-            case DEFINE:
-            // call symbol table - declaration of macro
-            break;
+        // Process directives which are not commented
+        if(global_state->tn_state->in_block_comment == 0 
+            && global_state->tn_state->in_line_comment == 0 
+            /*&& process directives ON*/){
+
+            switch(cl_directive_type(normalized_word)){
+
+                case INCLUDE:
+                cl_include_handler();
+                break;
+        
+                case IFDEF:
+                cl_ifdef_handler();
+                break;
+        
+                case DEFINE:
+                cl_define_handler();
+                break;
+            }
         }
-
-        // TODO endif
 
         // TODO final write output
 
