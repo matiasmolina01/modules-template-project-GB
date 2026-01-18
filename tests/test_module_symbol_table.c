@@ -29,6 +29,7 @@ static void test_st_init_destroy(void) {
     MacroTable *t = st_init();
     report("st_init sets initialized", st_is_initialized(t));
     st_destroy(t);
+    t = NULL; /* avoid checking a freed pointer */
     report("st_destroy clears initialized", !st_is_initialized(t));
 }
 
