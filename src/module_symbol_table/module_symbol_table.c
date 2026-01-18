@@ -14,7 +14,21 @@
 
 #include "./module_symbol_table.h"
 
-static int st_initialized = 0;
+#define ST_TABLE_SIZE 1024
+
+typedef struct{
+    char *name;
+    char *value;
+    int in_use; // 0 = free, 1 = used, so we can handle deletions
+} MacroEntry;
+
+typedef struct{
+    MacroEntry *entries; 
+    size_t size;  
+} MacroTable;
+
+static MacroTable macro_table; // dictionary instance
+static int st_initialized = 0;  
 
 
 /*
@@ -22,8 +36,18 @@ static int st_initialized = 0;
 */
 
 void st_init(void){
+    if (st_is_initialized()) return;
+
+    macro_table.size = ST_TABLE_SIZE;
+    macro_table.entries = calloc(macro_table.size, sizeof(MacroEntry));
+
+    if (macro_table.entries == NULL) {
+        printf("Symbol table initialization failed: out of memory.\n");
+        st_initialized = 0;
+        return;
+    }
+
     st_initialized = 1;
-    printf(" - Function: st_init Not implemented.");
 }
 
 
@@ -32,8 +56,20 @@ void st_init(void){
 */
 
 void st_destroy(void){
+    if (!st_is_initialized()) return;
+
+    for (size_t i = 0; i < macro_table.size; i++) {
+        if (macro_table.entries[i].in_use) {
+            free(macro_table.entries[i].name);
+            free(macro_table.entries[i].value);
+        }
+    }
+
+    free(macro_table.entries);
+    macro_table.entries = NULL;
+    macro_table.size = 0;
+
     st_initialized = 0;
-    printf(" - Function: st_destroy Not implemented.");
 }
 
 
@@ -45,17 +81,77 @@ void st_destroy(void){
     Returns 0 on success, other error numbers on different errors (defined as MACROS).
 */
 
-int st_define(const char *name, const char *value){
+int st_define(const char *name, const char *value) {
     
-    // Validate initialization and name
     if (!st_is_initialized()) return ST_ERR_NOT_INIT;
     if (name == NULL) return ST_ERR_NULL_NAME;
     if (!st_is_valid_name(name)) return ST_ERR_INVALID_NAME;
 
-    printf(" - Function: st_define Not implemented.\n");
+    size_t free_idx = SIZE_MAX;
+
+    /* Search for existing entry or first free slot */
+    for (size_t i = 0; i < macro_table.size; i++) {
+        MacroEntry *e = &macro_table.entries[i];
+
+        if (e->in_use) {
+            if (strcmp(e->name, name) == 0) {
+                /* Update existing */
+                free(e->value);
+                e->value = NULL;
+
+                if (value) {
+                    e->value = malloc(strlen(value) + 1);
+                    if (!e->value) return ST_ERR_NO_MEMORY;
+                    strcpy(e->value, value);
+                }
+                return ST_OK;
+            }
+        } 
+        else if (free_idx == SIZE_MAX) {
+            free_idx = i;
+        }
+    }
+
+    /* No free slot: grow dictionary */
+    if (free_idx == SIZE_MAX) {
+        size_t new_size = macro_table.size * 2;
+        MacroEntry *new_entries =
+            realloc(macro_table.entries, new_size * sizeof(MacroEntry));
+
+        if (!new_entries) return ST_ERR_NO_MEMORY;
+
+        for (size_t i = macro_table.size; i < new_size; i++) {
+            new_entries[i].name = NULL;
+            new_entries[i].value = NULL;
+            new_entries[i].in_use = 0;
+        }
+
+        free_idx = macro_table.size;
+        macro_table.entries = new_entries;
+        macro_table.size = new_size;
+    }
+
+    /* Insert new entry */
+    MacroEntry *slot = &macro_table.entries[free_idx];
+
+    slot->name = malloc(strlen(name) + 1);
+    if (!slot->name) return ST_ERR_NO_MEMORY;
+    strcpy(slot->name, name);
+
+    slot->value = NULL;
+    if (value) {
+        slot->value = malloc(strlen(value) + 1);
+        if (!slot->value) {
+            free(slot->name);
+            slot->name = NULL;
+            return ST_ERR_NO_MEMORY;
+        }
+        strcpy(slot->value, value);
+    }
+
+    slot->in_use = 1;
     return ST_OK;
 }
-
 
 
 /*  
@@ -93,7 +189,7 @@ int st_exists(const char *name){
 */
 
 void st_print_all(void){
-    if (!st_is_initialized()) {
+    if (!st_is_initialized()/*something*/) {
         printf("Symbol table not initialized.\n");
         return;
     }

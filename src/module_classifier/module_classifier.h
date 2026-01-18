@@ -2,7 +2,7 @@
 #define MODULE_CLASSIFIER_H
 
 #include "../main.h"
-#include "../module_input_handler/module_input_handler.h"
+#include "../module_io_handler/module_io_handler.h"
 #include <string.h>
 
 int is_directive(char* line);

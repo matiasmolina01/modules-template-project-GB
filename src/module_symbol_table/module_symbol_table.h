@@ -11,17 +11,28 @@
 #define ST_ERR_NOT_FOUND     -4
 #define ST_ERR_NO_MEMORY     -5
 #define ST_ERR_NOT_INIT      -6
+#define ST_ERR_NO_MEMORY  4
+
 
 int symbol_table(int n);
+
+/* Lifecycle */
 void st_init(void);
 void st_destroy(void);
+int st_is_initialized(void);
+
+/* Macro definition */
 int st_define(const char *name, const char *value);
+
+/* Query */
 const char *st_get(const char *name);
 int st_exists(const char *name);
+
+/* Debug */
 void st_print_all(void);
-int st_is_initialized(void);
+
+/* Validation */
 int st_is_valid_name(const char *name);
 
 
 #endif
- 
