@@ -1,0 +1,9 @@
+Machine remote time Generated log filename (with time stamp): ./logs/2026_01_18_15_37_proj_modules_template.log
+Generated log filename (with time stamp): ./logs/2026_01_18_17_37_proj_modules_template.log
+See log of execution in file ./logs/2026_01_18_17_37_proj_modules_template.log
+Classifier module, still to be implemented
+ - Function: is_directive Not implemented.Recursivity Handler module, still to be implemented
+Symbol Resolver module, still to be implemented
+Symbol Table module, still to be implemented
+All modules executed successfully!
+
