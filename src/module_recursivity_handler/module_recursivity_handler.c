@@ -27,15 +27,20 @@ int rh_handle_include(const char *filename){
 	}
 	else if(rh_filename_check(filename) == 1){	//file is in ""
 		//remove "" from "path.c" ---> path.c
-		char path[strlen(filename)-2];
-		strncpy(path, filename+1, strlen(filename)-2);
+		int path_len = strlen(filename) - 2;
+		char *path = malloc(path_len + 1);
+		if(path == NULL) return 0;
+		strncpy(path, filename+1, path_len);
+		path[path_len] = '\0';
 		
 		//Initialize a new classifier starting from the provided path
-		return cl_classifier(path);
+		int result = cl_classifier(path);
+		free(path);
+		return result;
 	}
 }
 
-int rh_filename_check(char *filename){
+int rh_filename_check(const char *filename){
 	//Check if the filename is correct, in ""
 	if(filename[0] == '\"' && filename[strlen(filename)-1] == '\"') return 1;
 	return 0;
@@ -47,7 +52,7 @@ void rh_handle_ifdef(char *macro, MacroTable *table, rh_process_macro *result){
 		result->process = 1; //process the following lines
 	}else{
 		result->process = 0; //skip the following lines
-		return result;}
+	}
 }
 
 void rh_handle_ifndef(char *macro, MacroTable *table, rh_process_macro *result){
@@ -56,6 +61,5 @@ void rh_handle_ifndef(char *macro, MacroTable *table, rh_process_macro *result){
 		result->process = 1; //process the following lines
 	}else{
 		result->process = 0; //skip the following lines
-		return result;
 	}
 }

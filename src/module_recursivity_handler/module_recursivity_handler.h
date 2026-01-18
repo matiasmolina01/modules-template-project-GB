@@ -11,7 +11,7 @@ int recursivity_handler(int n);
 
 int rh_handle_include(const char *filename);
 
-int rh_filename_check(char *filename);
+int rh_filename_check(const char *filename);
 
 void rh_handle_ifdef(char *macro, MacroTable *table, rh_process_macro *result);
 
