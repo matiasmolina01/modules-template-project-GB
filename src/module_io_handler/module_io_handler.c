@@ -9,6 +9,7 @@
  * - `ioh_read_word`: Reads a word from the input file into a buffer.
  * - `ioh_line_number`: Returns the current line number being read.
  * - `ioh_is_eof`: Checks if the end of the file has been reached.
+ * - `ioh_write_line`: Placeholder for writing a line to output (not implemented).
  * 
  * Usage:
  *     Called from the main application or test modules to handle io in modules.

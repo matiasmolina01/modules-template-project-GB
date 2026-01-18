@@ -12,6 +12,7 @@ int ioh_read_line(char *buffer, size_t max);
 int ioh_read_word(char *buffer, size_t max);
 int ioh_line_number();
 bool ioh_is_eof();
+int ioh_write_line(char *buffer, size_t max);
 
 
 #endif
