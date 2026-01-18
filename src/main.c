@@ -13,11 +13,11 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_args!!\n");
 
     fprintf(ofile, "Starting module_classifier ...\n");
-    cl_classifier(n, n);
+    cl_classifier("input", "output");
     fprintf(ofile, "Finished module_classifier!!\n");
 
     fprintf(ofile, "Starting module_io_handler ...\n");
-    ioh_open("/test");
+    ioh_open_input("/test");
     fprintf(ofile, "Finished module_io_handler!!\n");
     
     fprintf(ofile, "Starting module_recursivity_handler ...\n");

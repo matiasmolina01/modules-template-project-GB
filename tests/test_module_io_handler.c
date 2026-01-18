@@ -104,7 +104,7 @@ static void test_read_word_basic(void) { // read words and check content and lin
     assert(ioh_read_word(w, sizeof(w)) == 0);
     assert(ioh_is_eof() == true);
 
-    ioh_close();
+    ioh_close_input();
     delete_test_file();
 }
 

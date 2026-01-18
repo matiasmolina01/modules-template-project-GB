@@ -8,7 +8,7 @@
  *      and regular code lines.
  *
  * Status:
- *     In progress — checks if first word is a directive
+ *     In progress
  *
  * Author: [Franco Olano Melo]
  * -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
 
     GlobalState* global_state =  cl_init_datastructures();
 
-    ioh_open(input_file_path);
+    ioh_open_input(input_file_path);
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(next_word, sizeof(next_word)) > 0){

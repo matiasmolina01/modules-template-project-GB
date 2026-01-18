@@ -29,6 +29,13 @@ target_include_directories(test_module_symbol_table PRIVATE ${PROJECT_SOURCE_DIR
 add_test(NAME TestModuleSymbolTable COMMAND test_module_symbol_table)
 message(STATUS " - (${PROJECT_NAME}) Test for module_symbol_table added")
 
+# Test for module_classifier
+add_executable(test_module_classifier test_module_classifier.c)
+target_link_libraries(test_module_classifier PRIVATE module_classifier utils)
+target_include_directories(test_module_classifier PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleClassifier COMMAND test_module_classifier)
+message(STATUS " - (${PROJECT_NAME}) Test for module_classifier added")
+
 # Test for module_2
 # add_executable(test_module_2 test_module_2.c)
 # target_link_libraries(test_module_2 PRIVATE module_2 utils)

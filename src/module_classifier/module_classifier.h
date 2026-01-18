@@ -2,8 +2,6 @@
 #define MODULE_CLASSIFIER_H
 
 #include "../main.h"
-#include <string.h>
-
 
 #define INCLUDE_STR "#include" 
 #define DEFINE_STR "#define" 
