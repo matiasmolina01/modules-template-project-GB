@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_recursivity_handler!!\n");
 
     fprintf(ofile, "Starting module_symbol_resolver ...\n");
-    symbol_resolver(n);
+    // symbol_resolver(n);
     fprintf(ofile, "Finished module_symbol_resolver!!\n");
 
     fprintf(ofile, "Starting module_symbol_table ...\n");

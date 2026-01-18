@@ -15,7 +15,7 @@ add_library(module_symbol_resolver module_symbol_resolver.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(module_symbol_resolver PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because module_symbol_resolver depends on utils
-target_link_libraries(module_symbol_resolver PRIVATE utils)
+target_link_libraries(module_symbol_resolver PRIVATE utils module_symbol_table)
 
 # Print a status message during CMake configuration to confirm module_symbol_resolver is processed
 message(STATUS "(${PROJECT_NAME}) Module_symbol_resolver configured: Added as static library")
