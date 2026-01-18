@@ -16,38 +16,25 @@
 
 #define ST_TABLE_SIZE 1024
 
-typedef struct{
-    char *name;
-    char *value;
-    int in_use; // 0 = free, 1 = used, so we can handle deletions
-} MacroEntry;
-
-typedef struct{
-    MacroEntry *entries; 
-    size_t size;  
-} MacroTable;
-
-static MacroTable macro_table; // dictionary instance
-static int st_initialized = 0;  
 
 
 /*
     Initializes the macro table.
 */
 
-void st_init(void){
-    if (st_is_initialized()) return;
+MacroTable *st_init(void){
+    MacroTable *table = malloc(sizeof(MacroTable));
+    if (!table) return NULL;
 
-    macro_table.size = ST_TABLE_SIZE;
-    macro_table.entries = calloc(macro_table.size, sizeof(MacroEntry));
-
-    if (macro_table.entries == NULL) {
+    table->size = ST_TABLE_SIZE;
+    table->entries = calloc(table->size, sizeof(MacroEntry));
+    if (table->entries == NULL) {
         printf("Symbol table initialization failed: out of memory.\n");
-        st_initialized = 0;
-        return;
+        free(table);
+        return NULL;
     }
 
-    st_initialized = 1;
+    return table;
 }
 
 
@@ -55,21 +42,21 @@ void st_init(void){
     Destroys the macro table.
 */
 
-void st_destroy(void){
-    if (!st_is_initialized()) return;
+void st_destroy(MacroTable *table){
+    if (table == NULL) return;
 
-    for (size_t i = 0; i < macro_table.size; i++) {
-        if (macro_table.entries[i].in_use) {
-            free(macro_table.entries[i].name);
-            free(macro_table.entries[i].value);
+    for (size_t i = 0; i < table->size; i++) {
+        if (table->entries[i].in_use) {
+            free(table->entries[i].name);
+            free(table->entries[i].value);
         }
     }
 
-    free(macro_table.entries);
-    macro_table.entries = NULL;
-    macro_table.size = 0;
+    free(table->entries);
+    table->entries = NULL;
+    table->size = 0;
 
-    st_initialized = 0;
+    free(table);
 }
 
 
@@ -81,17 +68,16 @@ void st_destroy(void){
     Returns 0 on success, other error numbers on different errors (defined as MACROS).
 */
 
-int st_define(const char *name, const char *value) {
-    
-    if (!st_is_initialized()) return ST_ERR_NOT_INIT;
+int st_define(MacroTable *table, const char *name, const char *value) {
+    if (table == NULL) return ST_ERR_NOT_INIT;
     if (name == NULL) return ST_ERR_NULL_NAME;
     if (!st_is_valid_name(name)) return ST_ERR_INVALID_NAME;
 
     size_t free_idx = SIZE_MAX;
 
     /* Search for existing entry or first free slot */
-    for (size_t i = 0; i < macro_table.size; i++) {
-        MacroEntry *e = &macro_table.entries[i];
+    for (size_t i = 0; i < table->size; i++) {
+        MacroEntry *e = &table->entries[i];
 
         if (e->in_use) {
             if (strcmp(e->name, name) == 0) {
@@ -114,25 +100,25 @@ int st_define(const char *name, const char *value) {
 
     /* No free slot: grow dictionary */
     if (free_idx == SIZE_MAX) {
-        size_t new_size = macro_table.size * 2;
+        size_t new_size = table->size * 2;
         MacroEntry *new_entries =
-            realloc(macro_table.entries, new_size * sizeof(MacroEntry));
+            realloc(table->entries, new_size * sizeof(MacroEntry));
 
         if (!new_entries) return ST_ERR_NO_MEMORY;
 
-        for (size_t i = macro_table.size; i < new_size; i++) {
+        for (size_t i = table->size; i < new_size; i++) {
             new_entries[i].name = NULL;
             new_entries[i].value = NULL;
             new_entries[i].in_use = 0;
         }
 
-        free_idx = macro_table.size;
-        macro_table.entries = new_entries;
-        macro_table.size = new_size;
+        free_idx = table->size;
+        table->entries = new_entries;
+        table->size = new_size;
     }
 
     /* Insert new entry */
-    MacroEntry *slot = &macro_table.entries[free_idx];
+    MacroEntry *slot = &table->entries[free_idx];
 
     slot->name = malloc(strlen(name) + 1);
     if (!slot->name) return ST_ERR_NO_MEMORY;
@@ -160,12 +146,12 @@ int st_define(const char *name, const char *value) {
     It will return a pointer to the macro value string if found, or NULL if the macro does not exist.
 */
 
-const char *st_get(const char *name){
-    if (!st_is_initialized()) return NULL;
+const char *st_get(MacroTable *table, const char *name){
+    if (table == NULL) return NULL;
     if (name == NULL) return NULL;
 
-    for (size_t i = 0; i < macro_table.size; i++) {
-        MacroEntry *e = &macro_table.entries[i];
+    for (size_t i = 0; i < table->size; i++) {
+        MacroEntry *e = &table->entries[i];
         if (e->in_use && e->name != NULL && strcmp(e->name, name) == 0) {
             return e->value; /* may be NULL if macro defined without value */
         }
@@ -180,12 +166,12 @@ const char *st_get(const char *name){
     It will return 1 if the macro exists, or 0 otherwise.
 */
 
-int st_exists(const char *name){
-    if (!st_is_initialized()) return 0;
+int st_exists(MacroTable *table, const char *name){
+    if (table == NULL) return 0;
     if (name == NULL) return 0;
 
-    for (size_t i = 0; i < macro_table.size; i++) {
-        MacroEntry *e = &macro_table.entries[i];
+    for (size_t i = 0; i < table->size; i++) {
+        MacroEntry *e = &table->entries[i];
         if (e->in_use && e->name != NULL && strcmp(e->name, name) == 0) {
             return 1;
         }
@@ -198,15 +184,15 @@ int st_exists(const char *name){
     Function used to print all macros in the symbol table for debugging purposes.
 */
 
-void st_print_all(void){
-    if (!st_is_initialized()) {
+void st_print_all(MacroTable *table){
+    if (table == NULL) {
         printf("Symbol table not initialized.\n");
         return;
     }
 
-    printf("Symbol table contents (size=%zu):\n", macro_table.size);
-    for (size_t i = 0; i < macro_table.size; i++) {
-        MacroEntry *e = &macro_table.entries[i];
+    printf("Symbol table contents (size=%zu):\n", table->size);
+    for (size_t i = 0; i < table->size; i++) {
+        MacroEntry *e = &table->entries[i];
         if (e->in_use) {
             printf(" - [%zu] name='%s' value='%s'\n",
                    i,
@@ -223,8 +209,8 @@ void st_print_all(void){
     It will return 1 if initialized, or 0 otherwise.
 */
 
-int st_is_initialized(void){
-    return st_initialized;
+int st_is_initialized(MacroTable *table){
+    return (table != NULL && table->entries != NULL) ? 1 : 0;
 }
 
 

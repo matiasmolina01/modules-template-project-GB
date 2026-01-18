@@ -12,20 +12,33 @@
 #define ST_ERR_NO_MEMORY     -5
 #define ST_ERR_NOT_INIT      -6
 
+// Macro entry structure
+typedef struct{
+    char *name;
+    char *value;
+    int in_use; // 0 = free, 1 = used, so we can handle deletions
+} MacroEntry;
+
+// Macro table structure
+typedef struct{
+    MacroEntry *entries; 
+    size_t size;  
+} MacroTable;
+
 /* Lifecycle */
-void st_init(void);
-void st_destroy(void);
-int st_is_initialized(void);
+MacroTable *st_init(void);
+void st_destroy(MacroTable *table);
+int st_is_initialized(MacroTable *table);
 
 /* Macro definition */
-int st_define(const char *name, const char *value);
+int st_define(MacroTable *table, const char *name, const char *value);
 
 /* Query */
-const char *st_get(const char *name);
-int st_exists(const char *name);
+const char *st_get(MacroTable *table, const char *name);
+int st_exists(MacroTable *table, const char *name);
 
 /* Debug */
-void st_print_all(void);
+void st_print_all(MacroTable *table);
 
 /* Validation */
 int st_is_valid_name(const char *name);
