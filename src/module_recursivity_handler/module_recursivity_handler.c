@@ -41,18 +41,18 @@ int rh_filename_check(char *filename){
 	return 0;
 }
 
-void rh_handle_ifdef(char *macro, rh_process_macro *result){
+void rh_handle_ifdef(char *macro, MacroTable *table, rh_process_macro *result){
 	//Check if the macro exists in the defined macros list
-	if(st_exists(macro) == 1){
+	if(st_exists(table, macro) == 1){
 		result->process = 1; //process the following lines
 	}else{
 		result->process = 0; //skip the following lines
 		return result;}
 }
 
-void rh_handle_ifndef(char *macro, rh_process_macro *result){
+void rh_handle_ifndef(char *macro, MacroTable *table, rh_process_macro *result){
 	//Check if the macro exists in the defined macros list
-	if(st_exists(macro) == 0){
+	if(st_exists(table, macro) == 0){
 		result->process = 1; //process the following lines
 	}else{
 		result->process = 0; //skip the following lines
