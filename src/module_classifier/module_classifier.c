@@ -40,18 +40,6 @@ Directive cl_directive_type(char* word){
 
 
 /*
-    Calls text normalizer to eliminate comments
-
-    Parameters:
-        Raw Word from the input file
-*/
-
-char* cl_normalize_word(char* word){
-    printf(" - Function: cl_process_line Not implemented.");
-}
-
-
-/*
     Uses the symbol table module to handle a define directive from the input file
 
     Returns:
@@ -109,17 +97,18 @@ GlobalState* cl_init_datastructures(){
     and interacts with the rest to process the output.
 
     Parameters: 
-        file_path: input file's path
+        input_file_path: input file's path
+        output_file_path: outputs file's path
 
     Returns: 0 if everithing worked out correctly
             1 otherwise
         
 */
-int cl_classifier(char* file_path) {
+int cl_classifier(char* input_file_path, char* output_file_path) {
 
     GlobalState* global_state =  cl_init_datastructures();
 
-    ioh_open(file_path);
+    ioh_open(input_file_path);
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(next_word, sizeof(next_word)) > 0){
@@ -147,7 +136,7 @@ int cl_classifier(char* file_path) {
             }
         }
 
-        // TODO final write output
+        // TODO final write output in output_file_path
 
 
         // Resert word buffer

@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_args!!\n");
 
     fprintf(ofile, "Starting module_classifier ...\n");
-    cl_classifier(n);
+    cl_classifier(n, n);
     fprintf(ofile, "Finished module_classifier!!\n");
 
     fprintf(ofile, "Starting module_io_handler ...\n");
