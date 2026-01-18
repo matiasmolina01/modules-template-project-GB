@@ -11,10 +11,9 @@
 #define ST_ERR_NOT_FOUND     -4
 #define ST_ERR_NO_MEMORY     -5
 #define ST_ERR_NOT_INIT      -6
-#define ST_ERR_NO_MEMORY  4
 
 
-int symbol_table(int n);
+int test_symbol_table_module(int n);
 
 /* Lifecycle */
 void st_init(void);

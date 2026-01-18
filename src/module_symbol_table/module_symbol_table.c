@@ -164,7 +164,12 @@ const char *st_get(const char *name){
     if (!st_is_initialized()) return NULL;
     if (name == NULL) return NULL;
 
-    printf(" - Function: st_get Not implemented.\n");
+    for (size_t i = 0; i < macro_table.size; i++) {
+        MacroEntry *e = &macro_table.entries[i];
+        if (e->in_use && e->name != NULL && strcmp(e->name, name) == 0) {
+            return e->value; /* may be NULL if macro defined without value */
+        }
+    }
     return NULL;
 }
 
@@ -179,7 +184,12 @@ int st_exists(const char *name){
     if (!st_is_initialized()) return 0;
     if (name == NULL) return 0;
 
-    printf(" - Function: st_exists Not implemented.\n");
+    for (size_t i = 0; i < macro_table.size; i++) {
+        MacroEntry *e = &macro_table.entries[i];
+        if (e->in_use && e->name != NULL && strcmp(e->name, name) == 0) {
+            return 1;
+        }
+    }
     return 0;
 }
 
@@ -189,11 +199,21 @@ int st_exists(const char *name){
 */
 
 void st_print_all(void){
-    if (!st_is_initialized()/*something*/) {
+    if (!st_is_initialized()) {
         printf("Symbol table not initialized.\n");
         return;
     }
-    printf(" - Function: st_print_all Not implemented.\n");
+
+    printf("Symbol table contents (size=%zu):\n", macro_table.size);
+    for (size_t i = 0; i < macro_table.size; i++) {
+        MacroEntry *e = &macro_table.entries[i];
+        if (e->in_use) {
+            printf(" - [%zu] name='%s' value='%s'\n",
+                   i,
+                   e->name ? e->name : "(null)",
+                   e->value ? e->value : "(null)");
+        }
+    }
 }
 
 
@@ -205,7 +225,6 @@ void st_print_all(void){
 
 int st_is_initialized(void){
     return st_initialized;
-
 }
 
 
@@ -219,12 +238,11 @@ int st_is_valid_name(const char *name){
     if (name == NULL || *name == '\0') return 0;
     /* Later: check first char is letter or _, others alnum or _ */
     return 1;
-
 }
 
 
 /*
-    Symbol table main function.
+    Symbol table test function.
     Handles the symbol table operations.
 
     Parameters:
@@ -232,7 +250,52 @@ int st_is_valid_name(const char *name){
     Returns: 
 */
 
-int symbol_table(int n) {
-    printf("Symbol Table module, still to be implemented\n");
+int test_symbol_table_module(int n) {
+    
+    // Testing all the functionalities of the symbol table module
+    int rc;
+
+    (void)n; /* unused parameter */
+
+    st_init();
+    if (!st_is_initialized()) return ST_ERR_NOT_INIT;
+
+    printf("\nInitialized symbol table successfully.\n");
+
+    /* Basic smoke test: define a few macros */
+    rc = st_define("TEST1", "value1");
+    if (rc != ST_OK) { st_destroy(); return rc; }
+
+    printf("Defined macro TEST1 successfully.\n");
+
+    rc = st_define("EMPTY", NULL); /* defined with no value */
+    if (rc != ST_OK) { st_destroy(); return rc; }
+
+    printf("Defined macro EMPTY successfully.\n");
+
+    rc = st_define("NUM", "123");
+    if (rc != ST_OK) { st_destroy(); return rc; }
+
+    printf("Defined macro NUM successfully.\n");
+
+    /* Verify existence and values */
+    if (!st_exists("TEST1")) { st_destroy(); return ST_ERR_NOT_FOUND; }
+    if (st_get("TEST1") == NULL || strcmp(st_get("TEST1"), "value1") != 0) {
+        st_destroy();
+        return ST_ERR_NOT_FOUND;
+    }
+
+    if (!st_exists("EMPTY")) { st_destroy(); return ST_ERR_NOT_FOUND; }
+    /* st_get("EMPTY") may be NULL which is acceptable */
+
+    /* Print for debugging */
+    st_print_all();
+
+    printf("Printed all macros successfully.\n");
+
+    /* Cleanup */
+    st_destroy();
+
+    printf("Destroyed symbol table successfully.\n\n");
     return ST_OK;
 }

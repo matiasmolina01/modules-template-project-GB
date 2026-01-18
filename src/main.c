@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_symbol_resolver!!\n");
 
     fprintf(ofile, "Starting module_symbol_table ...\n");
-    symbol_table(n);
+    test_symbol_table_module(n);
     fprintf(ofile, "Finished module_symbol_table!!\n");
 
     fprintf(ofile, "Starting module_text_normalizer ...\n");
