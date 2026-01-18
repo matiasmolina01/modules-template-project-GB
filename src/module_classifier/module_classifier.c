@@ -134,9 +134,15 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
                 cl_define_handler();
                 break;
             }
+
+            continue;
         }
 
+        // TODO get final_word from symbol_resolver
+
         // TODO final write output in output_file_path
+        //       -> IF COMMENT FLAG ON -> final_word
+        //       -> IF COMMENT FLAG OFF -> next_word
 
 
         // Resert word buffer
