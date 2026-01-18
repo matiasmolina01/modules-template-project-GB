@@ -9,6 +9,10 @@
  * 
  * Update 1:
  * 
+ * - module_io_handler functionality test (lack test of write_line)
+ * Author: Matias Molina
+ * Date: 18-01-2026
+ * 
  * -----------------------------------------------------------------------------
  */
 
