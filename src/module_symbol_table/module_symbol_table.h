@@ -12,9 +12,6 @@
 #define ST_ERR_NO_MEMORY     -5
 #define ST_ERR_NOT_INIT      -6
 
-
-int test_symbol_table_module(int n);
-
 /* Lifecycle */
 void st_init(void);
 void st_destroy(void);
