@@ -8,6 +8,10 @@ typedef struct {
     int in_line_comment;  // 0 = code line, 1 = after //
 } TextNormalizerState;
 
+void text_normalizer_init(
+    TextNormalizerState* state
+); 
+
 char* text_normalizer(
     const char* input_line,
     TextNormalizerState* state

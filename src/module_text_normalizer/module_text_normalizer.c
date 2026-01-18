@@ -15,6 +15,13 @@
 #include "./module_text_normalizer.h"
 
 
+void text_normalizer_init(TextNormalizerState* state) {
+    if (state == NULL) return; // Safety check
+
+    state->in_block_comment = 0;
+    state->in_line_comment = 0;
+}
+
 char* text_normalizer(const char* input_line, TextNormalizerState* state) {
     int len = strlen(input_line);
     char* output = malloc(len + 1);

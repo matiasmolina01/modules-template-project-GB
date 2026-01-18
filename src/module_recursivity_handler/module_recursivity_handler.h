@@ -9,7 +9,9 @@ typedef struct{
 
 int recursivity_handler(int n);
 
-void rh_handle_include(const char *filename);
+int rh_handle_include(const char *filename);
+
+int rh_filename_check(char *filename);
 
 void rh_handle_ifdef(char *macro, rh_process_macro *result);
 

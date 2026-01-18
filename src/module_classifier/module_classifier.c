@@ -1,12 +1,14 @@
 /*
  * -----------------------------------------------------------------------------
- * module_output_handler.c 
+ * module_classifier.c 
  *
  * Usage:
- *     Used as a "detector" to detect when the input file has comments or directive
+ *     Defines the main flux of the preprocesor. 
+ *     Interacts with other modules to detect and process directives
+ *      and regular code lines.
  *
  * Status:
- *     Initial development — logic not yet implemented.
+ *     In progress — checks if first word is a directive
  *
  * Author: [Franco Olano Melo]
  * -----------------------------------------------------------------------------
@@ -14,60 +16,43 @@
 
 #include "./module_classifier.h"
 
-// Macro definitions on the types of directives
-#define NO_DIRECTIVE 0
-#define DEFINE 1
-#define INCLUDE 2
-#define IFDEF 3
-
 
 /*
     Checks whether a line is any type of directive.
 
     Parameters:
-        char* line: input file's line
+        char* line: input file's first word
     
     Returns:
-        DEFINE if its a define directive
-        INCLUDE if its a include directive
-        IFDEF if its a ifdef directive
-        NO_DIRECTIVE otherwise.
+        A Directive enum value
         
 */
-int is_directive(char* line){
-    printf(" - Function: is_directive Not implemented.");
+Directive cl_directive_type(char* word){
+    if (strcmp(word, INCLUDE_STR) == 0)
+        return  INCLUDE;
+    if(strcmp(word, IFDEF_STR) == 0)
+        return IFDEF;
+    if(strcmp(word, DEFINE_STR) == 0)
+        return DEFINE;
+        
     return NO_DIRECTIVE;
 }
 
+
 /*
-    Uses the input handler module to read a file line.
+    Calls text normalizer to eliminate comments
 
     Parameters:
-        char* file_path: input file path.
-
-    Returns:
-        Next Unprcessed file line.
-
+        Raw Word from the input file
 */
-char* read_input_line(char* file_path){
-    printf(" - Function: read_input_line Not implemented.");
+
+char* cl_process_word(char* word){
+    printf(" - Function: cl_process_line Not implemented.");
 }
 
-/*
-    Uses the text normalizer module to remove comments.
-
-    Parameters:
-        char* line: input file line.
-
-    Returns:
-        line any without comments
-*/
-char* delete_commets(char* line){
-    printf(" - Function: delete_commets Not implemented.");
-}
 
 /*
-    Uses the symbol table module to define a macro from the input file
+    Uses the symbol table module to handle a define directive from the input file
 
     Parameters:
         char* line: input file line.
@@ -75,35 +60,13 @@ char* delete_commets(char* line){
     Returns:
         1 if success, 0 otherwise.
 */
-int define_macro(char* line){
-    printf(" - Function: define_macro Not implemented.");
+int cl_define_handler(char* line){
+    printf(" - Function: cl_define_handler Not implemented.");
 }
 
-/*
-    Uses the recursivity handler module to include a new file 
-    specified in a #include directive.
-
-    Parameters:
-        char* line: input file line.
-
-    Returns:
-        1 if success, 0 otherwise.
-*/
-int include_file(char* line){
-    printf(" - Function: include_file Not implemented.");
-}
-
-/*
-    Uses the recursivity handler module to process a ifdef block.
-
-    Parameters:
-        char* ifdef_block: hole ifdef block.
-
-    Returns:
-        1 if success, 0 otherwise.
-*/
-int process_ifdef_block(char* ifdef_block){
-
+int cl_init_datastructures(){
+    TextNormalizerState* tn_state;
+    // tn_state = init()
 }
 
 /*
@@ -111,14 +74,48 @@ int process_ifdef_block(char* ifdef_block){
     Reads the input file using the input handler module
     and interacts with the rest to process the output.
 
-    Parameters:
+    Parameters: input file's path
 
-    Returns: 
+    Returns: 0 if everithing worked out correctly
+            1 otherwise
         
 */
-int classifier(int n) {
-    printf("Classifier module, still to be implemented\n");
+int cl_classifier(char* file_path) {
 
-    char* line = " ";
-    return is_directive(line);
+    // cl_init_datastructures();
+    TextNormalizerState* tn_state;
+
+    ioh_open(file_path);
+    
+    char next_word[MAX_SIZE];
+    while(ioh_read_word(next_word, sizeof(next_word)) > 0){
+
+        char* normalized_word = text_normalizer(next_word, tn_state);
+
+        // TODO if not in comment
+        switch(cl_directive_type(normalized_word)){
+            case INCLUDE:
+            // call recursivity handler - include
+            break;
+    
+            case IFDEF:
+            // call recusrivity handler - ifdef
+            break;
+    
+            case DEFINE:
+            // call symbol table - declaration of macro
+            break;
+        }
+
+        // TODO endif
+
+        // TODO final write output
+
+
+        // Resert word buffer
+        memset(next_word, 0, sizeof(next_word));
+    }
+
+
+    return 0;
 }
