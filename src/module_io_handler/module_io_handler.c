@@ -3,8 +3,10 @@
  * module_io_handler.c 
  *
  * This module provides functionality to handle io files for modules.
- * - `ioh_open`: Opens an io file for reading.
- * - `ioh_close`: Closes the currently opened input file.
+ * - `ioh_open_input`: Opens an io file for reading.
+ * - `ioh_close_input`: Closes the currently opened input file.
+ * - `ioh_open_output`: Opens an io file for writing.
+ * - `ioh_close_output`: Closes the currently opened output file.
  * - `ioh_read_line`: Reads a line from the input file into a buffer.
  * - `ioh_read_word`: Reads a word from the input file into a buffer.
  * - `ioh_line_number`: Returns the current line number being read.
@@ -23,31 +25,59 @@
 
 #include "./module_io_handler.h"
 
-static FILE *input_file = NULL; // input file
-static int num_line = 0; // current line number
-static bool is_eof = false; // to indicate end of file
+// static FILE *input_file = NULL; 
+// static int num_line = 0; 
+// static bool is_eof = false; // to indicate end of file
+
+static ioh_state_t g_ioh = {NULL, NULL, 0, false};
 
 
-bool ioh_close() {
-    if(input_file != NULL) { // close file if opened
-        fclose(input_file); // close file
-        input_file = NULL; // reset pointer
+bool ioh_close_input() {
+    if(g_ioh.input_file != NULL) { // close file if opened
+        fclose(g_ioh.input_file); // close file
+        g_ioh.input_file = NULL; // reset pointer
     }
-    num_line = 0; // reset line number
-    is_eof = false; // reset EOF status
+    g_ioh.line_number = 0; // reset line number
+    g_ioh.is_eof = false; // reset EOF status
     return true;
 }
 
-bool ioh_open(const char *path) {
-    ioh_close(); // before opening file, close previous one.
+bool ioh_close_output() {
+    if(g_ioh.output_file != NULL) { // close file if opened
+        fclose(g_ioh.output_file); // close file
+        g_ioh.output_file = NULL; // reset pointer
+    }
+    g_ioh.line_number = 0; // reset line number
+    g_ioh.is_eof = false; // reset EOF status
+    return true;
+}
+
+bool ioh_open_input(const char *path) {
+    ioh_close_input(); // before opening file, close previous one.
 
     if(path == NULL || path[0] == '\0') { // invalid path
-        fprintf(stderr, "ioh_open: invalid path\n");
+        fprintf(stderr, "ioh_open_input: invalid path\n");
         return false;
     } else {
-        input_file = fopen(path, "r");
-        if(input_file == NULL) { // error opening file
-            fprintf(stderr, "ioh_open: could not open input file '%s'\n", path);
+        g_ioh.input_file = fopen(path, "r");
+        if(g_ioh.input_file == NULL) { // error opening file
+            fprintf(stderr, "ioh_open_input: could not open input file '%s'\n", path);
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ioh_open_output(const char *path) {
+    ioh_close_output(); // before opening file, close previous one.
+
+    if(path == NULL || path[0] == '\0') { // invalid path
+        fprintf(stderr, "ioh_open_output: invalid path\n");
+        return false;
+    } else {
+        g_ioh.output_file = fopen(path, "w");
+        if(g_ioh.output_file == NULL) { // error opening file
+            fprintf(stderr, "ioh_open_output: could not open output file '%s'\n", path);
             return false;
         }
     }
@@ -55,7 +85,7 @@ bool ioh_open(const char *path) {
 }
 
 int ioh_read_line(char *buffer, size_t max) {
-    if(input_file == NULL) { // file not opened
+    if(g_ioh.input_file == NULL) { // file not opened
         fprintf(stderr, "ioh_read_line: input file not opened\n");
         return -1;
     }
@@ -65,10 +95,10 @@ int ioh_read_line(char *buffer, size_t max) {
         return -1;
     }
 
-    char* res = fgets(buffer, (int)max, input_file); // read line
+    char* res = fgets(buffer, (int)max, g_ioh.input_file); // read line
     if(res == NULL) { // error or EOF
-        if(feof(input_file)) { // end of file
-            is_eof = true;
+        if(feof(g_ioh.input_file)) { // end of file
+            g_ioh.is_eof = true;
             return 0; // indicate EOF
         } else { // error reading file
             fprintf(stderr, "ioh_read_line: error reading input file\n");
@@ -76,13 +106,13 @@ int ioh_read_line(char *buffer, size_t max) {
         }
     }
 
-    num_line++; // increment line number
+    g_ioh.line_number++; // increment line number
 
     return (int)strlen(buffer); // return number of characters read
 }
 int ioh_read_word(char *wordbuffer, size_t max) {
 
-    if(input_file == NULL) { // file not opened
+    if(g_ioh.input_file == NULL) { // file not opened
         fprintf(stderr, "ioh_read_word: input file not opened\n");
         return -1;
     }
@@ -97,16 +127,16 @@ int ioh_read_word(char *wordbuffer, size_t max) {
     int c;
 
     // to start reading the word, skip whitespace
-    while((c = fgetc(input_file)) != EOF) {
+    while((c = fgetc(g_ioh.input_file)) != EOF) {
         if(c == '\n'){
-            num_line++; // increment line number
+            g_ioh.line_number++; // increment line number
         } if(!isspace((unsigned char)c)){
             break; // found the start of a word
         }
     }
 
     if(c == EOF) { // end of file
-        is_eof = true;
+        g_ioh.is_eof = true;
         return 0; // indicate EOF
     }
 
@@ -116,24 +146,24 @@ int ioh_read_word(char *wordbuffer, size_t max) {
         if(index < max - 1) { // ensure space for null terminator
             wordbuffer[index++] = (char)c; // add character to buffer
         } else { // if the word is too long...
-            while((c = fgetc(input_file)) != EOF && !isspace((unsigned char)c)) {
+            while((c = fgetc(g_ioh.input_file)) != EOF && !isspace((unsigned char)c)) {
                 // to finish reading the rest of the word
             }
             fprintf(stderr, "ioh_read_word: word too long, so we truncate it\n");
             if(c == '\n'){
-                num_line++; // increment line number
+                g_ioh.line_number++; // increment line number
             }
             break;
         }
 
-        c=fgetc(input_file);
+        c=fgetc(g_ioh.input_file);
         if(c == '\n'){
-            num_line++; // increment line number
+            g_ioh.line_number++; // increment line number
         }
     }
 
     if(c == EOF) {
-        is_eof = true;
+        g_ioh.is_eof = true;
     }
 
 
@@ -142,13 +172,37 @@ int ioh_read_word(char *wordbuffer, size_t max) {
 }
 
 int ioh_line_number() {
-    return num_line; // return current line number
+    return g_ioh.line_number; // return current line number
 }
 
 bool ioh_is_eof() {
-    return is_eof; // return EOF status
+    return g_ioh.is_eof; // return EOF status
 }
 
 int ioh_write_line(char *buffer, size_t max) {
-    printf("Output Handler module, still to be implemented\n");
+    if(g_ioh.output_file == NULL) { // output file not opened
+        fprintf(stderr, "ioh_write_line: output file not opened\n");
+        return -1;
+    }
+
+    if(buffer == NULL || max == 0) { // invalid buffer
+        fprintf(stderr, "ioh_write_line: invalid buffer\n");
+        return -1;
+    }
+
+    char* res = fgets(buffer, (int)max, g_ioh.input_file); // read line
+    if(res == NULL) { // error or EOF
+        if(feof(g_ioh.input_file)) { // end of file
+            g_ioh.is_eof = true;
+            return 0; // indicate EOF
+        } else { // error reading file
+            fprintf(stderr, "ioh_write_line: error reading output file\n");
+            return -1;
+        }
+    }
+
+    g_ioh.line_number++; // increment line number
+
+    return (int)strlen(buffer); // return number of characters read
+
 }

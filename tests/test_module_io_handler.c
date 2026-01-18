@@ -38,17 +38,17 @@ static void delete_test_file(void) {
 }
 
 static void test_open_invalid_path(void) {
-    assert(ioh_open(NULL) == false);
-    assert(ioh_open("") == false);
+    assert(ioh_open_input(NULL) == false);
+    assert(ioh_open_input("") == false);
 }
 
 static void test_open_close_valid_path(void) { // open and close a valid file
     create_test_file();
 
-    assert(ioh_open(TEST_FILE_PATH) == true);
+    assert(ioh_open_input(TEST_FILE_PATH) == true);
     assert(ioh_is_eof() == false);
 
-    assert(ioh_close() == true);
+    assert(ioh_close_input() == true);
     delete_test_file();
 }
 
@@ -56,7 +56,7 @@ static void test_read_line_basic(void) { // read lines and check content and lin
     char buf[256];
 
     create_test_file();
-    assert(ioh_open(TEST_FILE_PATH) == true);
+    assert(ioh_open_input(TEST_FILE_PATH) == true);
 
     int n = ioh_read_line(buf, sizeof(buf));
     assert(n > 0);
@@ -78,7 +78,7 @@ static void test_read_line_basic(void) { // read lines and check content and lin
     assert(n == 0);
     assert(ioh_is_eof() == true);
 
-    ioh_close();
+    ioh_close_input();
     delete_test_file();
 }
 
@@ -86,7 +86,7 @@ static void test_read_word_basic(void) { // read words and check content and lin
     char w[64];
 
     create_test_file();
-    assert(ioh_open(TEST_FILE_PATH) == true);
+    assert(ioh_open_input(TEST_FILE_PATH) == true);
 
     assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "hello") == 0);
     assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "world") == 0);
