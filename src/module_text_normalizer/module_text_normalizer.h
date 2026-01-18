@@ -5,6 +5,7 @@
 
 typedef struct {
     int in_block_comment;  // 0 = outside, 1 = inside /* */
+    int in_line_comment;  // 0 = code line, 1 = after //
 } TextNormalizerState;
 
 char* text_normalizer(
