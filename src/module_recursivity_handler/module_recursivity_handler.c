@@ -34,7 +34,7 @@ int rh_handle_include(const char *filename){
 		path[path_len] = '\0';
 		
 		//Initialize a new classifier starting from the provided path
-		int result = cl_classifier(path);
+		int result = cl_classifier(path, path);
 		free(path);
 		return result;
 	}

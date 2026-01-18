@@ -5,13 +5,27 @@
 
 #define IH_MAX_LINE_LENGTH 1024
 
+typedef struct {
+    FILE *input_file; // input file
+    FILE *output_file; // output file
+    int line_number; // current line number
+    bool is_eof; // end of file status
+} ioh_state_t;
 
-bool ioh_open(const char *path);
-bool ioh_close();
+// status
+int ioh_line_number(void);
+bool ioh_is_eof(void);
+
+// input
+bool ioh_open_input(const char *path);
+bool ioh_close_input(void);
 int ioh_read_line(char *buffer, size_t max);
 int ioh_read_word(char *buffer, size_t max);
-int ioh_line_number();
-bool ioh_is_eof();
+
+// output
+bool ioh_close_output(void); 
+bool ioh_open_output(const char *path); // open with "w"
+bool ioh_open_output_append(const char *path); // open with "a"
 int ioh_write_line(char *buffer, size_t max);
 
 

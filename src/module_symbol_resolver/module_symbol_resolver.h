@@ -3,7 +3,14 @@
 
 #include "../main.h"
 
-int symbol_resolver(int n);
+typedef struct{
+    int inPrint;
+    int inString;
+}replaceFlags;
+
+typedef struct MacroTable MacroTable;
+
+void sr_init_replaceFlags(replaceFlags *flags);
+char* sr_substitute(char *word, replaceFlags *flags, MacroTable *table);
 
 #endif
- 
