@@ -16,13 +16,9 @@ int main(int argc, char *argv[]) {
     classifier(n);
     fprintf(ofile, "Finished module_classifier!!\n");
 
-    fprintf(ofile, "Starting module_input_handler ...\n");
-    ih_open("/test");
-    fprintf(ofile, "Finished module_input_handler!!\n");
-
-    fprintf(ofile, "Starting module_output_handler ...\n");
-    oh_open("/test");
-    fprintf(ofile, "Finished module_output_handler!!\n");
+    fprintf(ofile, "Starting module_io_handler ...\n");
+    ioh_open("/test");
+    fprintf(ofile, "Finished module_io_handler!!\n");
     
     fprintf(ofile, "Starting module_recursivity_handler ...\n");
     recursivity_handler(n);

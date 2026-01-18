@@ -57,8 +57,7 @@ target_link_libraries(modules_template_main PRIVATE
   utils
   module_args
   module_classifier
-  module_input_handler
-  module_output_handler
+  module_io_handler
   module_recursivity_handler
   module_symbol_resolver
   module_symbol_table

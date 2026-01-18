@@ -15,12 +15,12 @@ target_include_directories(test_module_args PRIVATE ${PROJECT_SOURCE_DIR}/src)
 add_test(NAME TestModuleArgs COMMAND test_module_args arg90 arg91 arg92)
 message(STATUS " - (${PROJECT_NAME}) Test for module_args added")
 
-# Test for module_input_handler
-add_executable(test_module_input_handler test_module_input_handler.c)
-target_link_libraries(test_module_input_handler PRIVATE module_input_handler utils)
-target_include_directories(test_module_input_handler PRIVATE ${PROJECT_SOURCE_DIR}/src)
-add_test(NAME TestModuleInputHandler COMMAND test_module_input_handler)
-message(STATUS " - (${PROJECT_NAME}) Test for module_input_handler added")
+# Test for module_io_handler
+add_executable(test_module_io_handler test_module_io_handler.c)
+target_link_libraries(test_module_io_handler PRIVATE module_io_handler utils)
+target_include_directories(test_module_io_handler PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleIOHandler COMMAND test_module_io_handler)
+message(STATUS " - (${PROJECT_NAME}) Test for module_io_handler added")
 
 
 

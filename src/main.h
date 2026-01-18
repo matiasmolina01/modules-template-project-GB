@@ -9,8 +9,7 @@
 #include "./module_text_normalizer/module_text_normalizer.h"
 #include "./module_symbol_resolver/module_symbol_resolver.h"
 #include "./module_symbol_table/module_symbol_table.h"
-#include "./module_input_handler/module_input_handler.h"
-#include "./module_output_handler/module_output_handler.h"
+#include "./module_io_handler/module_io_handler.h"
 #include "./module_recursivity_handler/module_recursivity_handler.h"
 
 // Output file of project run: either a stdout or a filename with log extension (comment one out)

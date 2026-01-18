@@ -1,8 +1,8 @@
 /*
  * -----------------------------------------------------------------------------
- * test_module_input_handler.c
+ * test_module_io_handler.c
  *
- * Unit tests for module_input_handler.
+ * Unit tests for module_io_handler.
  *
  * Team:
  *     GB
@@ -13,7 +13,7 @@
  */
 
 
-#include "../tests/test_module_input_handler.h"
+#include "../tests/test_module_io_handler.h"
 
 
 
@@ -34,17 +34,17 @@ static void delete_test_file(void) {
 }
 
 static void test_open_invalid_path(void) {
-    assert(ih_open(NULL) == false);
-    assert(ih_open("") == false);
+    assert(ioh_open(NULL) == false);
+    assert(ioh_open("") == false);
 }
 
 static void test_open_close_valid_path(void) { // open and close a valid file
     create_test_file();
 
-    assert(ih_open(TEST_FILE_PATH) == true);
-    assert(ih_is_eof() == false);
+    assert(ioh_open(TEST_FILE_PATH) == true);
+    assert(ioh_is_eof() == false);
 
-    assert(ih_close() == true);
+    assert(ioh_close() == true);
     delete_test_file();
 }
 
@@ -52,29 +52,29 @@ static void test_read_line_basic(void) { // read lines and check content and lin
     char buf[256];
 
     create_test_file();
-    assert(ih_open(TEST_FILE_PATH) == true);
+    assert(ioh_open(TEST_FILE_PATH) == true);
 
-    int n = ih_read_line(buf, sizeof(buf));
+    int n = ioh_read_line(buf, sizeof(buf));
     assert(n > 0);
     assert(strcmp(buf, "hello   world\t42\n") == 0);
-    assert(ih_line_number() == 1);
+    assert(ioh_line_number() == 1);
 
-    n = ih_read_line(buf, sizeof(buf));
+    n = ioh_read_line(buf, sizeof(buf));
     assert(n > 0);
     assert(strcmp(buf, "   #define   ON   1\n") == 0);
-    assert(ih_line_number() == 2);
+    assert(ioh_line_number() == 2);
 
-    n = ih_read_line(buf, sizeof(buf));
+    n = ioh_read_line(buf, sizeof(buf));
     assert(n > 0);
     assert(strcmp(buf, "ultimalinea\n") == 0);
-    assert(ih_line_number() == 3);
+    assert(ioh_line_number() == 3);
 
     // siguiente -> EOF
-    n = ih_read_line(buf, sizeof(buf));
+    n = ioh_read_line(buf, sizeof(buf));
     assert(n == 0);
-    assert(ih_is_eof() == true);
+    assert(ioh_is_eof() == true);
 
-    ih_close();
+    ioh_close();
     delete_test_file();
 }
 
@@ -82,25 +82,25 @@ static void test_read_word_basic(void) { // read words and check content and lin
     char w[64];
 
     create_test_file();
-    assert(ih_open(TEST_FILE_PATH) == true);
+    assert(ioh_open(TEST_FILE_PATH) == true);
 
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "hello") == 0);
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "world") == 0);
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "42") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "hello") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "world") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "42") == 0);
 
-    assert(ih_line_number() >= 1);
+    assert(ioh_line_number() >= 1);
 
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "#define") == 0);
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "ON") == 0);
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "1") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "#define") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "ON") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "1") == 0);
 
-    assert(ih_read_word(w, sizeof(w)) > 0 && strcmp(w, "ultimalinea") == 0);
+    assert(ioh_read_word(w, sizeof(w)) > 0 && strcmp(w, "ultimalinea") == 0);
 
     // EOF
-    assert(ih_read_word(w, sizeof(w)) == 0);
-    assert(ih_is_eof() == true);
+    assert(ioh_read_word(w, sizeof(w)) == 0);
+    assert(ioh_is_eof() == true);
 
-    ih_close();
+    ioh_close();
     delete_test_file();
 }
 
@@ -108,11 +108,11 @@ static void test_read_after_close_fails(void) {
     char buf[16];
 
     // without open
-    assert(ih_read_line(buf, sizeof(buf)) == -1);
-    assert(ih_read_word(buf, sizeof(buf)) == -1);
+    assert(ioh_read_line(buf, sizeof(buf)) == -1);
+    assert(ioh_read_word(buf, sizeof(buf)) == -1);
 }
 
-void test_input_handler_run_all(void) {
+void test_io_handler_run_all(void) {
     test_open_invalid_path();
     test_open_close_valid_path();
     test_read_line_basic();
@@ -122,9 +122,9 @@ void test_input_handler_run_all(void) {
 
 int main(void) {
 
-    printf("Starting tests for Module input...\n");
-    test_input_handler_run_all();
-    printf("Finished tests for Module input...\n\n");
+    printf("Starting tests for Module io handler...\n");
+    test_io_handler_run_all();
+    printf("Finished tests for Module io handler...\n\n");
 
     return 0;
 }
