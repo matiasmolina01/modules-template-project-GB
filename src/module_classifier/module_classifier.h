@@ -4,12 +4,6 @@
 #include "../main.h"
 #include <string.h>
 
-typedef enum {
-	INCLUDE,
-	DEFINE,
-	IFDEF,
-	NO_DIRECTIVE
-} Directive;
 
 #define INCLUDE_STR "#include" 
 #define DEFINE_STR "#define" 
@@ -19,18 +13,28 @@ typedef enum {
 typedef struct MacroTable MacroTable;
 typedef struct TextNormalizerState TextNormalizerState;
 
+typedef enum {
+	INCLUDE,
+	DEFINE,
+	IFDEF,
+	NO_DIRECTIVE
+} Directive;
+
 typedef struct GlobalState{
 	TextNormalizerState* tn_state;
 	MacroTable* macro_table;
 } GlobalState;
 
 Directive cl_directive_type(char* word);
-char* cl_normalize_word(char* word);
-int cl_define_handler();
-int cl_include_handler();
+// interaction with Symbol Table
+int cl_define_handler(); 
+// interaction with Recursivity Handler
+int cl_include_handler(); 
 int cl_ifdef_handler();
+// initialization of the GlobalState datastructure
 GlobalState* cl_init_datastructures();
-int cl_classifier(char* file_path);
+// main loop
+int cl_classifier(char* input_file_path, char* output_file_path);
 
 #endif
  
