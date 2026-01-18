@@ -3,27 +3,18 @@
 
 #include "../main.h"
 
-int recursivity_handler(int n);
+typedef struct{
+	int process; //0 = skip, 1 = process
+} rh_process_macro;
 
-void rh_handle_directive(int directive, const char *arg);
+int recursivity_handler(int n);
 
 void rh_handle_include(const char *filename);
 
-int rh_resolve_include(const char *pre_path, char *resolved_path);
+void rh_handle_ifdef(char *macro, rh_process_macro *result);
 
-void rh_handle_ifdef(const char *macro, int is_negated);
+void rh_handle_ifndef(char *macro, rh_process_macro *result);
 
-void rh_skip_until_endif();
-
-void rh_handle_endif();
-
-void rh_enter_context();
-
-void rh_exit_context();
-
-int rh_is_in_recursive_context(const char *filename);
-
-void rh_error(const char *message);
 
 #endif
  

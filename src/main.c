@@ -29,7 +29,8 @@ int main(int argc, char *argv[]) {
     fprintf(ofile, "Finished module_symbol_resolver!!\n");
 
     fprintf(ofile, "Starting module_symbol_table ...\n");
-    test_symbol_table_module(n);
+    // test_symbol_table_module(n); this function does not longer exist. 
+    // If you want to run tests, call them from build/tests/Debug/test_module_symbol_table.exe.
     fprintf(ofile, "Finished module_symbol_table!!\n");
 
     fprintf(ofile, "Starting module_text_normalizer ...\n");
