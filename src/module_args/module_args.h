@@ -31,6 +31,16 @@
 
 #include "../main.h"
 
+typedef struct{
+    int is_command_mode; // 1 if command mode, 0 otherwise
+    int is_directive_mode; // 1 if directive mode, 0 otherwise
+    int is_help_mode; // 1 if help mode, 0 otherwise
+
+    const char *input_path; // path to input file
+    const char *output_path; // path to output file
+} ags_state_t;
+
+
 int process_arguments(int argc, char *argv[]);
 void print_arguments(int argc, char *argv[]);
 
