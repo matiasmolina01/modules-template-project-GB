@@ -11,7 +11,7 @@
  * - `ioh_read_word`: Reads a word from the input file into a buffer.
  * - `ioh_line_number`: Returns the current line number being read.
  * - `ioh_is_eof`: Checks if the end of the file has been reached.
- * - `ioh_write_line`: Placeholder for writing a line to output (not implemented).
+ * - `ioh_write_line`: Placeholder for writing a line to output.
  * 
  * Usage:
  *     Called from the main application or test modules to handle io in modules.
@@ -31,21 +31,21 @@
 
 static ioh_state_t g_ioh = {NULL, NULL, 0, false};
 
+/* STATE */
+int ioh_line_number() {
+    return g_ioh.line_number; // return current line number
+}
 
+bool ioh_is_eof() {
+    return g_ioh.is_eof; // return EOF status
+}
+
+
+/* INPUT */
 bool ioh_close_input() {
     if(g_ioh.input_file != NULL) { // close file if opened
         fclose(g_ioh.input_file); // close file
         g_ioh.input_file = NULL; // reset pointer
-    }
-    g_ioh.line_number = 0; // reset line number
-    g_ioh.is_eof = false; // reset EOF status
-    return true;
-}
-
-bool ioh_close_output() {
-    if(g_ioh.output_file != NULL) { // close file if opened
-        fclose(g_ioh.output_file); // close file
-        g_ioh.output_file = NULL; // reset pointer
     }
     g_ioh.line_number = 0; // reset line number
     g_ioh.is_eof = false; // reset EOF status
@@ -59,25 +59,9 @@ bool ioh_open_input(const char *path) {
         fprintf(stderr, "ioh_open_input: invalid path\n");
         return false;
     } else {
-        g_ioh.input_file = fopen(path, "r");
+        g_ioh.input_file = fopen(path, IOH_MODE_READ);
         if(g_ioh.input_file == NULL) { // error opening file
             fprintf(stderr, "ioh_open_input: could not open input file '%s'\n", path);
-            return false;
-        }
-    }
-    return true;
-}
-
-bool ioh_open_output(const char *path) {
-    ioh_close_output(); // before opening file, close previous one.
-
-    if(path == NULL || path[0] == '\0') { // invalid path
-        fprintf(stderr, "ioh_open_output: invalid path\n");
-        return false;
-    } else {
-        g_ioh.output_file = fopen(path, "w");
-        if(g_ioh.output_file == NULL) { // error opening file
-            fprintf(stderr, "ioh_open_output: could not open output file '%s'\n", path);
             return false;
         }
     }
@@ -171,12 +155,46 @@ int ioh_read_word(char *wordbuffer, size_t max) {
     return (int)index; // return number of characters read
 }
 
-int ioh_line_number() {
-    return g_ioh.line_number; // return current line number
+/* OUTPUT */
+bool ioh_close_output() {
+    if(g_ioh.output_file != NULL) { // close file if opened
+        fclose(g_ioh.output_file); // close file
+        g_ioh.output_file = NULL; // reset pointer
+    }
+    return true;
 }
 
-bool ioh_is_eof() {
-    return g_ioh.is_eof; // return EOF status
+
+bool ioh_open_output(const char *path) {
+    ioh_close_output(); // before opening file, close previous one.
+
+    if(path == NULL || path[0] == '\0') { // invalid path
+        fprintf(stderr, "ioh_open_output: invalid path\n");
+        return false;
+    } else {
+        g_ioh.output_file = fopen(path, IOH_MODE_WRITE);
+        if(g_ioh.output_file == NULL) { // error opening file
+            fprintf(stderr, "ioh_open_output: could not open output file '%s'\n", path);
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ioh_open_output_append(const char *path) {
+    ioh_close_output(); // before opening file, close previous one.
+
+    if(path == NULL || path[0] == '\0') { // invalid path
+        fprintf(stderr, "ioh_open_output_append: invalid path\n");
+        return false;
+    } else {
+        g_ioh.output_file = fopen(path, IOH_MODE_APPEND);
+        if(g_ioh.output_file == NULL) { // error opening file
+            fprintf(stderr, "ioh_open_output_append: could not open output file '%s'\n", path);
+            return false;
+        }
+    }
+    return true;
 }
 
 int ioh_write_line(char *buffer, size_t max) {
@@ -190,19 +208,15 @@ int ioh_write_line(char *buffer, size_t max) {
         return -1;
     }
 
-    char* res = fgets(buffer, (int)max, g_ioh.input_file); // read line
-    if(res == NULL) { // error or EOF
-        if(feof(g_ioh.input_file)) { // end of file
-            g_ioh.is_eof = true;
-            return 0; // indicate EOF
-        } else { // error reading file
-            fprintf(stderr, "ioh_write_line: error reading output file\n");
-            return -1;
-        }
+    size_t len = strlen(buffer,max); // get length of buffer
+    if(len == 0) { // nothing to write
+        return 0;
     }
 
-    g_ioh.line_number++; // increment line number
-
-    return (int)strlen(buffer); // return number of characters read
-
+    size_t res = fwrite(buffer, 1, len, g_ioh.output_file); // write line
+    if(res != len) { // error or EOF
+        fprintf(stderr, "ioh_write_line: error writing to output file\n");
+        return -1;
+    }
+    return (int)len; // return number of characters read
 }

@@ -4,6 +4,9 @@
 #include "../main.h"
 
 #define IH_MAX_LINE_LENGTH 1024
+#define IOH_MODE_READ "r"
+#define IOH_MODE_WRITE "w"
+#define IOH_MODE_APPEND "a"
 
 typedef struct {
     FILE *input_file; // input file
