@@ -208,7 +208,7 @@ int ioh_write_line(char *buffer, size_t max) {
         return -1;
     }
 
-    size_t len = strlen(buffer,max); // get length of buffer
+    size_t len = strnlen(buffer,max); // get length of buffer
     if(len == 0) { // nothing to write
         return 0;
     }
