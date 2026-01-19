@@ -22,7 +22,7 @@
 #include "../tests/test_module_classifier.h"
 
 void test_directive_type() {
-    printf("Running tests for cl_directive_type...\n");
+    printf(" - cl_directive_type: running tests...\n");
 
     // 1. Positive Test Cases (Exact Matches)
     assert(cl_directive_type("#include") == INCLUDE);
@@ -47,12 +47,18 @@ void test_directive_type() {
     // Partial matches
     assert(cl_directive_type("#inc") == NO_DIRECTIVE);
 
-    printf("All tests passed successfully!\n");
+    printf(" - cl_directive_type: All tests passed successfully!\n");
+}
+
+void test_classifier_main(){
+    printf(" - cl_classfier: starting tests...\n");
+    cl_classifier("../../test/test_module_classifier/test1.c", "../../test/test_module_classifier/out/test1_pp.c");
 }
 
 int main(void) {
     printf("\nStarting tests for Module classifier...\n");
     test_directive_type();
+    test_classifier_main();
     printf("Finished tests for Module classifier...\n\n");
     return 0;
 }

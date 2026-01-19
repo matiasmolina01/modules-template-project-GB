@@ -3,14 +3,14 @@
 
 #include "../main.h"
 
-typedef struct{
+typedef struct ReplaceFlags{
     int inPrint;
     int inString;
-}replaceFlags;
+} ReplaceFlags;
 
 typedef struct MacroTable MacroTable;
 
-void sr_init_replaceFlags(replaceFlags *flags);
-char* sr_substitute(char *word, replaceFlags *flags, MacroTable *table);
+void sr_init_ReplaceFlags(ReplaceFlags *flags);
+char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table);
 
 #endif
