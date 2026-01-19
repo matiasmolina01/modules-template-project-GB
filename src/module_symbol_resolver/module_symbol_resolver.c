@@ -16,13 +16,13 @@
 
 
 
-void sr_init_replaceFlags(replaceFlags *flags){
+void sr_init_ReplaceFlags(ReplaceFlags *flags){
     //We initialize as false because as default the word in file won't be inside a print or a string.
     flags->inPrint = 0;
     flags->inString = 0;
 }
 
-char* sr_substitute(char *word, replaceFlags *flags, MacroTable *table){
+char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table){
     if(flags->inPrint ==1 || flags->inString ==1){
         return word;
     }

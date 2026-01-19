@@ -10,6 +10,7 @@
 
 typedef struct MacroTable MacroTable;
 typedef struct TextNormalizerState TextNormalizerState;
+typedef struct ReplaceFlags ReplaceFlags;
 
 typedef enum {
 	INCLUDE,
@@ -21,6 +22,7 @@ typedef enum {
 typedef struct GlobalState{
 	TextNormalizerState* tn_state;
 	MacroTable* macro_table;
+	ReplaceFlags* replace_flags;
 } GlobalState;
 
 Directive cl_directive_type(char* word);

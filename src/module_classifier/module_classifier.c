@@ -85,8 +85,12 @@ GlobalState* cl_init_datastructures(){
     
     MacroTable *macro_table = st_init();
 
+    ReplaceFlags *replace_flags = (ReplaceFlags*) malloc(sizeof(ReplaceFlags));
+    sr_init_ReplaceFlags(replace_flags);
+
     global_state->tn_state = tn_state;
     global_state->macro_table = macro_table;
+    global_state->replace_flags = replace_flags;
 
     return global_state;
 }
@@ -109,6 +113,9 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
     GlobalState* global_state =  cl_init_datastructures();
 
     ioh_open_input(input_file_path);
+    if (!ioh_open_output_append(output_file_path)){
+        ioh_open_output(output_file_path);
+    }
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(next_word, sizeof(next_word)) > 0){
@@ -138,17 +145,21 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
             continue;
         }
 
-        // TODO get final_word from symbol_resolver
+        char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
 
         // TODO final write output in output_file_path
         //       -> IF COMMENT FLAG ON -> final_word
         //       -> IF COMMENT FLAG OFF -> next_word
+
+        ioh_write_line(final_word, strlen(final_word));
 
 
         // Resert word buffer
         memset(next_word, 0, sizeof(next_word));
     }
 
+    ioh_close_input();
+    ioh_close_output();
 
     return 0;
 }
