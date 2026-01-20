@@ -35,3 +35,8 @@ int process_arguments(int argc, char *argv[]) {
     fflush(ofile);
     return 0;
 }
+
+ags_state_t ags_parsed(int argc, char *argv[]){ // hace falta implementarla
+    ags_state_t state = {0, 0, 0, NULL, NULL};
+    return state;
+}
