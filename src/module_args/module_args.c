@@ -41,7 +41,7 @@ void args_free(args_state_t *args){
     Returns:
         Pointer to populated args_state_t structure, or NULL on error.
 */
-args_state_t *args_parse(int argc, char *argv[]){ // hace falta implementarla
+args_state_t *args_parse(int argc, char *argv[]){
     
     args_state_t *args = malloc(sizeof(args_state_t));
         if (!args) {
