@@ -108,6 +108,7 @@ GlobalState* cl_init_datastructures(){
             1 otherwise
         
 */
+// TODO receive arguments struct as parameter
 int cl_classifier(char* input_file_path, char* output_file_path) {
 
     GlobalState* global_state =  cl_init_datastructures();
