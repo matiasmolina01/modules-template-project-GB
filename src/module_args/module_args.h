@@ -29,6 +29,16 @@
 #ifndef MODULE2_H
 #define MODULE2_H
 
+// defines
+#define ARGS_SUFFIX "_pp"
+
+// flags
+#define ARG_FLAG_C "-c"
+#define ARG_FLAG_D "-d"
+#define ARG_FLAG_H "-h"
+#define ARG_FLAG_ALL "-all"
+
+
 #include "../main.h"
 
 typedef struct{
@@ -38,11 +48,10 @@ typedef struct{
 
     const char *input_path; // path to input file
     const char *output_path; // path to output file
-} ags_state_t;
+} args_state_t;
 
-
-int process_arguments(int argc, char *argv[]);
-void print_arguments(int argc, char *argv[]);
+args_state_t *args_parse(int argc, char *argv[]);
+void args_free(args_state_t *args);
 
 #endif
 

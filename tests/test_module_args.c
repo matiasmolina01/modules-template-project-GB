@@ -1,45 +1,59 @@
-/* 
- * tests/test_module_args.c
- * 
- * This module is responsible to process the program arguments. 
- * It processes the command-line arguments of the entire application and sets the 
- * information in a global config variable.
- * 
- * This module has to manipulate launch.json to set the program arguments for running/debugging. 
- * So the contributors of this module have to have "ownership" of launch.json file too.
- * 
- * It includes the test cases of process_arguments to set the framework on how to set tests,
- * and do an exhaustive testing of a function.
- * The output is directed to a specified file or stdout.
+/*
+ * -----------------------------------------------------------------------------
+ * test_module_args.c
  *
- * The constants and configurations of the tests are defined in the header file test_module1.h.
+ * Unit tests for module_args.
+ *
+ * Team: GB
  * 
- * Team: [Your Team Name]
+ * Update 1:
  * 
- * Update 1: [Functionality added or modified]
- * Author: [The member/s responsible of the update]
- * Date: [Date of the update completed]
-*/
+ * - module_args functionality test
+ * 
+ * Author: Matias Molina
+ * Date: 24-01-2026
+ * -----------------------------------------------------------------------------
+ */
+
 #include "../tests/test_module_args.h"
 
 FILE *ofile = NULL; // file handler to send the module's output (to a file or stdout)
 
-void test_process_arguments(int argc, char *argv[]) {
-    print_arguments(argc, argv);
-    assert(argc >= 2); // At least the program name should be present
+static void print_args(args_state_t *args){
+    if(args == NULL){
+        fprintf(ofile, "Arguments struct is NULL\n");
+        return;
+    }
+    printf("----------- Parsed Arguments Test -----------\n");
+    printf("help_mode        : %d\n", args->is_help_mode);
+    printf("command_mode (-c): %d\n", args->is_command_mode);
+    printf("directive_mode(-d): %d\n", args->is_directive_mode);
+
+    if (args->input_path)
+        printf("input_path: %s\n", args->input_path);
+    else
+        printf("input_path: (null)\n");
+
+    if (args->output_path)
+        printf("output_path: %s\n", args->output_path);
+    else
+        printf("output_path: (null)\n");
+
+    printf("\n----------------------------------\n\n");
 }
 
 int main(int argc, char *argv[]) {
 
+
     ofile = stdout; // Default output to stdout
     ofile = set_output_test_file(MODARGSTESTLOGFILENAME);
 
-    printf("Starting tests for Module args...\n");
-    fprintf(ofile, "Starting tests for Module args...\n");
-    fprintf(ofile, "Testing of module arguments not implemented. Not done. Here put all tests of process_arguments\n");
-    test_process_arguments(argc, argv);      
-    printf("Finished tests for Module args...\n\n");
-    fprintf(ofile, "Finished tests for Module args...\n\n");
+    printf("Starting tests for Module args...\n\n");
+    args_state_t *args = args_parse(argc, argv);
+    print_args(args);
+    args_free(args);
+
+    fprintf(ofile, "\n\nFinished tests for Module args...\n\n");
 
     fclose(ofile); 
     return 0;
