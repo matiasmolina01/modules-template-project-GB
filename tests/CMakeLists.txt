@@ -36,6 +36,13 @@ target_include_directories(test_module_classifier PRIVATE ${PROJECT_SOURCE_DIR}/
 add_test(NAME TestModuleClassifier COMMAND test_module_classifier)
 message(STATUS " - (${PROJECT_NAME}) Test for module_classifier added")
 
+# Test for module_recursivity_handler
+add_executable(test_module_rh test_module_rh.c)
+target_link_libraries(test_module_rh PRIVATE module_recursivity_handler module_symbol_table utils)
+target_include_directories(test_module_rh PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleRecursivityHandler COMMAND test_module_rh)
+message(STATUS " - (${PROJECT_NAME}) Test for module_recursivity_handler added")
+
 # Test for module_2
 # add_executable(test_module_2 test_module_2.c)
 # target_link_libraries(test_module_2 PRIVATE module_2 utils)
