@@ -33,44 +33,47 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state) {
 
     while (i < len) {
 
-        // Case 1: until the end of comment */
-        if (state->in_block_comment) {
-            if (i + 1 < len && input_line[i] == '*' && input_line[i + 1] == '/') {
-                state->in_block_comment = 0;
+        if (not (flag_activate)) {
+
+            // Case 1: until the end of comment */
+            if (state->in_block_comment) {
+                if (i + 1 < len && input_line[i] == '*' && input_line[i + 1] == '/') {
+                    state->in_block_comment = 0;
+                    i += 2;
+                } else {
+                    i++;
+                }
+                continue;
+            }
+
+            // Case 2: until the end of the line inside comment //
+            if (state->in_line_comment) {
+                if (input_line[i] == '\n') {
+                    state->in_line_comment = 0;
+                    i++;
+                } else {
+                    i++;
+                }
+                continue;
+            }
+
+            // Case 1: starting comment //
+            if (i + 1 < len && state->in_block_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '/') {
+                state->in_line_comment = 1;
                 i += 2;
-            } else {
-                i++;
+                continue;
             }
-            continue;
-        }
 
-        // Case 2: until the end of the line inside comment //
-        if (state->in_line_comment) {
-            if (input_line[i] == '\n') {
-                state->in_line_comment = 0;
-                i++;
-            } else {
-                i++;
+            // Case 3: starting comment /*
+            if (i + 1 < len && state->in_line_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '*') {
+                state->in_block_comment = 1;
+                i += 2;
+                continue;
             }
-            continue;
-        }
 
-        // Case 1: starting comment //
-        if (i + 1 < len && state->in_block_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '/') {
-            state->in_line_comment = 1;
-            i += 2;
-            continue;
+            // Normal character
+            output[j++] = input_line[i++];
         }
-
-        // Case 3: starting comment /*
-        if (i + 1 < len && state->in_line_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '*') {
-            state->in_block_comment = 1;
-            i += 2;
-            continue;
-        }
-
-        // Normal character
-        output[j++] = input_line[i++];
     }
 
     output[j] = '\0';
