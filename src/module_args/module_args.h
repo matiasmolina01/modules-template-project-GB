@@ -41,7 +41,7 @@
 
 #include "../main.h"
 
-typedef struct{
+typedef struct args_state_t{
     int is_command_mode; // 1 if command mode, 0 otherwise
     int is_directive_mode; // 1 if directive mode, 0 otherwise
     int is_help_mode; // 1 if help mode, 0 otherwise

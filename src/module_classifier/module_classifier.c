@@ -34,9 +34,13 @@ Directive cl_directive_type(char* word){
         return IFDEF;
     if(strcmp(word, DEFINE_STR) == 0)
         return DEFINE;
+    if(strcmp(word, ENDIF_STR) == 0)
+        return ENDIF;
         
     return NO_DIRECTIVE;
 }
+
+
 
 
 /*
@@ -46,7 +50,7 @@ Directive cl_directive_type(char* word){
         1 if success, 0 otherwise.
 */
 int cl_define_handler(){
-    printf(" - Function: cl_define_handler Not implemented.");
+    
 }
 
 
@@ -88,11 +92,21 @@ GlobalState* cl_init_datastructures(){
     ReplaceFlags *replace_flags = (ReplaceFlags*) malloc(sizeof(ReplaceFlags));
     sr_init_ReplaceFlags(replace_flags);
 
+    RHStack *rh_stack = rh_stack_create(RH_STACK_CAPACITY);
+
+    RHProcessMacro* rh_process_macro = (RHProcessMacro*) malloc(sizeof(RHProcessMacro));
+
     global_state->tn_state = tn_state;
     global_state->macro_table = macro_table;
     global_state->replace_flags = replace_flags;
+    global_state->rh_stack = rh_stack;
+    global_state->rh_process_macro = rh_process_macro;
 
     return global_state;
+}
+
+void cl_free_datastructures(GlobalState* global_state){
+    free(global_state);
 }
 
 /*
@@ -109,9 +123,13 @@ GlobalState* cl_init_datastructures(){
         
 */
 // TODO receive arguments struct as parameter
-int cl_classifier(char* input_file_path, char* output_file_path) {
+int cl_classifier(args_state_t* args_state) {
 
     GlobalState* global_state =  cl_init_datastructures();
+    global_state->args_state = args_state;
+
+    char* input_file_path = args_state->input_path;
+    char* output_file_path = args_state->output_path;
 
     ioh_open_input(input_file_path);
     if (!ioh_open_output_append(output_file_path)){
@@ -123,10 +141,11 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
 
         char* normalized_word = text_normalizer(next_word, global_state->tn_state);
 
-        // Process directives which are not commented
+        // Process directives which are not commented or in a string
         if(global_state->tn_state->in_block_comment == 0 
             && global_state->tn_state->in_line_comment == 0 
-            /*&& process directives ON*/){
+            && global_state->replace_flags->inString == 0
+            && global_state->args_state->is_directive_mode == 1){
 
             switch(cl_directive_type(normalized_word)){
 
@@ -141,6 +160,10 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
                 case DEFINE:
                 cl_define_handler();
                 break;
+
+                case ENDIF:
+                rh_handle_endif(global_state->rh_stack);
+                break;
             }
 
             continue;
@@ -148,12 +171,12 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
 
         char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
 
-        // TODO final write output in output_file_path
-        //       -> IF COMMENT FLAG ON -> final_word
-        //       -> IF COMMENT FLAG OFF -> next_word
-
-        ioh_write_line(final_word, strlen(final_word));
-
+        // Write to output the correct word depending on if its a comment or not
+        if(global_state->args_state->is_command_mode == 1){
+            ioh_write_line(final_word, strlen(final_word));
+        }else{
+            ioh_write_line(next_word, strlen(next_word));
+        }
 
         // Resert word buffer
         memset(next_word, 0, sizeof(next_word));
@@ -161,6 +184,7 @@ int cl_classifier(char* input_file_path, char* output_file_path) {
 
     ioh_close_input();
     ioh_close_output();
+    cl_free_datastructures(global_state);
 
     return 0;
 }
