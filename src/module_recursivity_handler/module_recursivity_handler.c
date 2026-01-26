@@ -21,11 +21,11 @@ int recursivity_handler(int n) {
 }
 
 //Create a new stack with x capacity
-rh_stack* rh_stack_create(int capacity){
-	rh_stack *stack = (rh_stack*)malloc(sizeof(rh_stack));
+RHStack* rh_stack_create(int capacity){
+	RHStack *stack = (RHStack*)malloc(sizeof(RHStack));
 	if(stack == NULL) return NULL;
 	
-	stack->items = (rh_node*)malloc(sizeof(rh_node) * capacity);
+	stack->items = (RHNode*)malloc(sizeof(RHNode) * capacity);
 	if(stack->items == NULL){
 		free(stack);
 		return NULL;
@@ -37,7 +37,7 @@ rh_stack* rh_stack_create(int capacity){
 }
 
 //Free stack
-void rh_stack_free(rh_stack *stack){
+void rh_stack_free(RHStack *stack){
 	if(stack == NULL) return;
 	
 	for(int i = 0; i <= stack->top; i++){
@@ -50,7 +50,7 @@ void rh_stack_free(rh_stack *stack){
 }
 
 //Push direcvite
-int rh_stack_push(rh_stack *stack, const char *directive, const char *macro, int is_active){
+int rh_stack_push(RHStack *stack, const char *directive, const char *macro, int is_active){
 	if(stack == NULL || stack->top >= stack->capacity - 1){
 		return -1; //overflow
 	}
@@ -87,7 +87,7 @@ int rh_stack_push(rh_stack *stack, const char *directive, const char *macro, int
 }
 
 //Pop directive
-int rh_stack_pop(rh_stack *stack){
+int rh_stack_pop(RHStack *stack){
 	if(stack == NULL || stack->top < 0){
 		return -1; //underflow
 	}
@@ -102,12 +102,12 @@ int rh_stack_pop(rh_stack *stack){
 }
 
 //empty stack check
-int rh_stack_is_empty(rh_stack *stack){
+int rh_stack_is_empty(RHStack *stack){
 	return (stack == NULL || stack->top < 0);
 }
 
 //Check if we need to process
-int rh_stack_is_active(rh_stack *stack){
+int rh_stack_is_active(RHStack *stack){
 	if(stack == NULL || stack->top < 0){
 		return 1; //empty stack
 	}
@@ -152,9 +152,9 @@ int rh_filename_check(const char *filename){
 	return 0;
 }
 
-void rh_handle_ifdef_directive(char *macro, MacroTable *table, rh_stack *stack, int is_negated, rh_process_macro *process_macro){
+void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, int is_negated, RHProcessMacro *process_macro){
 	//check if any previous directive is marked as inactive
-	int prev_directive = rh_stack_is_active(stack);
+	int prev_directive = rh_stackis_active(stack);
 	
 	//check if the macro exists
 	int macro_exists = st_exists(table, macro);
@@ -185,13 +185,15 @@ void rh_handle_ifdef_directive(char *macro, MacroTable *table, rh_stack *stack, 
 	return;
 }
 
-int rh_handle_endif(rh_stack *stack){
+int rh_handle_endif(RHStack *stack){
 	//pop the top directive
-	if(rh_stack_pop(stack) == 0){
+	if(rh_stackpop(stack) == 0){
 		//pop successful continue processing
 		return 1;
 	}
 	//pop fails = underflow / no matching ifdef/ifndef
+	printf("Error: Unmatched endif directive found.\n");
+	exit(EXIT_FAILURE);
 	return 0;
 }
 
