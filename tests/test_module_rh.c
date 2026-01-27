@@ -37,7 +37,7 @@ void test_ifdef_ifndef(void){
 	assert(table != NULL);
 	assert(st_define(table, "A", "1") == ST_OK);
 
-	RHStack *stack = rh_stackcreate(8);
+	RHStack *stack = rh_stack_create(8);
 	assert(stack != NULL);
 
 	RHProcessMacro pm;
@@ -67,7 +67,7 @@ void test_ifdef_ifndef(void){
 	//Pop #ifdef A (active)
 	assert(rh_handle_endif(stack) == 1);
 	assert(rh_stack_is_active(stack) == 1); //empty stack treated as active
-	rh_stackfree(stack);
+	rh_stack_free(stack);
 	st_destroy(table);
 
 	log_status("test_ifdef_ifndef passed");
