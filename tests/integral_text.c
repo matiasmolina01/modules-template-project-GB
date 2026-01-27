@@ -7,7 +7,7 @@
  */
 
 //#include <stdio.h>
-#include "integral_text.h"
+//#include "integral_text.h"
 
 // #define
 #define MACRO0 /**//**/ 1
@@ -19,6 +19,11 @@
 void say_hello(void) {
     printf("Hello from the preprocessor test!\n");
 }
+
+#ifdef MACRO0
+	printf("HOLA");
+#endif
+
 
 int main(void) {
     int x = 5;

@@ -124,42 +124,53 @@ int rh_stack_is_active(RHStack *stack){
 
 int rh_handle_include(char *filename, args_state_t* args_state){
     printf("Handling include for file: %s\n", filename);
-    if(rh_filename_check(filename) != 0) return -1;
     
-    //Remove quotes from filename
+    if(rh_filename_check(filename) != 0){
+        return -1;
+    }
+    
+    // Remove quotes from filename
     size_t len = strlen(filename);
-    char *clean_name = (char*)malloc(len - 1); //-2 for quotes, +1 for \0
-    if(!clean_name) return -1;
+    char *clean_name = (char*)malloc(len - 1); // -2 for quotes, +1 for \0
+    if(!clean_name){
+        return -1;
+    }
     strncpy(clean_name, filename + 1, len - 2);
     clean_name[len - 2] = '\0';
     
-    //Find directory portion of input_path
+    // Find directory portion of input_path
     char *original_path = args_state->input_path;
     char *last_slash = strrchr(original_path, '/');
-    if(!last_slash) last_slash = strrchr(original_path, '\\');
+    if(!last_slash){
+        last_slash = strrchr(original_path, '\\');
+    }
     
     char *full_path;
     if(last_slash != NULL){
         size_t dir_length = (size_t)(last_slash - original_path) + 1;
         full_path = (char*)malloc(dir_length + strlen(clean_name) + 1);
-        if(!full_path) { free(clean_name); return -1; }
+        if(!full_path){
+            free(clean_name);
+            return -1;
+        }
         strncpy(full_path, original_path, dir_length);
         full_path[dir_length] = '\0';
         strcat(full_path, clean_name);
-    } else {
+    }else{
         full_path = strdup(clean_name);
     }
     free(clean_name);
     
     printf("Full include path: %s\n", full_path);
     
-    //Create new args_state
+    // Create new args_state
     args_state_t new_args = *args_state;
     strcpy(new_args.input_path, full_path);
     free(full_path);
     
     int result = cl_classifier(&new_args);
     printf("Finished classifier\n");
+    
     return result;
 }
 
