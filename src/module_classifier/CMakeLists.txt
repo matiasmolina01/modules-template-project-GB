@@ -15,7 +15,7 @@ add_library(module_classifier module_classifier.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(module_classifier PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because module_classifier depends on utils
-target_link_libraries(module_classifier PRIVATE utils module_io_handler module_text_normalizer module_symbol_table module_symbol_resolver)
+target_link_libraries(module_classifier PRIVATE utils module_io_handler module_text_normalizer module_symbol_table module_symbol_resolver module_recursivity_handler)
 
 # Print a status message during CMake configuration to confirm module_classifier is processed
 message(STATUS "(${PROJECT_NAME}) Module_classifier configured: Added as static library")
