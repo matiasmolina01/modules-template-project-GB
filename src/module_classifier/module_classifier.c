@@ -78,13 +78,13 @@ char* cl_next_argument(GlobalState* global_state){
         }
         // IF next word is a not commented word 
         else if (strcmp(normalized_word, "") != 0){
-            final_word = normalized_word;
             // if we are not in a string, return this word.
             if(global_state->replace_flags->inString == 0){
                 break;
             }
             // else, if we are on a string return the hole string. (continue loop)
-        } 
+        }
+        free(normalized_word); 
         memset(next_word, 0, sizeof(next_word));
     }
     return final_word;
@@ -109,6 +109,7 @@ int cl_define_handler(GlobalState* global_state){
 
     printf("calling define in macro table for '%s':'%s'\n", macro_name, macro_value);
     st_define(global_state->macro_table, macro_name, macro_value);
+    return 0;
 }
 
 
@@ -208,6 +209,7 @@ int cl_classifier(args_state_t* args_state) {
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
+        printf("Read word: '%s'\n", next_word); 
         // Only process if the ifdef
         if(global_state->rh_process_macro->process == 1){
 
@@ -223,18 +225,18 @@ int cl_classifier(args_state_t* args_state) {
     
                     case INCLUDE:
                     cl_include_handler(global_state);
-                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
             
                     case IFDEF:
                     cl_ifdef_handler(global_state);
-                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
             
                     case DEFINE:
                     cl_define_handler(global_state);
                     st_print_all(global_state->macro_table);
-                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
     
                     case ENDIF:
@@ -245,15 +247,34 @@ int cl_classifier(args_state_t* args_state) {
 
             }
     
+            //franco
             char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
-            
+            printf("Substituted word: '%s'\n", final_word);
             // Write to output the correct word depending on if its a comment or not
-            if(global_state->args_state->is_command_mode == 1 && strcmp(final_word, "") != 0){
+            if(global_state->args_state->is_command_mode == 1){
                 ioh_write_line(global_state->io_state, final_word, strlen(final_word));
             
             }else if(global_state->args_state->is_command_mode == 0){
                 ioh_write_line(global_state->io_state, next_word, strlen(next_word));
             }
+
+
+            // guide
+            const char *substituted = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
+            if (substituted == NULL) substituted = normalized_word;
+            printf("Substituted word: '%s'\n", substituted);
+            if(global_state->args_state->is_command_mode == 0 && global_state->args_state->is_directive_mode == 0){
+                ioh_write_line(global_state->io_state, (char*)next_word, strlen(next_word));
+            
+            }
+            if (global_state->args_state->is_command_mode == 1) {
+                ioh_write_line(global_state->io_state, (char*)substituted, strlen(substituted));
+            }
+            else if (strcmp(substituted, "") != 0) {
+                ioh_write_line(global_state->io_state, (char*)substituted, strlen(substituted));
+            }
+
+            free(normalized_word);
 
         }
 

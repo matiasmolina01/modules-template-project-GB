@@ -14,7 +14,7 @@
 
 #include "./module_io_handler.h"
 
-static Separator g_separators = { "=,\t ;\"(){}[]<>.?!\n" };
+static Separator g_separators = { "=,\t ;(){}[]<>.?!\n" };
 
 /* STATE */
 
