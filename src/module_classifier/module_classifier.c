@@ -40,6 +40,26 @@ Directive cl_directive_type(char* word){
     return NO_DIRECTIVE;
 }
 
+char* cl_get_next_not_commented_word(GlobalState* global_state){
+    char* final_word;
+    char next_word[MAX_SIZE];
+    while(ioh_read_word(next_word, sizeof(next_word)) > 0){
+        char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
+        if(strcmp(normalized_word, "\n") == 0){
+            return "\n";
+        }
+        else if (strcmp(normalized_word, "") != 0){
+            if(global_state->replace_flags->inString == 0){
+                final_word = normalized_word;
+                break;
+            }
+
+        } 
+        memset(next_word, 0, sizeof(next_word));
+    }
+    return final_word;
+}
+
 
 
 
@@ -49,8 +69,16 @@ Directive cl_directive_type(char* word){
     Returns:
         1 if success, 0 otherwise.
 */
-int cl_define_handler(){
-    
+int cl_define_handler(GlobalState* global_state){
+    char* macro_name = cl_get_next_not_commented_word(global_state);
+    char* macro_value = cl_get_next_not_commented_word(global_state);
+
+    if(strcmp(macro_value, "\n") == 0){
+        macro_value = NULL;
+    }
+
+    printf("calling define in macro table for '%s':'%s'\n", macro_name, macro_value);
+    st_define(global_state->macro_table, macro_name, macro_value);
 }
 
 
@@ -107,6 +135,7 @@ GlobalState* cl_init_datastructures(){
 
 void cl_free_datastructures(GlobalState* global_state){
     free(global_state);
+    st_destroy(global_state->macro_table);
 }
 
 /*
@@ -157,7 +186,8 @@ int cl_classifier(args_state_t* args_state) {
                 break;
         
                 case DEFINE:
-                cl_define_handler();
+                cl_define_handler(global_state);
+                st_print_all(global_state->macro_table);
                 break;
 
                 case ENDIF:

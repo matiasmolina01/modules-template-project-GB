@@ -52,7 +52,7 @@ char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table){
         }
         else{
         
-            return word;
+            return value;
 
         }
     }
