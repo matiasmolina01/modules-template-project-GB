@@ -233,7 +233,6 @@ int cl_classifier(args_state_t* args_state) {
             
                     case DEFINE:
                     cl_define_handler(global_state);
-                    st_print_all(global_state->macro_table);
                     ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
     
