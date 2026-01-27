@@ -247,34 +247,14 @@ int cl_classifier(args_state_t* args_state) {
 
             }
     
-            //franco
-            char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
-            printf("Substituted word: '%s'\n", final_word);
-            // Write to output the correct word depending on if its a comment or not
+            char* final_word = next_word;
             if(global_state->args_state->is_command_mode == 1){
-                ioh_write_line(global_state->io_state, final_word, strlen(final_word));
+                final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
+            }else if(global_state->tn_state->in_block_comment == 0 && global_state->tn_state->in_line_comment == 0){
+                final_word = sr_substitute(next_word, global_state->replace_flags, global_state->macro_table);
+            }
             
-            }else if(global_state->args_state->is_command_mode == 0){
-                ioh_write_line(global_state->io_state, next_word, strlen(next_word));
-            }
-
-
-            // guide
-            const char *substituted = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
-            if (substituted == NULL) substituted = normalized_word;
-            printf("Substituted word: '%s'\n", substituted);
-            if(global_state->args_state->is_command_mode == 0 && global_state->args_state->is_directive_mode == 0){
-                ioh_write_line(global_state->io_state, (char*)next_word, strlen(next_word));
-            
-            }
-            if (global_state->args_state->is_command_mode == 1) {
-                ioh_write_line(global_state->io_state, (char*)substituted, strlen(substituted));
-            }
-            else if (strcmp(substituted, "") != 0) {
-                ioh_write_line(global_state->io_state, (char*)substituted, strlen(substituted));
-            }
-
-            free(normalized_word);
+            ioh_write_line(global_state->io_state, final_word, strlen(final_word));
 
         }
 
