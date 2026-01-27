@@ -202,7 +202,7 @@ int cl_classifier(args_state_t* args_state) {
 	
     char* input_file_path = args_state->input_path;
     char* output_file_path = args_state->output_path;
-
+	
     ioh_open_input(global_state->io_state, input_file_path);
     if (!ioh_open_output_append(global_state->io_state, output_file_path)){
         ioh_open_output(global_state->io_state, output_file_path);

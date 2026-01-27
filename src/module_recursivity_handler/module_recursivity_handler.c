@@ -122,55 +122,45 @@ int rh_stack_is_active(RHStack *stack){
 	return 1;
 }
 
-// Handle include directive
-//starts a classifier with the new file path
 int rh_handle_include(char *filename, args_state_t* args_state){
     printf("Handling include for file: %s\n", filename);
-	//Check if the filename is correct
-	if(rh_filename_check(filename) != 0){	//file is not a valid format
-		return -1;
-	}
-	//Remove quotes from filename
-	filename[strlen(filename)-1] = '\0'; //remove last "
-	filename++; //skip first " "
-	//
-	char* new_filepath = args_state->input_path;
-	char* last_slash = strrchr(new_filepath, '/');
-	if(last_slash != NULL){
-		size_t dir_length = (size_t)(last_slash - new_filepath) + 1; //include slash
-		char* full_path = (char*)malloc(dir_length + strlen(filename) + 1); //+1 for \0
-		strncpy(full_path, new_filepath, dir_length);
-		full_path[dir_length] = '\0'; //null terminate
-		strcat(full_path, filename);
-		filename = full_path;
-	}
-
-
-	printf("Full include path: %s\n", filename);
-	//Create a new args_state_t with the new filename
-	args_state_t* new_args_state = (args_state_t*)malloc(sizeof(args_state_t));
-	new_args_state->input_path = (char*)malloc(strlen(filename));
-	new_args_state->output_path = (char*)malloc(strlen(args_state->output_path));
-	printf("1\n");
-	new_args_state->is_command_mode = args_state->is_command_mode;
-	printf("2\n");
-	new_args_state->is_directive_mode = args_state->is_directive_mode;
-	printf("3\n");
-	new_args_state->is_help_mode = args_state->is_help_mode;
-	printf("4\n");
-	strcpy(new_args_state->output_path, args_state->output_path);
-	printf("5\n");
-	strcpy(new_args_state->input_path, filename);
-
-	printf("Starting classifier for args_state with input: %s and output: %s\n", new_args_state->input_path, new_args_state->output_path);
-	//Initialize a new classifier starting from the provided path
-	cl_classifier(new_args_state);
-	printf("Finished classifier");
-	free(new_args_state->input_path);
-	free(new_args_state->output_path);
-	free(new_args_state);
-	printf("Freed new args_state\n");
-	return 0;
+    if(rh_filename_check(filename) != 0) return -1;
+    
+    //Remove quotes from filename
+    size_t len = strlen(filename);
+    char *clean_name = (char*)malloc(len - 1); //-2 for quotes, +1 for \0
+    if(!clean_name) return -1;
+    strncpy(clean_name, filename + 1, len - 2);
+    clean_name[len - 2] = '\0';
+    
+    //Find directory portion of input_path
+    char *original_path = args_state->input_path;
+    char *last_slash = strrchr(original_path, '/');
+    if(!last_slash) last_slash = strrchr(original_path, '\\');
+    
+    char *full_path;
+    if(last_slash != NULL){
+        size_t dir_length = (size_t)(last_slash - original_path) + 1;
+        full_path = (char*)malloc(dir_length + strlen(clean_name) + 1);
+        if(!full_path) { free(clean_name); return -1; }
+        strncpy(full_path, original_path, dir_length);
+        full_path[dir_length] = '\0';
+        strcat(full_path, clean_name);
+    } else {
+        full_path = strdup(clean_name);
+    }
+    free(clean_name);
+    
+    printf("Full include path: %s\n", full_path);
+    
+    //Create new args_state
+    args_state_t new_args = *args_state;
+    strcpy(new_args.input_path, full_path);
+    free(full_path);
+    
+    int result = cl_classifier(&new_args);
+    printf("Finished classifier\n");
+    return result;
 }
 
 int rh_filename_check(const char *filename){
