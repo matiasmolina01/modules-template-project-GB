@@ -223,23 +223,26 @@ int cl_classifier(args_state_t* args_state) {
     
                     case INCLUDE:
                     cl_include_handler(global_state);
-                    break;
+                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    continue;
             
                     case IFDEF:
                     cl_ifdef_handler(global_state);
-                    break;
+                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    continue;
             
                     case DEFINE:
                     cl_define_handler(global_state);
                     st_print_all(global_state->macro_table);
-                    break;
+                    ioh_write_line(global_state->io_state, '\n', strlen('\n'));
+                    continue;
     
                     case ENDIF:
                     rh_handle_endif(global_state->rh_stack);
                     break;
+
                 }
-                ioh_write_line(global_state->io_state, '\n', strlen('\n'));
-                continue;
+
             }
     
             char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
