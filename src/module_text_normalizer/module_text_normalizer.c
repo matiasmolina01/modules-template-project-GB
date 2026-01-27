@@ -57,14 +57,14 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state,  Repla
                 continue;
             }
 
-            // Case 1: starting comment //
+            // Case 3: starting comment //
             if (i + 1 < len && state->in_block_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '/') {
                 state->in_line_comment = 1;
                 i += 2;
                 continue;
             }
 
-            // Case 3: starting comment /*
+            // Case 4: starting comment /*
             if (i + 1 < len && state->in_line_comment == 0 && input_line[i] == '/' && input_line[i + 1] == '*') {
                 state->in_block_comment = 1;
                 i += 2;
