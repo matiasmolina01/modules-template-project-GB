@@ -25,39 +25,19 @@ void sr_init_ReplaceFlags(ReplaceFlags *flags){
 
 
 
-void flag_activate(const char* input_line, ReplaceFlags* flags) {
-    int len = strlen(input_line);
-
-
-    int i = 0;
-
-
-    while (i < len) {
-
-        // Case 1: until the end of comment */
-        if (flags->inString) {
-            if (i + 1 < len && input_line[i] == '"') {
-                flags->inString =0;
-                i += 1;
-            } else {
-                i++;
-            }
-            continue;
-        }
-
-       
-        //Case in which it starts string
-        if(flags->inString ==0 && input_line[i] == '"' ){
+void sr_flag_activate(char input_char, ReplaceFlags* flags) {
+    if(input_char == '"'){
+        switch(flags->inString){
+            case 1:
+            flags->inString = 0;
+            break;
+            
+            case 0:
             flags->inString = 1;
-            i++;
-            continue;
+            break;
         }
-        i++;
-       
-
-
     }
-
+    return;
 }
 
 

@@ -20,12 +20,6 @@
 
 FILE *ofile = NULL; //output handler for tests
 
-int cl_classifier(const char *input_path, const char *output_path){
-	(void)input_path;
-	(void)output_path;
-	return 0;
-}
-
 static void log_status(const char *msg){
 	if(ofile){
 		fprintf(ofile, "%s\n", msg);

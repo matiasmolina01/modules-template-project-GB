@@ -70,11 +70,11 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state,  Repla
                 i += 2;
                 continue;
             }
-
-            // Normal character
-            flag_activate(&input_line[i], replace_flags);
-            output[j++] = input_line[i++];
         }
+            
+        // Normal character
+        sr_flag_activate(input_line[i], replace_flags);
+        output[j++] = input_line[i++];
     }
 
     output[j] = '\0';

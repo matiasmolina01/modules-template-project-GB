@@ -122,7 +122,6 @@ void cl_free_datastructures(GlobalState* global_state){
             1 otherwise
         
 */
-// TODO receive arguments struct as parameter
 int cl_classifier(args_state_t* args_state) {
 
     GlobalState* global_state =  cl_init_datastructures();

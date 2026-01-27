@@ -15,7 +15,7 @@ add_library(module_recursivity_handler module_recursivity_handler.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(module_recursivity_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because module_recursivity_handler depends on utils
-target_link_libraries(module_recursivity_handler PRIVATE utils)
+target_link_libraries(module_recursivity_handler PRIVATE utils module_classifier)
 
 # Print a status message during CMake configuration to confirm module_recursivity_handler is processed
 message(STATUS "(${PROJECT_NAME}) Module_recursivity_handler configured: Added as static library")

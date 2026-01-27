@@ -11,6 +11,6 @@ typedef struct MacroTable MacroTable;
 
 void sr_init_ReplaceFlags(ReplaceFlags *flags);
 char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table);
-void flag_activate(char * input_line, ReplaceFlags* flags);
+void sr_flag_activate(char input_char, ReplaceFlags* flags);
 
 #endif
