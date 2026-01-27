@@ -15,6 +15,7 @@ typedef struct ReplaceFlags ReplaceFlags;
 typedef struct args_state_t args_state_t;
 typedef struct RHStack RHStack;
 typedef struct RHProcessMacro RHProcessMacro;
+typedef struct ioh_state_t ioh_state_t;
 
 typedef enum {
 	INCLUDE,
@@ -31,6 +32,7 @@ typedef struct GlobalState{
 	args_state_t* args_state;
 	RHStack* rh_stack;
 	RHProcessMacro* rh_process_macro;
+	ioh_state_t *io_state;
 } GlobalState;
 
 Directive cl_directive_type(char* word);

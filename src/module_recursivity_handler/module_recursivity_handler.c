@@ -124,16 +124,22 @@ int rh_stack_is_active(RHStack *stack){
 
 // Handle include directive
 //starts a classifier with the new file path
-int rh_handle_include(const char *filename, args_state_t* args_state){
+int rh_handle_include(char *filename, args_state_t* args_state){
     //Check if the filename is correct
 	if(rh_filename_check(filename) != 0){	//file is not a valid format
 		return -1;
 	}
+
+	char* original_input_path = args_state->input_path;
 	//Change input path to new filepath
-	strcpy(args_state->input_path, filename);
+	args_state->input_path = filename;
 	
 	//Initialize a new classifier starting from the provided path
-	return cl_classifier(args_state);
+	cl_classifier(args_state);
+	
+	args_state->input_path = original_input_path;
+
+	return 0;
 }
 
 int rh_filename_check(const char *filename){
