@@ -170,12 +170,15 @@ int cl_classifier(args_state_t* args_state) {
         }
 
         char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
-
+        
         // Write to output the correct word depending on if its a comment or not
-        if(global_state->args_state->is_command_mode == 1){
+        if(global_state->args_state->is_command_mode == 1 && strcmp(final_word, "") != 0){
             ioh_write_line(final_word, strlen(final_word));
-        }else{
+            ioh_write_line(" ", 1);
+        
+        }else if(global_state->args_state->is_command_mode == 0){
             ioh_write_line(next_word, strlen(next_word));
+            ioh_write_line(" ", 1);
         }
 
         // Resert word buffer
