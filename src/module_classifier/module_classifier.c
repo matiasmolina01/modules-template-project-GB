@@ -40,19 +40,25 @@ Directive cl_directive_type(char* word){
     return NO_DIRECTIVE;
 }
 
-char* cl_get_next_not_commented_word(GlobalState* global_state){
+char* cl_next_argument(GlobalState* global_state){
     char* final_word;
     char next_word[MAX_SIZE];
+
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
+        // Delete comments
         char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
+        // IF new line, return new line.
         if(strcmp(normalized_word, "\n") == 0){
             return "\n";
         }
+        // IF 
         else if (strcmp(normalized_word, "") != 0){
+            final_word = normalized_word;
+
             if(global_state->replace_flags->inString == 0){
-                final_word = normalized_word;
                 break;
             }
+            
 
         } 
         memset(next_word, 0, sizeof(next_word));
@@ -70,8 +76,8 @@ char* cl_get_next_not_commented_word(GlobalState* global_state){
         1 if success, 0 otherwise.
 */
 int cl_define_handler(GlobalState* global_state){
-    char* macro_name = cl_get_next_not_commented_word(global_state);
-    char* macro_value = cl_get_next_not_commented_word(global_state);
+    char* macro_name = cl_next_argument(global_state);
+    char* macro_value = cl_next_argument(global_state);
 
     if(strcmp(macro_value, "\n") == 0){
         macro_value = NULL;
@@ -88,19 +94,26 @@ int cl_define_handler(GlobalState* global_state){
     Returns:
         1 if success, 0 otherwise.
 */
-int cl_include_handler(){
-    printf(" - Function: cl_include_handler Not implemented.");
+int cl_include_handler(GlobalState* global_state){
+    char* include_file_path = cl_next_argument(global_state);
+    return rh_handle_include(include_file_path, global_state->args_state);
 }
 
 
 /*
-    Handles the ifdef directives with the help of the recursivity handler
+Handles the ifdef directives with the help of the recursivity handler
 
-    Returns:
-        1 if success, 0 otherwise.
+Returns:
+1 if success, 0 otherwise.
 */
-int cl_ifdef_handler(){
-    printf(" - Function: cl_ifdef_handler Not implemented.");
+int cl_ifdef_handler(GlobalState* global_state){
+    char* macro_name = cl_next_argument(global_state);
+    // TODO check that macro name is not '' or \n
+
+    rh_handle_ifdef_directive(macro_name, global_state->macro_table,
+         global_state->rh_stack, 0, global_state->rh_process_macro);
+
+    return 0; 
 }
 
 /*
@@ -123,6 +136,7 @@ GlobalState* cl_init_datastructures(){
     RHStack *rh_stack = rh_stack_create(RH_STACK_CAPACITY);
 
     RHProcessMacro* rh_process_macro = (RHProcessMacro*) malloc(sizeof(RHProcessMacro));
+    rh_process_macro->process = 1;
 
     ioh_state_t* io_state = (ioh_state_t*) malloc(sizeof(ioh_state_t));
     ioh_init(io_state);
@@ -171,45 +185,50 @@ int cl_classifier(args_state_t* args_state) {
     char next_word[MAX_SIZE];
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
 
-        char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
+        // Only process if the ifdef
+        if(global_state->rh_process_macro->process == 1){
 
-        // Process directives which are not commented or in a string
-        if(global_state->tn_state->in_block_comment == 0 
-            && global_state->tn_state->in_line_comment == 0 
-            && global_state->replace_flags->inString == 0
-            && global_state->args_state->is_directive_mode == 1){
-
-            switch(cl_directive_type(normalized_word)){
-
-                case INCLUDE:
-                cl_include_handler();
-                break;
-        
-                case IFDEF:
-                cl_ifdef_handler();
-                break;
-        
-                case DEFINE:
-                cl_define_handler(global_state);
-                st_print_all(global_state->macro_table);
-                break;
-
-                case ENDIF:
-                rh_handle_endif(global_state->rh_stack);
-                break;
+            char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
+    
+            // Process directives which are not commented or in a string
+            if(global_state->tn_state->in_block_comment == 0 
+                && global_state->tn_state->in_line_comment == 0 
+                && global_state->replace_flags->inString == 0
+                && global_state->args_state->is_directive_mode == 1){
+    
+                switch(cl_directive_type(normalized_word)){
+    
+                    case INCLUDE:
+                    cl_include_handler(global_state);
+                    break;
+            
+                    case IFDEF:
+                    cl_ifdef_handler(global_state);
+                    break;
+            
+                    case DEFINE:
+                    cl_define_handler(global_state);
+                    st_print_all(global_state->macro_table);
+                    break;
+    
+                    case ENDIF:
+                    rh_handle_endif(global_state->rh_stack);
+                    break;
+                }
+    
+                continue;
+            }
+    
+            char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
+            
+            // Write to output the correct word depending on if its a comment or not
+            if(global_state->args_state->is_command_mode == 1 && strcmp(final_word, "") != 0){
+                ioh_write_line(global_state->io_state, final_word, strlen(final_word));
+            
+            }else if(global_state->args_state->is_command_mode == 0){
+                ioh_write_line(global_state->io_state, next_word, strlen(next_word));
             }
 
-            continue;
-        }
-
-        char* final_word = sr_substitute(normalized_word, global_state->replace_flags, global_state->macro_table);
-        
-        // Write to output the correct word depending on if its a comment or not
-        if(global_state->args_state->is_command_mode == 1 && strcmp(final_word, "") != 0){
-            ioh_write_line(global_state->io_state, final_word, strlen(final_word));
-        
-        }else if(global_state->args_state->is_command_mode == 0){
-            ioh_write_line(global_state->io_state, next_word, strlen(next_word));
         }
 
         // Resert word buffer
