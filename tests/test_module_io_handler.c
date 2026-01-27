@@ -25,21 +25,22 @@
 
 
 
-// static const char *TEST_FILE_PATH = "ih_test_input.tmp";
+static const char *TEST_FILE_PATH = "ih_test_input.tmp";
 
-// static void create_test_file(void) {
-//     FILE *f = fopen(TEST_FILE_PATH, "w");
-//     assert(f != NULL);
-//     fputs("hello   world\t42\n", f); 
-//     fputs("   #define   ON   1\n\n", f);
-//     fputs("ultimalinea\n", f);
+static void create_test_file(void) {
+    FILE *f = fopen(TEST_FILE_PATH, "w");
+    assert(f != NULL);
 
-//     fclose(f);
-// }
+    fputs("hello   world\t42\n", f);
+    fputs("   #define   ON   1\n\n", f);
+    fputs("ultimalinea\n", f);
 
-// static void delete_test_file(void) {
-//     remove(TEST_FILE_PATH); // delete the temporal test file
-// }
+    fclose(f);
+}
+
+static void delete_test_file(void) {
+    remove(TEST_FILE_PATH); // delete the temporal test file
+}
 
 static void test_open_invalid_path(void) {
     ioh_state_t ioh;
@@ -71,7 +72,7 @@ static void test_read_word_basic(void) { // read words and check content and lin
     create_test_file();
     assert(ioh_open_input(&ioh, TEST_FILE_PATH) == true);
 
-//     printf(" ------------- test ioh_read_word_basic: -------------\n");
+    printf(" ------------- test ioh_read_word_basic: -------------\n");
 
     int n;
     while((n = ioh_read_word(&ioh, w, sizeof(w))) > 0) {
@@ -82,9 +83,9 @@ static void test_read_word_basic(void) { // read words and check content and lin
     assert(n == 0);
     assert(ioh_is_eof(&ioh) == true);
 
-//     printf("\n----------------------------------\n\n");
+    printf("\n----------------------------------\n\n");
 
-    ioh_close_input(&ioh);
+    assert(ioh_close_input(&ioh) == true);
     delete_test_file();
 }
 
@@ -99,19 +100,16 @@ static void test_read_after_close_fails(void) {
     assert(ioh_read_word(&ioh, buf, sizeof(buf)) == -1);
 }
 
-// void test_io_handler_run_all(void) {
-//     test_open_invalid_path();
-//     test_open_close_valid_path();
-//     test_read_word_basic();
-//     test_read_after_close_fails();
-// }
+static void test_io_handler_run_all(void) {
+    test_open_invalid_path();
+    test_open_close_valid_path();
+    test_read_word_basic();
+    test_read_after_close_fails();
+}
 
 int main(void) {
-
-    //printf("Starting tests for Module io handler...\n");
-    //test_io_handler_run_all();
-    //printf("Finished tests for Module io handler...\n\n");
-    printf("Module io handler tests are not yet implemented.\n");
-
+    printf("Starting tests for Module io handler...\n");
+    test_io_handler_run_all();
+    printf("Finished tests for Module io handler...\n\n");
     return 0;
 }
