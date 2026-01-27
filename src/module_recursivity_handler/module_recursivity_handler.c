@@ -130,15 +130,18 @@ int rh_handle_include(char *filename, args_state_t* args_state){
 		return -1;
 	}
 
-	char* original_input_path = args_state->input_path;
-	//Change input path to new filepath
-	args_state->input_path = filename;
-	
-	//Initialize a new classifier starting from the provided path
-	cl_classifier(args_state);
-	
-	args_state->input_path = original_input_path;
+	//Create a new args_state_t with the new filename
+	args_state_t* new_args_state = (args_state_t*)malloc(sizeof(args_state_t));
+	new_args_state->is_command_mode = args_state->is_command_mode;
+	new_args_state->is_directive_mode = args_state->is_directive_mode;
+	new_args_state->is_help_mode = args_state->is_help_mode;
+	strcpy(new_args_state->output_path, args_state->output_path);
+	strcpy(new_args_state->input_path, filename);
 
+	//Initialize a new classifier starting from the provided path
+	cl_classifier(new_args_state);
+	
+	free(new_args_state);
 	return 0;
 }
 
