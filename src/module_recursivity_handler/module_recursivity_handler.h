@@ -39,7 +39,7 @@ int rh_stack_is_active(RHStack *stack);
 //Recursivity handler functions
 int recursivity_handler(int n);
 
-int rh_handle_include(const char *filename, const char *output_file);
+int rh_handle_include(const char *filename, args_state_t* args_state);
 
 int rh_filename_check(const char *filename);
 

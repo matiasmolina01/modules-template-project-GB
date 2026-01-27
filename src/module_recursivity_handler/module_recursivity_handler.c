@@ -124,36 +124,22 @@ int rh_stack_is_active(RHStack *stack){
 
 // Handle include directive
 //starts a classifier with the new file path
-int rh_handle_include(const char *filename, const char* output_file){
+int rh_handle_include(const char *filename, args_state_t* args_state){
     //Check if the filename is correct
-	if(rh_filename_check(filename) == 0){	//file is not a valid format
-		return 0;
+	if(rh_filename_check(filename) != 0){	//file is not a valid format
+		return -1;
 	}
-	else if(rh_filename_check(filename) == 1){	//file is in ""
-		//remove "" from "path.c" ---> path.c
-		int path_len = strlen(filename) - 2;
-		char *path = malloc(path_len + 1);
-		if(path == NULL) return 0;
-		strncpy(path, filename+1, path_len);
-		path[path_len] = '\0';
-		
-		//Initialize a new classifier starting from the provided path
-		
-		// TODO
-		// Hay que llamar bien a la funcion del classifier, por hacer
-		
-		//int result = cl_classifier(path, output_file);
-		free(path);
-		// return result; // descomentar esta linea cuando se llame bien al classifier
-	}
-
-	return 0; //should not reach here, but keep compiler happy
+	//Change input path to new filepath
+	strcpy(args_state->input_path, filename);
+	
+	//Initialize a new classifier starting from the provided path
+	return cl_classifier(args_state);
 }
 
 int rh_filename_check(const char *filename){
 	//Check if the filename is correct, in ""
-	if(filename[0] == '\"' && filename[strlen(filename)-1] == '\"') return 1;
-	return 0;
+	if(filename[0] == '\"' && filename[strlen(filename)-1] == '\"') return 0;
+	return -1;
 }
 
 void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, int is_negated, RHProcessMacro *process_macro){
