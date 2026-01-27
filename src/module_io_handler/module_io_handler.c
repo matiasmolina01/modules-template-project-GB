@@ -27,6 +27,12 @@ void ioh_init(ioh_state_t *g_ioh) {
     g_ioh->is_eof = false;
 }
 
+ioh_state_t* ioh_create(void) {
+    ioh_state_t *g_ioh = (ioh_state_t*) malloc(sizeof(ioh_state_t));
+    if (g_ioh == NULL) return NULL;
+    ioh_init(g_ioh);
+    return g_ioh;
+}
 
 
 /*
@@ -74,8 +80,6 @@ bool ioh_close_input(ioh_state_t *g_ioh) {
         const char *path - the file path to open
 */
 bool ioh_open_input(ioh_state_t *g_ioh, const char *path) {
-    ioh_close_input(g_ioh); // before opening file, close previous one.
-
     if(path == NULL || path[0] == '\0') { // invalid path
         fprintf(stderr, "ioh_open_input: invalid path\n");
         return false;
