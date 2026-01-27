@@ -1,23 +1,23 @@
-// /*
-//  * -----------------------------------------------------------------------------
-//  * test_module_io_handler.c
-//  *
-//  * Unit tests for module_io_handler.
-//  *
-//  * Team:
-//  *     GB
-//  * 
-//  * Update 1:
-//  * 
-//  * - module_io_handler functionality test (lack test of write_line)
-//  * Author: Matias Molina
-//  * Date: 18-01-2026
-//  * 
-//  * -----------------------------------------------------------------------------
-//  */
+/*
+ * -----------------------------------------------------------------------------
+ * test_module_io_handler.c
+ *
+ * Unit tests for module_io_handler.
+ *
+ * Team:
+ *     GB
+ * 
+ * Update 1:
+ * 
+ * - module_io_handler functionality test (lack test of write_line)
+ * Author: Matias Molina
+ * Date: 18-01-2026
+ * 
+ * -----------------------------------------------------------------------------
+ */
 
 
-// #include "../tests/test_module_io_handler.h"
+#include "../tests/test_module_io_handler.h"
 
 
 
@@ -91,11 +91,12 @@
 //     test_read_after_close_fails();
 // }
 
-// int main(void) {
+int main(void) {
 
-//     printf("Starting tests for Module io handler...\n");
-//     test_io_handler_run_all();
-//     printf("Finished tests for Module io handler...\n\n");
+    //printf("Starting tests for Module io handler...\n");
+    //test_io_handler_run_all();
+    //printf("Finished tests for Module io handler...\n\n");
+    printf("Module io handler tests are not yet implemented.\n");
 
-//     return 0;
-// }
+    return 0;
+}
