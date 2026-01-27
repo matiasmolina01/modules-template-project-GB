@@ -124,21 +124,21 @@ GlobalState* cl_init_datastructures(){
 
     RHProcessMacro* rh_process_macro = (RHProcessMacro*) malloc(sizeof(RHProcessMacro));
 
-    ioh_state_t* io_state = (ioh_state_t*) malloc(sizeof(ioh_state_t));
-    ioh_init(io_state);
+    ioh_state_t* io_state = ioh_create();
 
     global_state->tn_state = tn_state;
     global_state->macro_table = macro_table;
     global_state->replace_flags = replace_flags;
     global_state->rh_stack = rh_stack;
     global_state->rh_process_macro = rh_process_macro;
-    global_state->io_state;
+    global_state->io_state = io_state;
 
     return global_state;
 }
 
 void cl_free_datastructures(GlobalState* global_state){
     st_destroy(global_state->macro_table);
+    free(global_state->io_state);
     free(global_state);
 }
 
