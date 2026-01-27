@@ -52,7 +52,10 @@ char* cl_next_argument(GlobalState* global_state){
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
         // Delete comments to ignore them.
         char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
-
+        // if its a space, ignore
+        if(global_state->replace_flags->inString == 0 && strcmp(normalized_word, " ") == 0){
+            continue;
+        }
         // concat normalized_word to final
         size_t current_len = (final_word == NULL) ? 0 : strlen(final_word);
         size_t append_len = strlen(normalized_word);
