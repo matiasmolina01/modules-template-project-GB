@@ -41,7 +41,7 @@ void sr_flag_activate(char input_char, ReplaceFlags* flags) {
 }
 
 
-char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table){
+const char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table){
     if(flags->inString ==1){
         return word;
     }

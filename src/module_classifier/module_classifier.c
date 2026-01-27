@@ -43,7 +43,7 @@ Directive cl_directive_type(char* word){
 char* cl_get_next_not_commented_word(GlobalState* global_state){
     char* final_word;
     char next_word[MAX_SIZE];
-    while(ioh_read_word(next_word, sizeof(next_word)) > 0){
+    while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
         char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
         if(strcmp(normalized_word, "\n") == 0){
             return "\n";
@@ -124,18 +124,21 @@ GlobalState* cl_init_datastructures(){
 
     RHProcessMacro* rh_process_macro = (RHProcessMacro*) malloc(sizeof(RHProcessMacro));
 
+    ioh_state_t* io_state = ioh_state_init();
+
     global_state->tn_state = tn_state;
     global_state->macro_table = macro_table;
     global_state->replace_flags = replace_flags;
     global_state->rh_stack = rh_stack;
     global_state->rh_process_macro = rh_process_macro;
+    global_state->io_state;
 
     return global_state;
 }
 
 void cl_free_datastructures(GlobalState* global_state){
-    free(global_state);
     st_destroy(global_state->macro_table);
+    free(global_state);
 }
 
 /*
@@ -159,13 +162,13 @@ int cl_classifier(args_state_t* args_state) {
     char* input_file_path = args_state->input_path;
     char* output_file_path = args_state->output_path;
 
-    ioh_open_input(input_file_path);
-    if (!ioh_open_output_append(output_file_path)){
-        ioh_open_output(output_file_path);
+    ioh_open_input(global_state->io_state, input_file_path);
+    if (!ioh_open_output_append(global_state->io_state, output_file_path)){
+        ioh_open_output(global_state->io_state, output_file_path);
     }
     
     char next_word[MAX_SIZE];
-    while(ioh_read_word(next_word, sizeof(next_word)) > 0){
+    while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
 
         char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
 
@@ -202,20 +205,18 @@ int cl_classifier(args_state_t* args_state) {
         
         // Write to output the correct word depending on if its a comment or not
         if(global_state->args_state->is_command_mode == 1 && strcmp(final_word, "") != 0){
-            ioh_write_line(final_word, strlen(final_word));
-            ioh_write_line(" ", 1);
+            ioh_write_line(global_state->io_state, final_word, strlen(final_word));
         
         }else if(global_state->args_state->is_command_mode == 0){
-            ioh_write_line(next_word, strlen(next_word));
-            ioh_write_line(" ", 1);
+            ioh_write_line(global_state->io_state, next_word, strlen(next_word));
         }
 
         // Resert word buffer
         memset(next_word, 0, sizeof(next_word));
     }
 
-    ioh_close_input();
-    ioh_close_output();
+    ioh_close_input(global_state->io_state);
+    ioh_close_output(global_state->io_state);
     cl_free_datastructures(global_state);
 
     return 0;

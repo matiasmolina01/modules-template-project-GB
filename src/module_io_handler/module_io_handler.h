@@ -8,7 +8,7 @@
 #define IOH_MODE_WRITE "w"
 #define IOH_MODE_APPEND "a"
 
-typedef struct {
+typedef struct ioh_state_t{
     FILE *input_file; // input file
     FILE *output_file; // output file
     int line_number; // current line number
