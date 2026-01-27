@@ -40,26 +40,47 @@ Directive cl_directive_type(char* word){
     return NO_DIRECTIVE;
 }
 
+/*
+Returns next non commented words
+ or hole strings, to use as argument for the directives.
+*/
+
 char* cl_next_argument(GlobalState* global_state){
-    char* final_word;
+    char* final_word = NULL;
     char next_word[MAX_SIZE];
 
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
-        // Delete comments
+        // Delete comments to ignore them.
         char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
-        // IF new line, return new line.
+
+        // concat normalized_word to final
+        size_t current_len = (final_word == NULL) ? 0 : strlen(final_word);
+        size_t append_len = strlen(normalized_word);
+        
+        char* temp = realloc(final_word, current_len + append_len + 1);
+        
+        if (temp == NULL) {
+            if (final_word) free(final_word);
+            return NULL;
+        }
+        final_word = temp;
+        if (current_len == 0) {
+            final_word[0] = '\0';
+        }
+        strcat(final_word, normalized_word);
+
+        // IF next word is new line, return new line.
         if(strcmp(normalized_word, "\n") == 0){
             return "\n";
         }
-        // IF 
+        // IF next word is a not commented word 
         else if (strcmp(normalized_word, "") != 0){
             final_word = normalized_word;
-
+            // if we are not in a string, return this word.
             if(global_state->replace_flags->inString == 0){
                 break;
             }
-            
-
+            // else, if we are on a string return the hole string. (continue loop)
         } 
         memset(next_word, 0, sizeof(next_word));
     }

@@ -36,11 +36,12 @@ typedef struct GlobalState{
 } GlobalState;
 
 Directive cl_directive_type(char* word);
+char* cl_next_argument(GlobalState* global_state);
 // interaction with Symbol Table
 int cl_define_handler(GlobalState* global_state); 
 // interaction with Recursivity Handler
-int cl_include_handler(); 
-int cl_ifdef_handler();
+int cl_include_handler(GlobalState* global_state); 
+int cl_ifdef_handler(GlobalState* global_state);
 // initialization of the GlobalState datastructure
 GlobalState* cl_init_datastructures();
 void cl_free_datastructures(GlobalState* global_state);
