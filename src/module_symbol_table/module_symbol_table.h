@@ -11,6 +11,7 @@
 #define ST_ERR_NOT_FOUND     -4
 #define ST_ERR_NO_MEMORY     -5
 #define ST_ERR_NOT_INIT      -6
+#define ST_ERR_INVALID_VALUE -7
 
 // Macro entry structure
 typedef struct{
@@ -42,6 +43,6 @@ void st_print_all(MacroTable *table);
 
 /* Validation */
 int st_is_valid_name(const char *name);
-
+int st_is_valid_value(const char *value);
 
 #endif
