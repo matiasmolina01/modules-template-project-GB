@@ -106,6 +106,11 @@ GlobalState* cl_init_datastructures(){
 }
 
 void cl_free_datastructures(GlobalState* global_state){
+    free(global_state->tn_state);
+    free(global_state->macro_table);
+    free(global_state->replace_flags);
+    rh_stack_destroy(global_state->rh_stack);
+    free(global_state->rh_process_macro);
     free(global_state);
 }
 
@@ -139,7 +144,7 @@ int cl_classifier(args_state_t* args_state) {
     char next_word[MAX_SIZE];
     while(ioh_read_word(next_word, sizeof(next_word)) > 0){
 
-        char* normalized_word = text_normalizer(next_word, global_state->tn_state);
+        char* normalized_word = text_normalizer(next_word, global_state->tn_state, global_state->replace_flags);
 
         // Process directives which are not commented or in a string
         if(global_state->tn_state->in_block_comment == 0 

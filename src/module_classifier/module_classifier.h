@@ -29,8 +29,8 @@ typedef struct GlobalState{
 	MacroTable* macro_table;
 	ReplaceFlags* replace_flags;
 	args_state_t* args_state;
-	rh_stack* rh_stack;
-	rh_process_macro* rh_process_macro;
+	RHStack* rh_stack;
+	RHProcessMacro* rh_process_macro;
 } GlobalState;
 
 Directive cl_directive_type(char* word);

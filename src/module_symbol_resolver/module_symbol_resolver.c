@@ -62,7 +62,7 @@ void flag_activate(const char* input_line, ReplaceFlags* flags) {
 
 
 char* sr_substitute(char *word, ReplaceFlags *flags, MacroTable *table){
-    if(flags->inPrint ==1 || flags->inString ==1){
+    if(flags->inString ==1){
         return word;
     }
     else{

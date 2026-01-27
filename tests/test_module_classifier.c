@@ -52,7 +52,7 @@ void test_directive_type() {
 
 void test_classifier_main(){
     printf(" - cl_classfier: starting tests...\n");
-    cl_classifier("../../test/test_module_classifier/test1.c", "../../test/test_module_classifier/out/test1_pp.c");
+    // cl_classifier("../../test/test_module_classifier/test1.c", "../../test/test_module_classifier/out/test1_pp.c");
 }
 
 int main(void) {

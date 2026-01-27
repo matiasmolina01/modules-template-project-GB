@@ -14,7 +14,8 @@ void text_normalizer_init(
 
 char* text_normalizer(
     const char* input_line,
-    TextNormalizerState* state
+    TextNormalizerState* state,
+    ReplaceFlags *replace_flags
 );
 
 #endif

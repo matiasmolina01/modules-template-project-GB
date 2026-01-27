@@ -22,7 +22,7 @@ void text_normalizer_init(TextNormalizerState* state) {
     state->in_line_comment = 0;
 }
 
-char* text_normalizer(const char* input_line, TextNormalizerState* state) {
+char* text_normalizer(const char* input_line, TextNormalizerState* state,  ReplaceFlags *replace_flags) {
     int len = strlen(input_line);
     char* output = malloc(len + 1);
 
@@ -33,7 +33,7 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state) {
 
     while (i < len) {
 
-        if (not (flag_activate)) {
+        if (!(replace_flags->inString == 1)) {
 
             // Case 1: until the end of comment */
             if (state->in_block_comment) {
@@ -72,6 +72,7 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state) {
             }
 
             // Normal character
+            flag_activate(&input_line[i], replace_flags);
             output[j++] = input_line[i++];
         }
     }

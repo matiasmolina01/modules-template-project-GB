@@ -138,9 +138,13 @@ int rh_handle_include(const char *filename, const char* output_file){
 		path[path_len] = '\0';
 		
 		//Initialize a new classifier starting from the provided path
-		int result = cl_classifier(path, output_file);
+		
+		// TODO
+		// Hay que llamar bien a la funcion del classifier, por hacer
+		
+		//int result = cl_classifier(path, output_file);
 		free(path);
-		return result;
+		// return result; // descomentar esta linea cuando se llame bien al classifier
 	}
 
 	return 0; //should not reach here, but keep compiler happy
@@ -154,7 +158,7 @@ int rh_filename_check(const char *filename){
 
 void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, int is_negated, RHProcessMacro *process_macro){
 	//check if any previous directive is marked as inactive
-	int prev_directive = rh_stackis_active(stack);
+	int prev_directive = rh_stack_is_active(stack);
 	
 	//check if the macro exists
 	int macro_exists = st_exists(table, macro);
@@ -187,7 +191,7 @@ void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, i
 
 int rh_handle_endif(RHStack *stack){
 	//pop the top directive
-	if(rh_stackpop(stack) == 0){
+	if(rh_stack_pop(stack) == 0){
 		//pop successful continue processing
 		return 1;
 	}
