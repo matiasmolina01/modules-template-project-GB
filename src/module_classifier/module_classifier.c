@@ -106,11 +106,6 @@ GlobalState* cl_init_datastructures(){
 }
 
 void cl_free_datastructures(GlobalState* global_state){
-    free(global_state->tn_state);
-    free(global_state->macro_table);
-    free(global_state->replace_flags);
-    rh_stack_destroy(global_state->rh_stack);
-    free(global_state->rh_process_macro);
     free(global_state);
 }
 

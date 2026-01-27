@@ -8,6 +8,8 @@ typedef struct TextNormalizerState{
     int in_line_comment;  // 0 = code line, 1 = after //
 } TextNormalizerState;
 
+typedef struct ReplaceFlags ReplaceFlags;
+
 void text_normalizer_init(
     TextNormalizerState* state
 ); 
