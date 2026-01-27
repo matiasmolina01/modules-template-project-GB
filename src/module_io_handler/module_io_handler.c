@@ -148,6 +148,17 @@ int ioh_read_word(char *wordbuffer, size_t max) {
             wordbuffer[1] = '\0'; // null terminate
             g_ioh.line_number++; // increment line number
             return 1; // length 1
+        if(c == ' '){
+            wordbuffer[0] = ' '; // if space, return it as a word
+            wordbuffer[1] = '\0'; // null terminate
+            return 1;
+        }
+        if(c == '\t'){
+            wordbuffer[0] = '\t'; // if tab, return it as a word
+            wordbuffer[1] = '\0'; // null terminate
+            return 1;
+        }
+
         } if(!isspace((unsigned char)c)){
             break; // found the start of a word
         }
