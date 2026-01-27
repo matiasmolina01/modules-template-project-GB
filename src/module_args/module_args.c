@@ -66,6 +66,7 @@ args_state_t *args_parse(int argc, char *argv[]){
 
         if(strcmp(arg, ARG_FLAG_H) == 0) {
             args->is_help_mode = 1;
+            void_print_menu();
             return args; // ignore rest of arguments
         } else if(strcmp(arg, ARG_FLAG_ALL) == 0){
             args->is_directive_mode = 1;
@@ -128,3 +129,29 @@ args_state_t *args_parse(int argc, char *argv[]){
     return args;
 }
 
+void args_print_menu(){
+    printf("⟦ Preprocessor GB ⟧\n\n");
+
+    printf("Usage:\n");
+    printf("preprocessor <flags> <program.c>\n\n");
+
+    printf("Arguments:\n\n");
+    printf("-c    : Remove comments from source code (default)\n");
+    printf("-d    : Replace all directives starting with '#'\n");
+    printf("-all  : Execute all implemented processing\n");
+    printf("-help : Show this help message and exit\n\n");
+
+    printf("Description:\n");
+    printf("This program implements a reduced version of the C preprocessor.\n");
+    printf("It processes a source file and generates a preprocessed version\n");
+    printf("of the input file according to the selected flags.\n\n");
+
+    printf("Output:\n");
+    printf("The preprocessed file is generated in the same directory as the input\n");
+    printf("file, adding the suffix '_pp' to the original filename.\n\n");
+
+    printf("Notes:\n");
+    printf("  * The order of flags is not relevant.\n");
+    printf("  * Flags can be combined (e.g. '-c -d' is equivalent to '-all').\n");
+    printf("  * If '-help' is provided, all other flags are ignored.\n");
+}
