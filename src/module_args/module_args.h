@@ -36,6 +36,7 @@
 #define ARG_FLAG_C "-c"
 #define ARG_FLAG_D "-d"
 #define ARG_FLAG_H "-h"
+#define ARG_FLAG_HELP "-help"
 #define ARG_FLAG_ALL "-all"
 
 
@@ -52,6 +53,7 @@ typedef struct args_state_t{
 
 args_state_t *args_parse(int argc, char *argv[]);
 void args_free(args_state_t *args);
+void args_print_menu();
 
 #endif
 

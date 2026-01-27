@@ -64,9 +64,9 @@ args_state_t *args_parse(int argc, char *argv[]){
     for (int i = 1; i < argc; i++) {
         const char *arg = argv[i];
 
-        if(strcmp(arg, ARG_FLAG_H) == 0) {
+        if(strcmp(arg, ARG_FLAG_H) == 0 || strcmp(arg, ARG_FLAG_HELP) == 0){
             args->is_help_mode = 1;
-            void_print_menu();
+            args_print_menu();
             return args; // ignore rest of arguments
         } else if(strcmp(arg, ARG_FLAG_ALL) == 0){
             args->is_directive_mode = 1;
@@ -130,7 +130,7 @@ args_state_t *args_parse(int argc, char *argv[]){
 }
 
 void args_print_menu(){
-    printf("⟦ Preprocessor GB ⟧\n\n");
+    printf("-- Preprocessor GB --\n\n");
 
     printf("Usage:\n");
     printf("preprocessor <flags> <program.c>\n\n");
@@ -139,7 +139,7 @@ void args_print_menu(){
     printf("-c    : Remove comments from source code (default)\n");
     printf("-d    : Replace all directives starting with '#'\n");
     printf("-all  : Execute all implemented processing\n");
-    printf("-help : Show this help message and exit\n\n");
+    printf("-help or -h: Show this help message and exit\n\n");
 
     printf("Description:\n");
     printf("This program implements a reduced version of the C preprocessor.\n");
