@@ -123,7 +123,6 @@ int rh_stack_is_active(RHStack *stack){
 }
 
 int rh_handle_include(char *filename, args_state_t* args_state){
-    printf("Handling include for file: %s\n", filename);
     
     if(rh_filename_check(filename) != 0){
         return -1;
@@ -160,8 +159,7 @@ int rh_handle_include(char *filename, args_state_t* args_state){
         full_path = strdup(clean_name);
     }
     free(clean_name);
-    
-    printf("Full include path: %s\n", full_path);
+   
     
     // Create new args_state
     args_state_t new_args = *args_state;
@@ -169,8 +167,7 @@ int rh_handle_include(char *filename, args_state_t* args_state){
     free(full_path);
     
     int result = cl_classifier(&new_args);
-    printf("Finished classifier\n");
-    
+   
     return result;
 }
 
@@ -213,10 +210,11 @@ void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, i
 	return;
 }
 
-int rh_handle_endif(RHStack *stack){
+int rh_handle_endif(RHStack *stack, RHProcessMacro *process_macro){
 	//pop the top directive
 	if(rh_stack_pop(stack) == 0){
 		//pop successful continue processing
+		process_macro->process = rh_stack_is_active(stack);
 		return 1;
 	}
 	//pop fails = underflow / no matching ifdef/ifndef

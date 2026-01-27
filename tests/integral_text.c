@@ -20,9 +20,11 @@ void say_hello(void) {
     printf("Hello from the preprocessor test!\n");
 }
 
+
 #ifdef MACRO0
 	printf("HOLA");
 #endif
+
 
 
 int main(void) {

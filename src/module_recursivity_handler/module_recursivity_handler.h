@@ -45,7 +45,7 @@ int rh_filename_check(const char *filename);
 
 void rh_handle_ifdef_directive(char *macro, MacroTable *table, RHStack *stack, int is_negated, RHProcessMacro *process_macro);
 
-int rh_handle_endif(RHStack *stack);
+int rh_handle_endif(RHStack *stack, RHProcessMacro *process_macro);
 
 #endif
  

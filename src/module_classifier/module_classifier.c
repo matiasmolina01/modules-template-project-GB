@@ -107,7 +107,6 @@ int cl_define_handler(GlobalState* global_state){
         macro_value = NULL;
     }
 
-    printf("calling define in macro table for '%s':'%s'\n", macro_name, macro_value);
     st_define(global_state->macro_table, macro_name, macro_value);
     return 0;
 }
@@ -121,7 +120,6 @@ int cl_define_handler(GlobalState* global_state){
 */
 int cl_include_handler(GlobalState* global_state){
     char* include_file_path = cl_next_argument(global_state);
-    printf("Handling include directive for file: %s\n", include_file_path);
     return rh_handle_include(include_file_path, global_state->args_state);
 }
 
@@ -135,7 +133,7 @@ Returns:
 int cl_ifdef_handler(GlobalState* global_state){
     char* macro_name = cl_next_argument(global_state);
     // TODO check that macro name is not '' or \n
-
+	
     rh_handle_ifdef_directive(macro_name, global_state->macro_table,
          global_state->rh_stack, 0, global_state->rh_process_macro);
 
@@ -202,7 +200,7 @@ int cl_classifier(args_state_t* args_state) {
 	
     char* input_file_path = args_state->input_path;
     char* output_file_path = args_state->output_path;
-	
+
     ioh_open_input(global_state->io_state, input_file_path);
     if (!ioh_open_output_append(global_state->io_state, output_file_path)){
         ioh_open_output(global_state->io_state, output_file_path);
@@ -210,7 +208,6 @@ int cl_classifier(args_state_t* args_state) {
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
-        printf("Read word: '%s'\n", next_word); 
         // Only process if the ifdef
         if(global_state->rh_process_macro->process == 1){
 
@@ -225,7 +222,6 @@ int cl_classifier(args_state_t* args_state) {
                 switch(cl_directive_type(normalized_word)){
     
                     case INCLUDE:
-                    printf("Handling include directive\n");
 					cl_include_handler(global_state);
                     ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
@@ -242,8 +238,8 @@ int cl_classifier(args_state_t* args_state) {
                     continue;
     
                     case ENDIF:
-                    rh_handle_endif(global_state->rh_stack);
-                    break;
+                    rh_handle_endif(global_state->rh_stack, global_state->rh_process_macro);
+                    continue;
 
                 }
 
