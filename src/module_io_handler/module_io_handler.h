@@ -20,6 +20,7 @@ typedef struct {
 } Separator;
 
 // status
+void ioh_init(ioh_state_t *g_ioh);
 int ioh_line_number(ioh_state_t *g_ioh);
 bool ioh_is_eof(ioh_state_t *g_ioh);
 

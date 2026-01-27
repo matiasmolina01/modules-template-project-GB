@@ -17,6 +17,18 @@
 static Separator g_separators = { "=,\t ;\"(){}[]<>.?!/\n" };
 
 /* STATE */
+
+
+// Initializes the ioh_state_t structure.
+void ioh_init(ioh_state_t *g_ioh) {
+    g_ioh->input_file = NULL;
+    g_ioh->output_file = NULL;
+    g_ioh->line_number = 0;
+    g_ioh->is_eof = false;
+}
+
+
+
 /*
     Returns the current line number being read.
 
