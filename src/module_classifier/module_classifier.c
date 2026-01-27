@@ -205,7 +205,6 @@ int cl_classifier(args_state_t* args_state) {
     
     char next_word[MAX_SIZE];
     while(ioh_read_word(global_state->io_state, next_word, sizeof(next_word)) > 0){
-
         // Only process if the ifdef
         if(global_state->rh_process_macro->process == 1){
 
