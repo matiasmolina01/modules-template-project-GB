@@ -121,6 +121,7 @@ int cl_define_handler(GlobalState* global_state){
 */
 int cl_include_handler(GlobalState* global_state){
     char* include_file_path = cl_next_argument(global_state);
+    printf("Handling include directive for file: %s\n", include_file_path);
     return rh_handle_include(include_file_path, global_state->args_state);
 }
 
@@ -198,7 +199,7 @@ int cl_classifier(args_state_t* args_state) {
 
     GlobalState* global_state =  cl_init_datastructures();
     global_state->args_state = args_state;
-
+	
     char* input_file_path = args_state->input_path;
     char* output_file_path = args_state->output_path;
 
@@ -224,7 +225,8 @@ int cl_classifier(args_state_t* args_state) {
                 switch(cl_directive_type(normalized_word)){
     
                     case INCLUDE:
-                    cl_include_handler(global_state);
+                    printf("Handling include directive\n");
+					cl_include_handler(global_state);
                     ioh_write_line(global_state->io_state, "\n", strlen("\n"));
                     continue;
             
@@ -253,9 +255,7 @@ int cl_classifier(args_state_t* args_state) {
             }else if(global_state->tn_state->in_block_comment == 0 && global_state->tn_state->in_line_comment == 0){
                 final_word = sr_substitute(next_word, global_state->replace_flags, global_state->macro_table);
             }
-            
-            ioh_write_line(global_state->io_state, final_word, strlen(final_word));
-
+            if(strcmp(final_word, "") != 0) ioh_write_line(global_state->io_state, final_word, strlen(final_word));
         }
 
         // Resert word buffer
