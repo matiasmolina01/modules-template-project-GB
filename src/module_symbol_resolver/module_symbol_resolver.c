@@ -1,20 +1,6 @@
-/*
- * -----------------------------------------------------------------------------
- * module_symbol_resolver.c 
- *
- * Usage:
- *     Called from the main application or test modules to process symbol resolver.
- *
- * Status:
- *     Initial development — logic to handle symbol resolver is not yet implemented.
- *
- * Author: [Marc Lounds]
- * -----------------------------------------------------------------------------
- */
-
 #include "./module_symbol_resolver.h"
 
-
+//Implementation of the symbol resolver module
 
 void sr_init_ReplaceFlags(ReplaceFlags *flags){
     //We initialize as false because as default the word in file won't be inside a print or a string.
