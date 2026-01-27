@@ -13,6 +13,10 @@
  * Author: Matias Molina
  * Date: 18-01-2026
  * 
+ * Update 2:
+ * - because of changes in image of module_io_handler, i updated the tests
+ * Author: Matias Molina
+ * Date: 27-01-2026
  * -----------------------------------------------------------------------------
  */
 
@@ -37,52 +41,63 @@
 //     remove(TEST_FILE_PATH); // delete the temporal test file
 // }
 
-// static void test_open_invalid_path(void) {
-//     assert(ioh_open_input(NULL) == false);
-//     assert(ioh_open_input("") == false);
-// }
+static void test_open_invalid_path(void) {
+    ioh_state_t ioh;
+    ioh_init(&ioh);
 
-// static void test_open_close_valid_path(void) { // open and close a valid file
-//     create_test_file();
+    assert(ioh_open_input(&ioh, NULL) == false);
+    assert(ioh_open_input(&ioh, "") == false);
+}
 
-//     assert(ioh_open_input(TEST_FILE_PATH) == true);
-//     assert(ioh_is_eof() == false);
+static void test_open_close_valid_path(void) { // open and close a valid file
+    ioh_state_t ioh;
+    ioh_init(&ioh);
 
-//     assert(ioh_close_input() == true);
-//     delete_test_file();
-// }
+    create_test_file();
 
-// static void test_read_word_basic(void) { // read words and check content and line numbers
-//     char w[64];
+    assert(ioh_open_input(&ioh, TEST_FILE_PATH) == true);
+    assert(ioh_is_eof(&ioh) == false);
 
-//     create_test_file();
-//     assert(ioh_open_input(TEST_FILE_PATH) == true);
+    assert(ioh_close_input(&ioh) == true);
+    delete_test_file();
+}
+
+static void test_read_word_basic(void) { // read words and check content and line numbers
+    ioh_state_t ioh;
+    ioh_init(&ioh);
+
+    char w[64];
+
+    create_test_file();
+    assert(ioh_open_input(&ioh, TEST_FILE_PATH) == true);
 
 //     printf(" ------------- test ioh_read_word_basic: -------------\n");
 
-//     int n;
+    int n;
+    while((n = ioh_read_word(&ioh, w, sizeof(w))) > 0) {
+        printf("Read word: '%s' (length: %d) at line %d\n", w, n, ioh_line_number(&ioh));
+    }
 
-//     while((n = ioh_read_word(w, sizeof(w))) > 0) {
-//         printf("Read word: '%s' (length: %d) at line %d\n", w, n, ioh_line_number());
-//     }
-
-//     // EOF expected
-//     assert(n == 0);
-//     assert(ioh_is_eof() == true);
+    // EOF expected
+    assert(n == 0);
+    assert(ioh_is_eof(&ioh) == true);
 
 //     printf("\n----------------------------------\n\n");
 
-//     ioh_close_input();
-//     delete_test_file();
-// }
+    ioh_close_input(&ioh);
+    delete_test_file();
+}
 
-// static void test_read_after_close_fails(void) {
-//     char buf[16];
+static void test_read_after_close_fails(void) {
+    ioh_state_t ioh;
+    ioh_init(&ioh);
 
-//     // without open
-//     assert(ioh_read_line(buf, sizeof(buf)) == -1);
-//     assert(ioh_read_word(buf, sizeof(buf)) == -1);
-// }
+    char buf[16];
+
+    // without open
+    assert(ioh_read_line(&ioh, buf, sizeof(buf)) == -1);
+    assert(ioh_read_word(&ioh, buf, sizeof(buf)) == -1);
+}
 
 // void test_io_handler_run_all(void) {
 //     test_open_invalid_path();
