@@ -124,7 +124,8 @@ GlobalState* cl_init_datastructures(){
 
     RHProcessMacro* rh_process_macro = (RHProcessMacro*) malloc(sizeof(RHProcessMacro));
 
-    ioh_state_t* io_state = ioh_state_init();
+    ioh_state_t* io_state = (ioh_state_t*) malloc(sizeof(ioh_state_t));
+    ioh_init(io_state);
 
     global_state->tn_state = tn_state;
     global_state->macro_table = macro_table;

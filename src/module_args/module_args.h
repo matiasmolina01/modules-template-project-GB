@@ -46,8 +46,8 @@ typedef struct args_state_t{
     int is_directive_mode; // 1 if directive mode, 0 otherwise
     int is_help_mode; // 1 if help mode, 0 otherwise
 
-    const char *input_path; // path to input file
-    const char *output_path; // path to output file
+    char *input_path; // path to input file
+    char *output_path; // path to output file
 } args_state_t;
 
 args_state_t *args_parse(int argc, char *argv[]);
