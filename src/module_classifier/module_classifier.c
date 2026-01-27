@@ -238,7 +238,7 @@ int cl_classifier(args_state_t* args_state) {
                     rh_handle_endif(global_state->rh_stack);
                     break;
                 }
-    
+                ioh_write_line(global_state->io_state, '\n', strlen('\n'));
                 continue;
             }
     
