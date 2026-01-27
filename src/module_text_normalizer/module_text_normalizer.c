@@ -73,10 +73,14 @@ char* text_normalizer(const char* input_line, TextNormalizerState* state,  Repla
         }
             
         // Normal character
-        sr_flag_activate(input_line[i], replace_flags);
+        if(!state->in_block_comment || !state->in_line_comment){
+            sr_flag_activate(input_line[i], replace_flags);
+        }
+        
         output[j++] = input_line[i++];
     }
 
     output[j] = '\0';
     return output;
 }
+
