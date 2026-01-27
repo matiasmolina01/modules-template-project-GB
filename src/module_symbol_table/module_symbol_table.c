@@ -72,6 +72,7 @@ int st_define(MacroTable *table, const char *name, const char *value) {
     if (table == NULL) return ST_ERR_NOT_INIT;
     if (name == NULL) return ST_ERR_NULL_NAME;
     if (!st_is_valid_name(name)) return ST_ERR_INVALID_NAME;
+    if (!st_is_valid_value(value)) return ST_ERR_INVALID_VALUE;
 
     size_t free_idx = SIZE_MAX;
 
@@ -223,5 +224,18 @@ int st_is_initialized(MacroTable *table){
 int st_is_valid_name(const char *name){
     if (name == NULL || *name == '\0') return 0;
     /* Later: check first char is letter or _, others alnum or _ */
+    return 1;
+}
+
+
+/*
+    Function to validate if a macro value is valid according to the rules.
+
+    It will return 1 if valid, or 0 otherwise.
+*/
+
+int st_is_valid_value(const char *value){
+    if (value == NULL) return 1; // NULL value is valid
+    if (value == "\n") return 0; // Newline-only value is invalid
     return 1;
 }
