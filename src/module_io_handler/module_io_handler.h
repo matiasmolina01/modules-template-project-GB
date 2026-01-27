@@ -15,6 +15,10 @@ typedef struct {
     bool is_eof; // end of file status
 } ioh_state_t;
 
+typedef struct {
+    char chars[64];
+} Separator;
+
 // status
 int ioh_line_number(void);
 bool ioh_is_eof(void);

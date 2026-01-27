@@ -15,6 +15,7 @@
 #include "./module_io_handler.h"
 
 static ioh_state_t g_ioh = {NULL, NULL, 0, false};
+static Separator g_separators = { "=,\t ;\"(){}[]<>.?!/\n" };
 
 /* STATE */
 /*
@@ -143,23 +144,18 @@ int ioh_read_word(char *wordbuffer, size_t max) {
 
     // to start reading the word, skip whitespace
     while((c = fgetc(g_ioh.input_file)) != EOF) {
-        if(c == '\n'){
-            wordbuffer[0] = '\n'; // if newline, return it as a word
-            wordbuffer[1] = '\0'; // null terminate
-            g_ioh.line_number++; // increment line number
-            return 1; // length 1
-        if(c == ' '){
-            wordbuffer[0] = ' '; // if space, return it as a word
-            wordbuffer[1] = '\0'; // null terminate
-            return 1;
+        for(size_t i = 0; i < sizeof(g_separators.chars); i++){
+            if(c == g_separators.chars[i]){
+                // if separator, return it as a word
+                wordbuffer[0] = (char)c; 
+                wordbuffer[1] = '\0'; // null terminate
+                if(c == '\n'){
+                    g_ioh.line_number++; // increment line number
+                }
+                return 1; // length 1
+            }
         }
-        if(c == '\t'){
-            wordbuffer[0] = '\t'; // if tab, return it as a word
-            wordbuffer[1] = '\0'; // null terminate
-            return 1;
-        }
-
-        } if(!isspace((unsigned char)c)){
+        if(!isspace((unsigned char)c)){
             break; // found the start of a word
         }
     }
