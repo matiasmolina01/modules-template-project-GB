@@ -35,7 +35,7 @@ typedef struct GlobalState{
 
 Directive cl_directive_type(char* word);
 // interaction with Symbol Table
-int cl_define_handler(); 
+int cl_define_handler(GlobalState* global_state); 
 // interaction with Recursivity Handler
 int cl_include_handler(); 
 int cl_ifdef_handler();
