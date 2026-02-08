@@ -3,6 +3,14 @@
 
 #include "../main.h"
 
-void o_output_handler();
+#define RELEASE 0
+#define DEBUG 1
+// Usage: gcc -DOUTFORMAT=DEBUG or gcc -DOUTFORMAT=RELEASE
+
+#ifndef OUTFORMAT
+#define OUTFORMAT RELEASE
+#endif
+
+void o_output_handler(TokenList *list, const char *filename);
 
 #endif
