@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "Finished module alphabet!!\n\n");
     
     fprintf(stdout, "Starting module automata ...\n");
-    a_automata();
+    // a_automata();
     fprintf(stdout, "Finished module automata!!\n\n");
     
     fprintf(stdout, "Starting module controller ...\n");

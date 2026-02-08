@@ -115,6 +115,21 @@ This allows to select the proper compiler and generator in VS Code easily.
 - The `logs/` directory can be ignored by git depending if you want to share your output files to the team.
 - Environment assumes MSYS2 installed with UCRT64 toolchain available and added to PATH.
 - The configuration aims for minimal manual setup to reduce friction between team contributors.
+- Each module functions are written following the same name structure:
+  - **Function names**: have the initial letter of the module and if the name contains multiple words, they will be separated by underscores as well.
+  - **Struct names**: will start with an uppercase letter and there will be no underscores separating the multiple words each struct might have, we will differentiate different words by typing the first letter in uppercase 
+
+## Automata
+The automata module implements a struct **DFA** used by the scanner.
+
+Its only responsibility is to **execute state transitions** of an automaton.
+
+The scanner feeds the automaton **one character at a time**.  
+For each character, the automaton:
+
+- checks whether a valid transition exists from the current state
+- if so, updates its internal `current_state`
+- returns whether the transition was successful
 
 
 
