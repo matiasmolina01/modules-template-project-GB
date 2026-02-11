@@ -44,15 +44,16 @@ typedef struct{
 } Lookahead;
 
 // No magic numbers... (requirements)
-#define A_CONTINUE 0 /**/
-#define A_ACCEPT 1
-#define A_FAIL -1
+#define A_CONTINUE 0 // can keep going (consumed current character)
+#define A_ACCEPT 1 // cannot continue with lookahead, but is accepting state (accept token)
+#define A_FAIL -1 // cannot continue with lookahead, and is not accepting state (fail token)
 
 // functions:
 int a_is_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
 int a_advance_automata(Automata *automata, char character);
 int a_mapping_alphabet(Automata *automata, char character); // to map the character of the scanner to the column of the transition table of the automata.
 int a_next_state(Automata *automata, char character); // to compute the nex state of the transition between current state and the character.
-
+int a_process(Automata *automata, char character, Lookahead *lookahead); // to process the character and the lookahead, and return if can continue, accept or fail.
+void a_reset_automata(Automata *automata); // to reset the automata to the initial state.
 
 #endif

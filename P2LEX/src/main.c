@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "Finished module args!!\n\n");
 
     fprintf(stdout, "Starting module output_handler ...\n");
-    o_output_handler();
+    // o_output_handler();
     fprintf(stdout, "Finished module output_handler!!\n\n");
 
     fprintf(stdout, "Starting module token ...\n");

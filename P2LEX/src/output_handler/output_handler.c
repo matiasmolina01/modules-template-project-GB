@@ -44,5 +44,5 @@ void o_output_handler(TokenList *list, const char *filename) {
     }
 
     fclose(fp);
-    return 0;
+    // return 0; I comment this because output_handler is void
 }

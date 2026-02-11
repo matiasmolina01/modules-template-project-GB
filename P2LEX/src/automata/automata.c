@@ -68,5 +68,41 @@ int a_advance_automata(Automata *automata, char c){
     return 1;
 }
 
+/*
+    Function to advance the automata with a given character from scanner. The function checks if the character 
+    is accepted by the automata, and if it is, it advances to the next state. If the character is not accepted, 
+    it does not advance to the next state.
+
+    Returns:
+        1 --> 
+        0 --> 
+*/
+int a_process(Automata *automata, char c, Lookahead *lookahead){
+    if (!automata->current_state) { // if the current state is invalid, return fail
+        return A_FAIL;
+    }
+
+    if(!a_advance_automata(automata, c)){ // if the character is not accepted, return fail
+        return A_FAIL;
+    }
+
+    if(a_is_accepting_state(automata, automata->current_state)){ // if the new state is accepting, return accept
+        return A_ACCEPT;
+    }
+
+    // falta poner A_CONTINUE.
+
+    
+    // TODO
+    return A_FAIL;
+}
+
+/*
+    Function called from the scanner to reset the automata to the initial state.
+*/
+void a_reset_automata(Automata *automata){
+    automata->current_state = automata->initial_state; // reset to initial state
+}
+
 
 
