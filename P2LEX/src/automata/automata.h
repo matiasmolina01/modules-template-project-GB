@@ -9,7 +9,7 @@
     struct to indicate the symbols of the alphabet of the automata.
 */
 typedef struct{
-    char name; // symbol
+    char name; // symbol of the alphabet
     int col; // columna in the table
 } AlphabetSymbol;
 
@@ -43,8 +43,12 @@ typedef struct{
     char character; // the character to lookahead
 } Lookahead;
 
-// functions:
+// No magic numbers... (requirements)
+#define A_CONTINUE 0 /**/
+#define A_ACCEPT 1
+#define A_FAIL -1
 
+// functions:
 int a_is_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
 int a_advance_automata(Automata *automata, char character);
 int a_mapping_alphabet(Automata *automata, char character); // to map the character of the scanner to the column of the transition table of the automata.
