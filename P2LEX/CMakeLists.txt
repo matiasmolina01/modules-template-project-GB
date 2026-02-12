@@ -57,7 +57,7 @@ target_link_libraries(modules_template_main PRIVATE
   utils  
   alphabet
   automata
-  controller
+  scanner
   counter
   error_handler
   input_handler
