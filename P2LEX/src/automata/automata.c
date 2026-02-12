@@ -59,6 +59,7 @@ int a_next_state(Automata *automata, char c){
     if(cr < 0 || cr >= automata->numstates) return -1; // if the current state is invalid, return failure
 
     int col = a_mapping_alphabet(automata, c); // get the column of the transition table of the automata for the character
+    if(col < 0) return 0; // if the character is not in the alphabet, return failure
 
     int new_state = automata->transitions[cr][col]; // get the new state from the transition table of the automata
 
@@ -130,9 +131,7 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     int nw = automata->transitions[cs][col]; // get the next state...
     if(nw < 0 || nw >= automata->numstates) return 0; // ... if the next state is invalid, return 0
 
-
-
-
+    return 1; // the next state is valid, return 1
 }
 /*
     Function to processes one transition step of the automaton. Consumes current_char, checks if it can continue 
