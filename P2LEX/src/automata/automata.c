@@ -3,7 +3,7 @@
  * automata.c 
  *
  * Usage:
- *     Called from the controller module or test modules to check what category the word is.
+ *     Called from the scanner module or test modules to check what category the word is.
  *
  * Status:
  *     Initial development — logic to handle automata is not yet implemented.

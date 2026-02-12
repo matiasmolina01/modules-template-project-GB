@@ -19,7 +19,7 @@ message(STATUS " - (${PROJECT_NAME}) Test for module_args added")
 
 # Test for automata
 
-# Test for controller
+# Test for scanner
 
 # Test for counter
 

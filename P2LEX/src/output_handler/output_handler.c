@@ -3,7 +3,7 @@
  * output_handler.c 
  *
  * Usage:
- *     Called from the controller module or test modules to handle output.
+ *     Called from the scanner module or test modules to handle output.
  *
  * Status:
  *     Initial development — logic to handle output is not yet implemented.

@@ -6,7 +6,7 @@
 #include "./utils_files.h"
 #include "./alphabet/alphabet.h"
 #include "./automata/automata.h"
-#include "./controller/controller.h"
+#include "./scanner/scanner.h"
 #include "./counter/counter.h"
 #include "./error_handler/error_handler.h"
 #include "./input_handler/input_handler.h"

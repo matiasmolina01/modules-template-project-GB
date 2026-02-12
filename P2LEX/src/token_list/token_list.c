@@ -3,7 +3,7 @@
  * token_list.c 
  *
  * Usage:
- *     Called from the controller module or test modules to handle tokens list.
+ *     Called from the scanner module or test modules to handle tokens list.
  *
  * Status:
  *     Initial development — logic to handle tokens list is not yet implemented.

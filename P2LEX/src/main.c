@@ -12,9 +12,9 @@ int main(int argc, char *argv[]) {
     // a_automata();
     fprintf(stdout, "Finished module automata!!\n\n");
     
-    fprintf(stdout, "Starting module controller ...\n");
-    c_controller();
-    fprintf(stdout, "Finished module controller!!\n\n");
+    fprintf(stdout, "Starting module scanner ...\n");
+    c_scanner();
+    fprintf(stdout, "Finished module scanner!!\n\n");
 
     fprintf(stdout, "Starting module counter ...\n");
     cnt_counter();

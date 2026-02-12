@@ -1,20 +1,20 @@
 /*
  * -----------------------------------------------------------------------------
- * controller.c 
+ * init.c 
  *
  * Usage:
  *     Called from the main file or test modules to orcherstrate the whole program.
  *
  * Status:
- *     Initial development — logic to handle controller is not yet implemented.
+ *     Initial development — logic to handle init is not yet implemented.
  *
- * Author: []
+ * Author: [Franco Olano]
  * -----------------------------------------------------------------------------
  */
 
-#include "./controller.h"
+#include "./init.h"
 
 
-void c_controller() {
-    fprintf(stdout, "Controller module is under development.\n");
+void i_init() {
+    fprintf(stdout, "init module is under development.\n");
 }
