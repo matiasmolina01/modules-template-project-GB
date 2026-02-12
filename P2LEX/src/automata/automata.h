@@ -46,7 +46,8 @@ typedef struct{
 // No magic numbers... (requirements)
 #define A_CONTINUE 0 // can keep going (consumed current character)
 #define A_ACCEPT 1 // cannot continue with lookahead, but is accepting state (accept token)
-#define A_FAIL -1 // cannot continue with lookahead, and is not accepting state (fail token)
+#define A_FAIL -1 // used in case of failure and to indicate that the character is not accepted.
+
 
 // functions:
 int a_is_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
