@@ -1,8 +1,159 @@
-#ifndef MODULE_ERROR_HANDLER_H
-#define MODULE_ERROR_HANDLER_H
+#ifndef MODULE_ERROR_HANDLER_REQ_H
+#define MODULE_ERROR_HANDLER_REQ_H
 
 #include "../main.h"
 
+//ON/OFF Trace flags (Criterion 10)
+#define TRACE_ERROR_HANDLER	//Coment this line to disable the error_handler function
+#define TRACE_ERROR_REPORT	//Coment this line to disable the error_report function
+
+//String constants (Criterion 3)
+#define MSG_ERROR_HANDLER_DEV "Error handler module is under development.\n"
+#define MSG_ERROR_FORMAT "Error [%d] in step %d: %s\n"
+#define MSG_UNKNOWN_ERROR "Unknown error code: %d\n"
+
+//Error message constants for error_table
+#define ERR_MSG_I_FILE_NOT_FOUND "Input file not found."
+#define ERR_MSG_I_PERMISSION_DENIED "Permission denied when accessing input file."
+#define ERR_MSG_I_EMPTY_INPUT "Input file is empty."
+#define ERR_MSG_I_UNEXPECTED_EOF "Unexpected end of file while reading input."
+#define ERR_MSG_I_READ_FAILURE "Failed to read from input file."
+#define ERR_MSG_I_BUFFER_OVERFLOW "Buffer overflow while reading input."
+#define ERR_MSG_I_INVALID_INPUT "Invalid input format."
+
+#define ERR_MSG_S_AUTOMATON_MISSING "Automaton definition is missing."
+#define ERR_MSG_S_AUTOMATA_INIT_FAILURE "Failed to initialize automata."
+#define ERR_MSG_S_AUTOMATA_SELECTION_FAILURE "Failed to select appropriate automaton for input."
+#define ERR_MSG_S_LOOKAHEAD_OUT_OF_BOUNDS "Lookahead exceeds input bounds."
+#define ERR_MSG_S_INFINITE_LOOP "Scanner entered an infinite loop."
+#define ERR_MSG_S_INVALID_TOKEN_DATA "Scanner produced invalid token data."
+
+#define ERR_MSG_A_CHAR_NOT_IN_ALPHABET "Input character not in automaton alphabet."
+#define ERR_MSG_A_UNDEFINED_TRANSITION "Automaton has undefined transition for input."
+#define ERR_MSG_A_REJECTS_VALID_LEXEME "Automaton incorrectly rejects valid lexeme."
+#define ERR_MSG_A_ACCEPTS_INVALID_LEXEME "Automaton incorrectly accepts invalid lexeme."
+#define ERR_MSG_A_NOT_RESETTING "Automaton failed to reset between inputs."
+#define ERR_MSG_A_MULTIPLE_FINAL_STATES "Automaton has multiple final states for input."
+#define ERR_MSG_A_INCORRECT_CONFIG "Automaton configuration is incorrect."
+
+#define ERR_MSG_T_MEM_ALLOC_TOKEN "Failed to allocate memory for token."
+#define ERR_MSG_T_MEM_ALLOC_LEXEME "Failed to allocate memory for lexeme."
+#define ERR_MSG_T_LIST_NOT_INITIALIZED "Token list is not initialized."
+#define ERR_MSG_T_APPEND_FAILURE "Failed to append token to list."
+#define ERR_MSG_T_CORRUPT_TOKEN "Token data is corrupt."
+#define ERR_MSG_T_INVALID_CATEGORY "Token has invalid category."
+#define ERR_MSG_T_LEXEME_NOT_NULL_TERMINATED "Lexeme string is not null-terminated."
+#define ERR_MSG_T_MEM_LEAK_FREEING "Memory leak detected when freeing token."
+
+#define ERR_MSG_O_FILE_OPEN_FAILURE "Failed to open output file."
+#define ERR_MSG_O_PERMISSION_DENIED "Permission denied when accessing output file."
+#define ERR_MSG_O_WRITE_FAILURE "Failed to write to output file."
+#define ERR_MSG_O_EMPTY_TOKEN_LIST "Token list is empty, nothing to write."
+#define ERR_MSG_O_NULL_TOKEN "Encountered null token in output handler."
+#define ERR_MSG_O_FILE_CLOSE_FAILURE "Failed to close output file."
+
+typedef enum ErrorStep{
+	STEP_PARSER,
+	STEP_SCANNER,
+	STEP_PREPROCESSOR
+} ErrorStep;
+
+typedef enum ErrorCode{
+	//Input handler 100-199
+	ERR_I_FILE_NOT_FOUND = 100,
+	ERR_I_PERMISSION_DENIED = 101,
+	ERR_I_EMPTY_INPUT = 102,
+	ERR_I_UNEXPECTED_EOF = 103,
+	ERR_I_READ_FAILURE = 104,
+	ERR_I_BUFFER_OVERFLOW = 105,
+	ERR_I_INVALID_INPUT = 106,
+
+	//Scanner 200-299
+	ERR_S_AUTOMATON_MISSING = 200,
+	ERR_S_AUTOMATA_INIT_FAILURE = 201,
+	ERR_S_AUTOMATA_SELECTION_FAILURE = 202,
+	ERR_S_LOOKAHEAD_OUT_OF_BOUNDS = 203,
+	ERR_S_INFINITE_LOOP = 204,
+	ERR_S_INVALID_TOKEN_DATA = 205,
+
+	//Automata 300-399
+	ERR_A_CHAR_NOT_IN_ALPHABET = 300,
+	ERR_A_UNDEFINED_TRANSITION = 301,
+	ERR_A_REJECTS_VALID_LEXEME = 302,
+	ERR_A_ACCEPTS_INVALID_LEXEME = 303,
+	ERR_A_NOT_RESETTING = 304,
+	ERR_A_MULTIPLE_FINAL_STATES = 305,
+	ERR_A_INCORRECT_CONFIG = 306,
+
+	//Token Handler 400-499
+	ERR_T_MEM_ALLOC_TOKEN = 400,
+	ERR_T_MEM_ALLOC_LEXEME = 401,
+	ERR_T_LIST_NOT_INITIALIZED = 402,
+	ERR_T_APPEND_FAILURE = 403,
+	ERR_T_CORRUPT_TOKEN = 404,
+	ERR_T_INVALID_CATEGORY = 405,
+	ERR_T_LEXEME_NOT_NULL_TERMINATED = 406,
+	ERR_T_MEM_LEAK_FREEING = 407,
+
+	//Output Handler 500-599
+	ERR_O_FILE_OPEN_FAILURE = 500,
+	ERR_O_PERMISSION_DENIED = 501,
+	ERR_O_WRITE_FAILURE = 502,
+	ERR_O_EMPTY_TOKEN_LIST = 503,
+	ERR_O_NULL_TOKEN = 504,
+	ERR_O_FILE_CLOSE_FAILURE = 505
+} ErrorCode;
+
+typedef struct Error{
+	ErrorCode code;
+	ErrorStep step;
+	const char *message;
+} Error;
+
+static Error error_table[] = {
+	//Input
+	{ERR_I_FILE_NOT_FOUND, STEP_SCANNER, ERR_MSG_I_FILE_NOT_FOUND},
+	{ERR_I_PERMISSION_DENIED, STEP_SCANNER, ERR_MSG_I_PERMISSION_DENIED},
+	{ERR_I_EMPTY_INPUT, STEP_SCANNER, ERR_MSG_I_EMPTY_INPUT},
+	{ERR_I_UNEXPECTED_EOF, STEP_SCANNER, ERR_MSG_I_UNEXPECTED_EOF},
+	{ERR_I_READ_FAILURE, STEP_SCANNER, ERR_MSG_I_READ_FAILURE},
+	{ERR_I_BUFFER_OVERFLOW, STEP_SCANNER, ERR_MSG_I_BUFFER_OVERFLOW},
+	{ERR_I_INVALID_INPUT, STEP_SCANNER, ERR_MSG_I_INVALID_INPUT},
+	//Scanner
+	{ERR_S_AUTOMATON_MISSING, STEP_SCANNER, ERR_MSG_S_AUTOMATON_MISSING},
+	{ERR_S_AUTOMATA_INIT_FAILURE, STEP_SCANNER, ERR_MSG_S_AUTOMATA_INIT_FAILURE},
+	{ERR_S_AUTOMATA_SELECTION_FAILURE, STEP_SCANNER, ERR_MSG_S_AUTOMATA_SELECTION_FAILURE},
+	{ERR_S_LOOKAHEAD_OUT_OF_BOUNDS, STEP_SCANNER, ERR_MSG_S_LOOKAHEAD_OUT_OF_BOUNDS},
+	{ERR_S_INFINITE_LOOP, STEP_SCANNER, ERR_MSG_S_INFINITE_LOOP},
+	{ERR_S_INVALID_TOKEN_DATA, STEP_SCANNER, ERR_MSG_S_INVALID_TOKEN_DATA},
+	//Automata
+	{ERR_A_CHAR_NOT_IN_ALPHABET, STEP_SCANNER, ERR_MSG_A_CHAR_NOT_IN_ALPHABET},
+	{ERR_A_UNDEFINED_TRANSITION, STEP_SCANNER, ERR_MSG_A_UNDEFINED_TRANSITION},
+	{ERR_A_REJECTS_VALID_LEXEME, STEP_SCANNER, ERR_MSG_A_REJECTS_VALID_LEXEME},
+	{ERR_A_ACCEPTS_INVALID_LEXEME, STEP_SCANNER, ERR_MSG_A_ACCEPTS_INVALID_LEXEME},
+	{ERR_A_NOT_RESETTING, STEP_SCANNER, ERR_MSG_A_NOT_RESETTING},
+	{ERR_A_MULTIPLE_FINAL_STATES, STEP_SCANNER, ERR_MSG_A_MULTIPLE_FINAL_STATES},
+	{ERR_A_INCORRECT_CONFIG, STEP_SCANNER, ERR_MSG_A_INCORRECT_CONFIG},
+	//Token
+	{ERR_T_MEM_ALLOC_TOKEN, STEP_SCANNER, ERR_MSG_T_MEM_ALLOC_TOKEN},
+	{ERR_T_MEM_ALLOC_LEXEME, STEP_SCANNER, ERR_MSG_T_MEM_ALLOC_LEXEME},
+	{ERR_T_LIST_NOT_INITIALIZED, STEP_SCANNER, ERR_MSG_T_LIST_NOT_INITIALIZED},
+	{ERR_T_APPEND_FAILURE, STEP_SCANNER, ERR_MSG_T_APPEND_FAILURE},
+	{ERR_T_CORRUPT_TOKEN, STEP_SCANNER, ERR_MSG_T_CORRUPT_TOKEN},
+	{ERR_T_INVALID_CATEGORY, STEP_SCANNER, ERR_MSG_T_INVALID_CATEGORY},
+	{ERR_T_LEXEME_NOT_NULL_TERMINATED, STEP_SCANNER, ERR_MSG_T_LEXEME_NOT_NULL_TERMINATED},
+	{ERR_T_MEM_LEAK_FREEING, STEP_SCANNER, ERR_MSG_T_MEM_LEAK_FREEING},
+	//Output
+	{ERR_O_FILE_OPEN_FAILURE, STEP_SCANNER, ERR_MSG_O_FILE_OPEN_FAILURE},
+	{ERR_O_PERMISSION_DENIED, STEP_SCANNER, ERR_MSG_O_PERMISSION_DENIED},
+	{ERR_O_WRITE_FAILURE, STEP_SCANNER, ERR_MSG_O_WRITE_FAILURE},
+	{ERR_O_EMPTY_TOKEN_LIST, STEP_SCANNER, ERR_MSG_O_EMPTY_TOKEN_LIST},
+	{ERR_O_NULL_TOKEN, STEP_SCANNER, ERR_MSG_O_NULL_TOKEN},
+	{ERR_O_FILE_CLOSE_FAILURE, STEP_SCANNER, ERR_MSG_O_FILE_CLOSE_FAILURE}
+};
+
 void e_error_handler();
+
+void e_error_report(ErrorCode code);
 
 #endif
