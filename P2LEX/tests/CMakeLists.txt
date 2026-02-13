@@ -18,6 +18,11 @@ message(STATUS " - (${PROJECT_NAME}) Test for module_args added")
 # Test for alphabet
 
 # Test for automata
+add_executable(test_module_automata test_module_automata.c)
+target_link_libraries(test_module_automata PRIVATE automata utils)
+target_include_directories(test_module_automata PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleAutomata COMMAND test_module_automata)
+message(STATUS " - (${PROJECT_NAME}) Test for module_automata added")
 
 # Test for scanner
 
