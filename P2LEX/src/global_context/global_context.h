@@ -2,6 +2,12 @@
 #define MODULE_INIT_H
 
 #include "../main.h"
+/*********	 temporal ****** */
+// #include "../alphabet/alphabet.h"
+#define NUM_AUTOMATAS 6
+
+///
+
 
 typedef struct Automata Automata;
 typedef struct Token Token;

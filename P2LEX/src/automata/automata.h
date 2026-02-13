@@ -50,11 +50,13 @@ typedef struct Lookahead{
 
 
 // functions:
+Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, AcceptingState *accept); // to create an automata with the parameters.
 int a_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
 int a_advance_automata(Automata *automata, char character);
 int a_mapping_alphabet(Automata *automata, char character); // to map the character of the scanner to the column of the transition table of the automata.
 int a_next_state(Automata *automata, char character); // to compute the nex state of the transition between current state and the character.
 int a_process(Automata *automata, char character, Lookahead *lookahead); // to process the character and the lookahead, and return if can continue, accept or fail.
 void a_reset_automata(Automata *automata); // to reset the automata to the initial state.
+void a_destroy_automata(Automata *automata); // to free the memory of the automata 
 
 #endif
