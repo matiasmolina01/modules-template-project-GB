@@ -23,19 +23,40 @@
 */
 Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, AcceptingState *accept){
     // validations for the parameters...
-    if(numstates <= 0 || numstates > MAXLEN) return NULL;
-    if(numcols <= 0 || numcols > MAXCOLS) return NULL;
-    if(numsymbols <= 0 || numsymbols > MAXLEN) return NULL;
+    if(numstates <= 0 || numstates > MAXLEN){
+        printf("Invalid number of states: %d. Must be between 1 and %d.\n", numstates, MAXLEN);// ------- ERROR @alex
+        return NULL;
+    }
+    if(numcols <= 0 || numcols > MAXCOLS){
+        printf("Invalid number of columns: %d. Must be between 1 and %d.\n", numcols, MAXCOLS);// ------- ERROR @alex
+        return NULL;
+    }
 
-    if(alphabet == NULL) return NULL;
-    if(trans == NULL) return NULL;
-    if(accept == NULL) return NULL;
+    if(numsymbols <= 0 || numsymbols > MAXLEN){
+        printf("Invalid number of symbols: %d. Must be between 1 and %d.\n", numsymbols, MAXLEN);
+        return NULL;
+    } 
 
-    if(initial_state < 0 || initial_state >= numstates) return NULL;
+    if(alphabet == NULL){
+        printf("Alphabet is NULL.\n"); // ------- ERROR @alex
+        return NULL;
+    }
+    if(accept == NULL){
+        printf("Accepting states info is NULL.\n");// ------- ERROR @alex
+        return NULL;
+    }
+
+    if(initial_state < 0 || initial_state >= numstates){
+        printf("Invalid initial state: %d. Must be between 0 and %d.\n", initial_state, numstates - 1);// ------- ERROR @alex
+        return NULL;
+    }
 
     // AUTOMATA CREATION
     Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
-    if(a == NULL) return NULL;
+    if(a == NULL){
+        printf("Memory allocation failed for automata.\n");// ------- ERROR @alex
+        return NULL;
+    }
     memset(a, 0, sizeof(*a)); // initialize all fields to 0
 
     a->numstates = numstates;
@@ -49,13 +70,14 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
         a->alphabet[i] = alphabet[i];
         if(a->alphabet[i].col < 0 || a->alphabet[i].col >= numcols){ // alphabet not valid
             free(a);
+            printf("Invalid column in alphabet symbol: %d. Must be between 0 and %d.\n", a->alphabet[i].col, numcols - 1);// ------- ERROR @alex
             return NULL;
         }
     }
     // copy the transition table
     for(int r = 0; r < numstates; r++){
         for(int c = 0; c < numcols; c++){
-            a->transitions[r][c] = trans[r * numcols + c]; // copy the transition table from the input array
+            a->transitions[r][c] = trans[r][c]; // copy the transition table from the input array
         }
     }
     
@@ -63,6 +85,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
     for(int i = 0; i < numstates; i++){
         a->accept[i] = accept[i];
     }
+    return a; // return the created automata
 }
 
 
@@ -76,7 +99,10 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
 
 */
 int a_mapping_alphabet(Automata *automata, char c){
-    if(automata == NULL) return A_FAIL; // if the automata is null, return failure
+    if(automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return A_FAIL; // if the automata is null, return failure
+    }
     int limit; // to indicate the limit of the alphabet to check...
     
     if(automata->numsymbols > 0){ // ... if numsymbols is greater than 0, we use it as limit
@@ -89,6 +115,7 @@ int a_mapping_alphabet(Automata *automata, char c){
         if(automata->alphabet[i].name == c){ // if we find the character in the alphabet, return the column
             int col = automata->alphabet[i].col;
             if(col < 0 || col >= automata->numcols){ // if the column is invalid, return failure
+                printf("Invalid column in alphabet symbol: %d. Must be between 0 and %d.\n", col, automata->numcols - 1);// ------- ERROR @alex
                 return A_FAIL;
             }
             return col; // return the column of the transition table of the automata
@@ -107,10 +134,16 @@ int a_mapping_alphabet(Automata *automata, char c){
 
 */
 int a_next_state(Automata *automata, char c){
-    if(automata == NULL) return A_FAIL; // if the automata is null, return failure
+    if(automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return A_FAIL; // if the automata is null, return failure
+    } 
     
     int cr = automata->current_state; // current state
-    if(cr < 0 || cr >= automata->numstates) return A_FAIL; // if the current state is invalid, return failure
+    if(cr < 0 || cr >= automata->numstates){
+        printf("Invalid current state: %d. Must be between 0 and %d.\n", cr, automata->numstates - 1);// ------- ERROR @alex
+        return A_FAIL; // if the current state is invalid, return failure
+    }
 
     int col = a_mapping_alphabet(automata, c); // get the column of the transition table of the automata for the character
     if(col < 0) return 0; // if the character is not in the alphabet, return 0 (not accepted) --> a_mapping_alphabet returns A_FAIL (-1 < 0)
@@ -120,7 +153,10 @@ int a_next_state(Automata *automata, char c){
 
     // error handling for the new state...
     if(new_state < 0) return 0; //(not accepted)
-    if(new_state >= automata->numstates) return A_FAIL; // return A_FAIL 
+    if(new_state >= automata->numstates){
+        printf("Invalid new state: %d. Must be between 0 and %d.\n", new_state, automata->numstates - 1);// ------- ERROR @alex
+        return A_FAIL; // return A_FAIL 
+    }
 
     return new_state; // return the new state after the transition
 }
@@ -135,7 +171,10 @@ int a_next_state(Automata *automata, char c){
         A_FAIL (-1) --> failure (invalid state or automata is null).
 */
 int a_accepting_state(Automata *automata, int state){
-    if(automata == NULL) return 0; // if the automata is null,  (not accepting)
+    if(automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return 0; // if the automata is null, return failure
+    }
     if(state < 0 || state >= automata->numstates) return 0; // if the state is invalid,  (not accepting)
     if(automata->accept[state].flag == 1){
         return 1;
@@ -155,8 +194,10 @@ int a_accepting_state(Automata *automata, int state){
         A_FAIL (-1) --> failure
 */
 int a_advance_automata(Automata *automata, char c){
-    if(automata == NULL) return A_FAIL; // if the automata is null, return failure
-    
+    if(automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return A_FAIL; // if the automata is null, return failure
+    }
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
     if(new_state > 0){ // we consider that the initial state is always 0, so the new state cannot be 0.
         automata->current_state = new_state; // advance to the new state
@@ -175,9 +216,17 @@ int a_advance_automata(Automata *automata, char c){
         A_FAIL (-1) --> failure
 */
 int a_lookahead_process(Automata *automata, Lookahead *lookahead){
-    if (automata == NULL) return A_FAIL;
-    if (lookahead == NULL) return 0; // is not accepting
-    if (lookahead->has == 0) return 0;  // and lookahead has no character -> is not accepting
+    if (automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return A_FAIL; // if the automata is null, return failure
+    }
+    if (lookahead == NULL){
+        printf("Lookahead is NULL.\n"); // ------- ERROR @alex
+        return 0; // if the lookahead is null, return failure
+    }
+    if (lookahead->has == 0){
+        return 0; // and lookahead has no character -> is not accepting
+    }
 
     int new_state = a_next_state(automata, lookahead->character); // get the next state from the transition table of the automata for the lookahead character
     if(new_state > 0) return 1; // if have new_state, there are valid transitions with the lookahead character (can continue)
@@ -195,8 +244,10 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
         -1 (A_FAIL) --> cannot consume the current character or stopped in a non-accepting state.
 */
 int a_process(Automata *automata, char c, Lookahead *lookahead){
-    if(automata == NULL || lookahead == NULL) return A_FAIL; // if the automata or lookahead is null, return failure
-
+    if(automata == NULL || lookahead == NULL){
+        printf("Automata or Lookahead is NULL.\n"); // ------- ERROR @alex
+        return A_FAIL; // if the automata or lookahead is null, return failure
+    }
     int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
     if(adv == 0 || adv == A_FAIL){ // if the character is not accepted or there is a failure, return fail
         return A_FAIL; // if the character is not accepted, return fail
@@ -217,7 +268,10 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
     Function to reset the automata to the initial state. (current state = intial state)
 */
 void a_reset_automata(Automata *automata){
-    if(automata == NULL) return;
+    if(automata == NULL){
+        printf("Automata is NULL.\n"); // ------- ERROR @alex
+        return;
+    } 
     automata->current_state = automata->initial_state;
 }
 
