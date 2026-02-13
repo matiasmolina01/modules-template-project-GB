@@ -29,9 +29,6 @@ message(STATUS " - (${PROJECT_NAME}) Test for module_args added")
 
 # Test for output_handler
 
-# Test for token
-
-# Test for token_list
-
+# Test for token_handler
 
 message(STATUS " - (${PROJECT_NAME}) Test configuration (executables) completed.")

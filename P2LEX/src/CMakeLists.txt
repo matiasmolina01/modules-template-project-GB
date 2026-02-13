@@ -34,8 +34,7 @@ add_subdirectory(error_handler)
 add_subdirectory(input_handler)
 add_subdirectory(module_args)
 add_subdirectory(output_handler)
-add_subdirectory(token)
-add_subdirectory(token_list)
+add_subdirectory(token_handler)
 
 message(STATUS "   - (${PROJECT_NAME}) Added modules subdirectories")
 

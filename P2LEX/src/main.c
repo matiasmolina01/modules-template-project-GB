@@ -36,13 +36,9 @@ int main(int argc, char *argv[]) {
     // o_output_handler();
     fprintf(stdout, "Finished module output_handler!!\n\n");
 
-    fprintf(stdout, "Starting module token ...\n");
-    t_token();
-    fprintf(stdout, "Finished module token!!\n\n");
-
-    fprintf(stdout, "Starting module token_list ...\n");
-    tl_token_list();
-    fprintf(stdout, "Finished module token_list!!\n\n");
+    fprintf(stdout, "Starting module token_handler ...\n");
+    t_token_handler();
+    fprintf(stdout, "Finished module token_handler!!\n\n");
 
     fprintf(stdout, "All modules executed successfully!\n\n");
 
