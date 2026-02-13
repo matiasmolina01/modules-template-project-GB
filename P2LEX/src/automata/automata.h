@@ -50,7 +50,7 @@ typedef struct{
 
 
 // functions:
-int a_is_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
+int a_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
 int a_advance_automata(Automata *automata, char character);
 int a_mapping_alphabet(Automata *automata, char character); // to map the character of the scanner to the column of the transition table of the automata.
 int a_next_state(Automata *automata, char character); // to compute the nex state of the transition between current state and the character.
