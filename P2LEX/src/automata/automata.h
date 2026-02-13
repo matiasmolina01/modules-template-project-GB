@@ -8,7 +8,7 @@
 /*
     struct to indicate the symbols of the alphabet of the automata.
 */
-typedef struct{
+typedef struct AlphabetSymbol{
     char name; // symbol of the alphabet
     int col; // columna in the table
 } AlphabetSymbol;
@@ -16,7 +16,7 @@ typedef struct{
 /*
     struct to indicate if each state is accepting, and if it is, the category of the token that it accepts.
 */
-typedef struct{
+typedef struct AcceptingState{
     int flag; // to indicate if the state is accepting or not
     char category[MAXLEN]; // to indicate the category of the token if the state is accepting
 } AcceptingState;
@@ -24,7 +24,7 @@ typedef struct{
 /*
     struct to indicate the current state of the automata.
 */
-typedef struct {
+typedef struct Automata{
     int numsymbols; // actual number of symbols of the alphabet of the automata
     int numstates; // actual number of states of the automata
     int numcols; // number of columns in the compressed table
@@ -38,7 +38,7 @@ typedef struct {
 /*
     struct to indicate the lookahead of the automata.
 */
-typedef struct{
+typedef struct Lookahead{
     int has; // to indicate if the lookahead has a character or not
     char character; // the character to lookahead
 } Lookahead;

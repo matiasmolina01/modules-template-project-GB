@@ -3,6 +3,8 @@
 
 #include "../main.h"
 
+#define NUM_AUTOMATAS 6
+
 void al_alphabet();
 
 #endif
