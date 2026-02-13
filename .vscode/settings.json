@@ -9,7 +9,7 @@
   "cmake.buildDirectory": "${workspaceFolder}/build",
 
   // Root of the source project (where top-level CMakeLists.txt is)
-  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.sourceDirectory": "C:/Users/Marti/Documents/UNI/3/2n term/COMPILATORS/repo/modules-template-project-GB/P2LEX/src/init",
 
   // Where `make install` will copy built outputs (optional)
   "cmake.installPrefix": "${workspaceFolder}/install",

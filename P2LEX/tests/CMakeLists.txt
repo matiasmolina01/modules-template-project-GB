@@ -29,9 +29,12 @@ message(STATUS " - (${PROJECT_NAME}) Test for module_args added")
 
 # Test for output_handler
 
-# Test for token
-
-# Test for token_list
+# Test for token_handler
+add_executable(test_module_token_handler test_module_token_handler.c)
+target_link_libraries(test_module_token_handler PRIVATE token_handler utils)
+target_include_directories(test_module_token_handler PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleTokenHandler COMMAND test_module_token_handler)
+message(STATUS " - (${PROJECT_NAME}) Test for module_token_handler added")
 
 
 message(STATUS " - (${PROJECT_NAME}) Test configuration (executables) completed.")
