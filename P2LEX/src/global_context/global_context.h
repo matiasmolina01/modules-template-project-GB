@@ -20,6 +20,7 @@ typedef struct GlobalContext{
 	// InputStruct...
 }GlobalContext;
 
-GlobalContext* i_init();
+GlobalContext* gc_init();
+int gc_destroy(GlobalContext*);
 
 #endif
