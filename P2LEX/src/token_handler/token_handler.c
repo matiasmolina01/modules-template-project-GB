@@ -97,12 +97,19 @@ void t_token_destroy(Token *t) {
 }
 
 // Function to initialize a token list. This sets up the list to be empty and ready to store tokens.
-void tl_token_list_init(TokenList *list) {
-    if (!list) return;
+TokenList *tl_token_list_init(void) {
+    TokenList *list = (TokenList *)malloc(sizeof(TokenList));
+    if (!list) {
+        // TODO
+        //e_error_report(); // This error happens when memory allocation for a new token list fails. We should report this error appropriately.
+        exit(EXIT_FAILURE);
+    }
 
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
+
+    return list;
 }
 
 // Function to add a token to the end of a token list. This creates a new node for the token and updates the list's head, tail, and size accordingly.
