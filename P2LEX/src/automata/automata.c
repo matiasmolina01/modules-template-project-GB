@@ -15,6 +15,58 @@
 #include "./automata.h"
 
 /*
+    Function to create an automata with the parameters.
+
+    Returns:
+        Automata* --> pointer to the created automata.
+        NULL --> failure (invalid parameters or memory allocation failure).
+*/
+Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, AcceptingState *accept){
+    // validations for the parameters...
+    if(numstates <= 0 || numstates > MAXLEN) return NULL;
+    if(numcols <= 0 || numcols > MAXCOLS) return NULL;
+    if(numsymbols <= 0 || numsymbols > MAXLEN) return NULL;
+
+    if(alphabet == NULL) return NULL;
+    if(trans == NULL) return NULL;
+    if(accept == NULL) return NULL;
+
+    if(initial_state < 0 || initial_state >= numstates) return NULL;
+
+    // AUTOMATA CREATION
+    Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
+    if(a == NULL) return NULL;
+    memset(a, 0, sizeof(*a)); // initialize all fields to 0
+
+    a->numstates = numstates;
+    a->numcols = numcols;
+    a->numsymbols = numsymbols;
+    a->initial_state = initial_state;
+    a->current_state = current_state;
+
+    // copy the alphabet
+    for(int i = 0; i < numsymbols; i++){
+        a->alphabet[i] = alphabet[i];
+        if(a->alphabet[i].col < 0 || a->alphabet[i].col >= numcols){ // alphabet not valid
+            free(a);
+            return NULL;
+        }
+    }
+    // copy the transition table
+    for(int r = 0; r < numstates; r++){
+        for(int c = 0; c < numcols; c++){
+            a->transitions[r][c] = trans[r * numcols + c]; // copy the transition table from the input array
+        }
+    }
+    
+    // copy the accepting states info
+    for(int i = 0; i < numstates; i++){
+        a->accept[i] = accept[i];
+    }
+}
+
+
+/*
     Function used by next_state to map the character and get the column to use in the matrix for the input c:
     That is to say, found the column of a compressed table of the transition table of the automata that corresponds to the alphabet symbol c.
 
@@ -167,4 +219,12 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
 void a_reset_automata(Automata *automata){
     if(automata == NULL) return;
     automata->current_state = automata->initial_state;
+}
+
+/*
+    Function to free the memory of the automata.
+*/
+void a_destroy_automata(Automata *automata){
+    if(automata == NULL) return;
+    free(automata);
 }

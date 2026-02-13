@@ -162,13 +162,15 @@ Its responsibility is to interact with the Scanner module by providing the follo
 
 | FUNCTION | DESCRIPTION | INTERESTED MODULES | RETURN |
 |----------|------------|-------------------|--------|
-| `int a_process(Automata *automata, char c, Lookahead *lookahead)` | Processes one transition step of the automaton. Consumes `c`, checks whether it can continue using the provided `Lookahead`, and determines whether to continue, accept, or fail. | SCANNER | **A_CONTINUE (0)** – automaton can continue.<br><br>**A_ACCEPT (1)** – Current character consumed, cannot continue, but the current state is accepting.<br><br>**A_FAIL (-1)** – Cannot consume the current character or stopped in a non-accepting state. |
+| `a_create_automata(...)`| Function to create an automata with the parameters. | SCANNER | `Automata*` --> pointer to the created automata. <br>`NULL` --> failure (invalid parameters or memory allocation failure). |
+| `int a_process(Automata *automata, char c, Lookahead *lookahead)` | Processes one transition step of the automaton. Consumes `c`, checks whether it can continue using the provided `Lookahead`, and determines whether to continue, accept, or fail. | SCANNER | `A_CONTINUE (0)` – automaton can continue.<br>`A_ACCEPT (1)` – Current character consumed, cannot continue, but the current state is accepting.<br>`A_FAIL (-1)` – Cannot consume the current character or stopped in a non-accepting state. |
 | `int a_mapping_alphabet(Automata *automata, char c)` | Maps a character to the corresponding column in the compressed transition table of the automaton. | --- | `col` → column index of transition table.<br>`A_FAIL (-1)` → character not found or invalid column. |
 | `int a_next_state(Automata *automata, char c)` | Computes the next state from the current state using character `c`. | --- | `new_state` → next valid state.<br>`0` → character not accepted.<br>`A_FAIL (-1)` → invalid state or failure. |
 | `int a_accepting_state(Automata *automata, int state)` | Checks whether a given state is an accepting state. | --- | `1` → accepting state.<br>`0` → not accepting.<br> |
 | `int a_advance_automata(Automata *automata, char c)` | Advances the automaton one step if the character is accepted, updating the current state. | --- | `1` → character accepted and state advanced.<br>`0` → character not accepted.<br>`A_FAIL (-1)` → failure. |
 | `int a_lookahead_process(Automata *automata, Lookahead *lookahead)` | Processes the lookahead character to determine if the automaton can continue. | --- | `1` → valid transition exists (can continue).<br>`0` → no valid transition exists..<br>`A_FAIL (-1)` → failure. |
 | `void a_reset_automata(Automata *automata)` | Resets the automaton to its initial state. | SCANNER | No return value. |
+|`void a_destroy_automata(Automata *automata)`|Function to free the memory of the automata.| SCANNER | No return value. |
 
 #### Design Notes
 - State `0` is always the initial state.
