@@ -41,7 +41,7 @@ void t_token_update_category(Token *t, TokenCategory cat);
 void t_token_destroy(Token *t);
 
 // Token list functions
-TokenList * tl_token_list_init();
+TokenList *tl_token_list_init();
 void tl_token_list_add(TokenList *list, Token t);
 void tl_token_update_and_append(TokenList *list, Token *t, TokenCategory cat);
 int  tl_token_list_size(const TokenList *list);
