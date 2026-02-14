@@ -16,24 +16,72 @@
 
 //Para leer carácter por carácter
 
-char ioh_read_char(ioh_state_t *g_ioh) {
+char i_read_char(Input *input) {
     int c;
 
-    if (g_ioh->input_file == NULL) {
-        fprintf(stderr, "ioh_read_char: input file not opened\n");
+    if (input->input_file == NULL) {
+        fprintf(stderr, "i_read_char: input file not opened\n");
+        // TODO standarize error
         return -1;
     }
 
-    c = fgetc(g_ioh->input_file);
+    input->column++;
+    c = fgetc(input->input_file);
 
     if (c == EOF) {
-        g_ioh->is_eof = true;
+        input->is_eof = 1;
         return 0;   // indica EOF
     }
 
     if (c == '\n') {
-        g_ioh->line_number++;
+        input->line_number++;
+        input->column = 0;
     }
 
     return c;  // return del carácter 
+}
+
+void i_init(Input *input) {
+    input->input_file = NULL;
+    input->line_number = 0;
+    input->is_eof = 0;
+}
+
+Input* i_create(void) {
+    Input *input = (Input*) malloc(sizeof(Input));
+    if (input == NULL) return NULL;
+    i_init(input);
+    return input;
+}
+
+
+int i_is_eof(Input *input) {
+    return input->is_eof;
+}
+
+int i_open_input(Input *input, const char *path) {
+    if(path == NULL || path[0] == '\0') { // invalid path
+        fprintf(stderr, "ioh_open_input: invalid path\n");
+        // TODO standarize error
+        return 0;
+    } else {
+        input->input_file = fopen(path, MODE_READ);
+        if(input->input_file == NULL) { // error opening file
+            fprintf(stderr, "ioh_open_input: could not open input file '%s'\n", path);
+            // TODO standarize error
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+int i_close_input(Input *input) {
+    if(input->input_file != NULL) { // close file if opened
+        fclose(input->input_file); // close file
+        input->input_file = NULL; // reset pointer
+    }
+    input->line_number = 0; // reset line number
+    input->is_eof = 0; // reset EOF status
+    return 1;
 }

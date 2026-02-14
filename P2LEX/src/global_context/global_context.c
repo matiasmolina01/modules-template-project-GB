@@ -19,7 +19,7 @@
     Initilizes the GlobalContext datastructure.
     Returns GlobalContext pointer.
 */
-GlobalContext* gc_init() {
+GlobalContext* gc_init(char input_file_path) {
     GlobalContext *global_context = (GlobalContext*) malloc(sizeof(GlobalContext));
     if(global_context == NULL) exit(0); // TODO Put standarized error
 
@@ -28,11 +28,18 @@ GlobalContext* gc_init() {
     global_context->token_list = token_list;
 
     // TODO initiate atomatas
+
+    Input* input = i_create();
+
+    global_context->input = input;
+
+    i_open_input(global_context->input, input_file_path);
     
     return global_context;
 }
 
 int gc_destroy(GlobalContext* global_context){
+    i_close_input(global_context->input);
     free(global_context->token_list);
     free(global_context);
     return 0;

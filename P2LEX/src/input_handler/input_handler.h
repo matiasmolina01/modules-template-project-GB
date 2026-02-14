@@ -3,15 +3,21 @@
 
 #include "../main.h"
 #include <stdio.h>
-#include <stdbool.h>
 
+#define MODE_READ "r"
 
-typedef struct {
-    FILE *input_file;   // fichero de entrada
-    bool  is_eof;       // flag de fin de fichero
-    int   line_number;  // número de línea actual
-} ioh_state_t;
+typedef struct Input {
+    FILE *input_file;   
+    int is_eof;
+    int line_number;
+    int column;
+} Input;
 
-char ioh_read_char(ioh_state_t *g_ioh);
+char i_read_char(Input *input);
+Input* i_create();
+void i_init(Input *input);
+int i_is_eof(Input *input);
+int i_open_input(Input *input, const char *path);
+int i_close_input(Input *input);
 
 #endif
