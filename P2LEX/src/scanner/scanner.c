@@ -54,7 +54,7 @@ void s_check_responses(GlobalContext* global_context, int* automata_responses){
             case A_ACCEPT:
             token_status = CURRENT_TOKEN_ACCEPTED;
             s_accept_token(global_context, i);
-            global_context->current_token = tl_token_create();
+            global_context->current_token = tl_token_create(global_context->input->line_number, global_context->input->column);
             break;
 
             case A_CONTINUE:
@@ -65,7 +65,7 @@ void s_check_responses(GlobalContext* global_context, int* automata_responses){
 
     if(token_status == CURRENT_TOKEN_FAIL){
         s_reject_token(global_context);
-        global_context->current_token = tl_token_create();
+        global_context->current_token = tl_token_create(global_context->input->line_number, global_context->input->column);
     }
 }
 
@@ -82,12 +82,12 @@ void s_scanner(GlobalContext* global_context) {
     
     s_init_responses(automata_reponses, NUM_AUTOMATAS);
 
-    global_context->current_token = tl_token_create();
     char current_char, lookahead;
-    // TODO handler cases where first chars do not exist
-
     current_char = i_read_char(global_context->input);
     lookahead = i_read_char(global_context->input);
+    // TODO handler cases where first chars do not exist
+    
+    global_context->current_token = tl_token_create(global_context->input->line_number, global_context->input->column);
 
     t_token_append_char(global_context->current_token, current_char);
 
