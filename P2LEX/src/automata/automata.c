@@ -109,7 +109,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
 int a_mapping_alphabet(Automata *automata, char c){
     if(automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
+        e_error_report(311);
 		return A_FAIL; // if the automata is null, return failure
     }
     int limit; // to indicate the limit of the alphabet to check...
@@ -153,7 +153,7 @@ int a_next_state(Automata *automata, char c){
     int cr = automata->current_state; // current state
     if(cr < 0 || cr >= automata->numstates){
         //printf("Invalid current state: %d. Must be between 0 and %d.\n", cr, automata->numstates - 1);// ------- ERROR @alex
-        e_error_code(312);
+        e_error_report(312);
 		return A_FAIL; // if the current state is invalid, return failure
     }
 
@@ -167,7 +167,7 @@ int a_next_state(Automata *automata, char c){
     if(new_state < 0) return 0; //(not accepted)
     if(new_state >= automata->numstates){
         //printf("Invalid new state: %d. Must be between 0 and %d.\n", new_state, automata->numstates - 1);// ------- ERROR @alex
-        e_error_code(313);
+        e_error_report(313);
 		return A_FAIL; // return A_FAIL 
     }
 
@@ -186,7 +186,7 @@ int a_next_state(Automata *automata, char c){
 int a_accepting_state(Automata *automata, int state){
     if(automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
+        e_error_report(311);
 		return 0; // if the automata is null, return failure
     }
     if(state < 0 || state >= automata->numstates) return 0; // if the state is invalid,  (not accepting)
@@ -210,7 +210,7 @@ int a_accepting_state(Automata *automata, int state){
 int a_advance_automata(Automata *automata, char c){
     if(automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
+        e_error_report(311);
 		return A_FAIL; // if the automata is null, return failure
     }
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
@@ -233,12 +233,12 @@ int a_advance_automata(Automata *automata, char c){
 int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     if (automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
+        e_error_report(311);
 		return A_FAIL; // if the automata is null, return failure
     }
     if (lookahead == NULL){
         //printf("Lookahead is NULL.\n"); // ------- ERROR @alex
-        e_error_code(314);
+        e_error_report(314);
 		return 0; // if the lookahead is null, return failure
     }
     if (lookahead->has == 0){
@@ -263,8 +263,8 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
 int a_process(Automata *automata, char c, Lookahead *lookahead){
     if(automata == NULL || lookahead == NULL){
         //printf("Automata or Lookahead is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
-		e_error_code(314);
+        e_error_report(311);
+		e_error_report(314);
 		return A_FAIL; // if the automata or lookahead is null, return failure
     }
     int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
@@ -289,7 +289,7 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
 void a_reset_automata(Automata *automata){
     if(automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
-        e_error_code(311);
+        e_error_report(311);
 		return;
     } 
     automata->current_state = automata->initial_state;

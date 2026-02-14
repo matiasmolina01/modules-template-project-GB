@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     fprintf(stdout, "Finished module error_handler!!\n\n");
     
     fprintf(stdout, "Starting module input_handler ...\n");
-    i_input_handler();
+    //i_input_handler();
     fprintf(stdout, "Finished module input_handler!!\n\n");
     
     fprintf(stdout, "Starting module args ...\n");

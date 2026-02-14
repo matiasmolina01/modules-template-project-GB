@@ -16,7 +16,7 @@
 
 //Para leer carácter por carácter
 
-int ioh_read_char(ioh_state_t *g_ioh) {
+char ioh_read_char(ioh_state_t *g_ioh) {
     int c;
 
     if (g_ioh->input_file == NULL) {

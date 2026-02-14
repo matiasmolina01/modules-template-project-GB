@@ -15,7 +15,7 @@ add_library(input_handler input_handler.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(input_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because input_handler depends on utils
-target_link_libraries(input_handler PRIVATE utils)
+target_link_libraries(input_handler PRIVATE utils error_handler counter)
 
 # Print a status message during CMake configuration to confirm input_handler is processed
 message(STATUS "(${PROJECT_NAME}) input_handler configured: Added as static library")

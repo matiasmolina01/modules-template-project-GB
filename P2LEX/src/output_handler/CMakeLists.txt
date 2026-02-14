@@ -15,7 +15,7 @@ add_library(output_handler output_handler.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(output_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because output_handler depends on utils
-target_link_libraries(output_handler PRIVATE utils)
+target_link_libraries(output_handler PRIVATE utils error_handler counter)
 
 # Print a status message during CMake configuration to confirm output_handler is processed
 message(STATUS "(${PROJECT_NAME}) output_handler configured: Added as static library")

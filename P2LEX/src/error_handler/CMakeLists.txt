@@ -15,7 +15,7 @@ add_library(error_handler error_handler.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(error_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because error_handler depends on utils
-target_link_libraries(error_handler PRIVATE utils)
+target_link_libraries(error_handler PRIVATE utils counter)
 
 # Print a status message during CMake configuration to confirm error_handler is processed
 message(STATUS "(${PROJECT_NAME}) error_handler configured: Added as static library")

@@ -15,7 +15,7 @@ add_library(global_context global_context.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(global_context PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because global_context depends on utils
-target_link_libraries(global_context PRIVATE utils)
+target_link_libraries(global_context PRIVATE utils error_handler counter)
 
 # Print a status message during CMake configuration to confirm global_context is processed
 message(STATUS "(${PROJECT_NAME}) global_context configured: Added as static library")

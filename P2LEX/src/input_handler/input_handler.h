@@ -12,6 +12,6 @@ typedef struct {
     int   line_number;  // número de línea actual
 } ioh_state_t;
 
-void ioh_read_char(ioh_state_t *g_ioh);
+char ioh_read_char(ioh_state_t *g_ioh);
 
 #endif

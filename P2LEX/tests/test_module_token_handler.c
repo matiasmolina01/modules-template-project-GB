@@ -59,52 +59,49 @@ static void test_token_append_and_category(void) {
 
 
 static void test_token_list_init_size_destroy(void) {
-    TokenList list;
-    tl_token_list_init(&list);
+    TokenList *list = tl_token_list_init();
 
     report("tl_token_list_init sets size 0",
-           tl_token_list_size(&list) == 0);
+           tl_token_list_size(list) == 0);
 
-    tl_token_list_destroy(&list);
+    tl_token_list_destroy(list);
 
     report("tl_token_list_destroy clears list",
-           tl_token_list_size(&list) == 0);
+           tl_token_list_size(list) == 0);
 }
 
 
 static void test_token_list_add(void) {
-    TokenList list;
-    tl_token_list_init(&list);
+    TokenList *list = tl_token_list_init();
 
     Token t1 = t_token_create(1, 1);
     t_token_append_char(&t1, 'x');
 
-    tl_token_list_add(&list, t1);
+    tl_token_list_add(list, t1);
 
     report("tl_token_list_add increases size",
-           tl_token_list_size(&list) == 1);
+           tl_token_list_size(list) == 1);
 
-    tl_token_list_destroy(&list);
+    tl_token_list_destroy(list);
 }
 
 
 static void test_token_update_and_append(void) {
-    TokenList list;
-    tl_token_list_init(&list);
+    TokenList *list = tl_token_list_init();
 
     Token t = t_token_create(2, 4);
     t_token_append_char(&t, 'y');
 
-    tl_token_update_and_append(&list, &t, CAT_IDENTIFIER);
+    tl_token_update_and_append(list, &t, CAT_IDENTIFIER);
 
     report("tl_token_update_and_append size",
-           tl_token_list_size(&list) == 1);
+           tl_token_list_size(list) == 1);
 
     report("tl_token_update_and_append category",
-           list.head != NULL &&
-           list.head->token.category == CAT_IDENTIFIER);
+           list->head != NULL &&
+           list->head->token.category == CAT_IDENTIFIER);
 
-    tl_token_list_destroy(&list);
+    tl_token_list_destroy(list);
 }
 
 
@@ -140,31 +137,30 @@ static void test_token_print_debug(void) {
 
 
 static void test_token_list_print_modes(void) {
-    TokenList list;
-    tl_token_list_init(&list);
+    TokenList *list = tl_token_list_init();
 
     Token t1 = t_token_create(1, 1);
     t_token_append_char(&t1, 'x');
     t_token_update_category(&t1, CAT_IDENTIFIER);
-    tl_token_list_add(&list, t1);
+    tl_token_list_add(list, t1);
 
     Token t2 = t_token_create(1, 3);
     t_token_append_char(&t2, '7');
     t_token_update_category(&t2, CAT_NUMBER);
-    tl_token_list_add(&list, t2);
+    tl_token_list_add(list, t2);
 
 
     printf("\n-- RELEASE token list print --\n");
-    tl_token_list_print_release(stdout, &list);
+    tl_token_list_print_release(stdout, list);
     printf("\n-- end RELEASE token list print --\n\n");
 
     printf("\n-- DEBUG token list print --\n");
-    tl_token_list_print_debug(stdout, &list);
+    tl_token_list_print_debug(stdout, list);
     printf("\n-- end DEBUG token list print --\n\n");
 
     report("tl_token_list_print modes executed", 1);
 
-    tl_token_list_destroy(&list);
+    tl_token_list_destroy(list);
 }
 
 void test_token_run_all(void) {

@@ -15,7 +15,7 @@ add_library(counter counter.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(counter PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because counter depends on utils
-target_link_libraries(counter PRIVATE utils)
+target_link_libraries(counter PRIVATE utils error_handler)
 
 # Print a status message during CMake configuration to confirm counter is processed
 message(STATUS "(${PROJECT_NAME}) counter configured: Added as static library")

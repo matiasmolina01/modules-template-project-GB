@@ -15,7 +15,7 @@ add_library(alphabet alphabet.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(alphabet PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because alphabet depends on utils
-target_link_libraries(alphabet PRIVATE utils)
+target_link_libraries(alphabet PRIVATE utils error_handler counter)
 
 # Print a status message during CMake configuration to confirm alphabet is processed
 message(STATUS "(${PROJECT_NAME}) alphabet configured: Added as static library")

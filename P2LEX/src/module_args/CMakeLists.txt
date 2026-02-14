@@ -16,7 +16,7 @@ add_library(module_args module_args.c)
 target_include_directories(module_args PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Link utils because module_args depends on utils
-target_link_libraries(module_args PRIVATE utils)
+target_link_libraries(module_args PRIVATE utils error_handler counter)
 
 # Print a status message during CMake configuration to confirm module_args is processed
 message(STATUS "(${PROJECT_NAME}) module_args configured: Added as static library")
