@@ -104,6 +104,5 @@ void s_scanner(GlobalContext* global_context) {
     
     }
 
-    o_output_handler(global_context->token_list, "output_file");
-    // TODO change file name
+    o_output_handler(global_context->token_list, global_context->arguments->output_path);
 }

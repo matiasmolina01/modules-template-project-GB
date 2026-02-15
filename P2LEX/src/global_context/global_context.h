@@ -13,15 +13,19 @@ typedef struct Automata Automata;
 typedef struct Token Token;
 typedef struct TokenList TokenList;
 typedef struct Input Input;
+typedef struct Arguments Arguments;
 
 typedef struct GlobalContext{
 	Automata* automatas_list[NUM_AUTOMATAS];
 	Token* current_token;
 	TokenList* token_list;
 	Input* input;
+	Arguments* arguments;
 }GlobalContext;
 
-GlobalContext* gc_init(char input_file_path);
-int gc_destroy(GlobalContext*);
+void gc_init_automatas(Automata** automata_list);
+
+GlobalContext* gc_init(Arguments* arguments);
+void gc_destroy(GlobalContext* global_context);
 
 #endif

@@ -30,9 +30,9 @@ directory. The log files are named with the time to avoid overwritting the diffe
 ├── src/          # The project source code
 │ ├── main.c           # Main program 
 │ ├── main.h           # Program data structure and common project definitions
-│ ├── alphabet/
-│ │ ├── 
-│ │ ├── 
+│ ├── language/
+│ │ ├── language.h
+│ │ ├── language.c
 │ │ └── CMakeLists.txt
 │ ├── automata/
 │ │ ├── automata.c
@@ -146,7 +146,7 @@ This allows to select the proper compiler and generator in VS Code easily.
   - **Struct names**: will start with an uppercase letter and there will be no underscores separating the multiple words each struct might have, we will differentiate different words by typing the first letter in uppercase 
 
 # Modules
-## Alphabet
+## Language
 
 
 ## Automata

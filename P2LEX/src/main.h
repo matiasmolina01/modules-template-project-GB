@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "./utils_files.h"
-#include "./alphabet/alphabet.h"
+#include "./language/language.h"
 #include "./automata/automata.h"
 #include "./scanner/scanner.h"
 #include "./counter/counter.h"

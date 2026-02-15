@@ -55,7 +55,7 @@ message(STATUS " - (${PROJECT_NAME}) Added tests/ directory")
 add_executable(modules_template_main src/main.c)
 target_link_libraries(modules_template_main PRIVATE 
   utils  
-  alphabet
+  language
   automata
   scanner
   counter

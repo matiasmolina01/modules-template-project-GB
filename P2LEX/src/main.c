@@ -5,9 +5,14 @@
 int main(int argc, char *argv[]) {
     
     printf("COMPILA!!\n");
-    // TODO process argument
-    // TODO init global context
-    // TODO call scanner with global context
-    // TODO destroy global context
+
+    // Arguments* args = process_arguments(argc, argv);
+
+    // GlobalContext* global_context = gc_init(args);
+
+    // s_scanner(global_context);
+
+    // gc_destroy(global_context);
+
     return 0;
 }

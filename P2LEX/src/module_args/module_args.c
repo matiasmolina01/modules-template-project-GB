@@ -29,9 +29,20 @@ void print_arguments(int argc, char *argv[]) {
     fflush(ofile);
 }
 
-int process_arguments(int argc, char *argv[]) {
+// TODO process arguments (similar to P1) into Arguments data structure
+Arguments* process_arguments(int argc, char *argv[]) {
+    Arguments* args = (Arguments*) malloc(sizeof(Arguments));
     print_arguments(argc, argv);
     fprintf(ofile, "Module arguments: not implemented yet\n");
     fflush(ofile);
-    return 0;
+    return args;
+}
+
+void args_free(Arguments *args){ 
+    if(args != NULL){
+        if(args->output_path != NULL){
+            free((void*)args->output_path);
+        }
+        free(args);
+    }
 }
