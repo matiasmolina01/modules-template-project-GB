@@ -15,6 +15,7 @@
 
 
 #include "./language.h"
+#include "../automata/automata.h"
 
 
 AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA] = {

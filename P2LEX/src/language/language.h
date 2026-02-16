@@ -3,6 +3,7 @@
 
 #include "../main.h"
 
+
 #define NUM_AUTOMATAS 6
 
 #define OPERATOR_AUTOMATA 0
@@ -35,6 +36,9 @@
 #define NUM_STATES_LITERALS_AUTOMATA 3
 #define NUM_SYMBOLS_LITERALS_AUTOMATA 65
 // #define NUM_COLS_OPERATOR_AUTOMATA 4 ???? TODO
+
+typedef struct AlphabetSymbol AlphabetSymbol;
+
 // TODO define rest of automatas
 // ....
 
@@ -42,7 +46,7 @@ extern int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_
 extern int identifiers_transitions[NUM_STATES_IDENTIFIERS_AUTOMATA][NUM_SYMBOLS_IDENTIFIERS_AUTOMATA];
 extern int numbers_transitions[NUM_STATES_NUMBERS_AUTOMATA][NUM_SYMBOLS_NUMBERS_AUTOMATA];
 extern int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA];
-extern int operators_transitions[NUM_STATES_OPERATORS_AUTOMATA][NUM_SYMBOLS_OPERATORS_AUTOMATA];
+extern int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA];
 extern int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA];
 
 
