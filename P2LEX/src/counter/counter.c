@@ -64,7 +64,7 @@ void c_count_init(const char *filename, FILE *main_output) {
         count_fp = fopen(dbgname, "w");
         
         if (!count_fp) {
-            e_error_report(600);
+            e_error_report(ERR_C_COUNT_FILE_CREATE_FAILURE);
             count_fp = NULL; // fallback a stdout
         }
     } else {

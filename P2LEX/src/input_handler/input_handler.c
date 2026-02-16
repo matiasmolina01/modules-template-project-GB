@@ -20,7 +20,7 @@ char i_read_char(Input *input) {
     int c;
 
     if (input->input_file == NULL) {
-		e_error_report(100);
+		e_error_report(ERR_I_FILE_NOT_FOUND);
         return NULL;
     }
 
@@ -60,12 +60,12 @@ int i_is_eof(Input *input) {
 
 int i_open_input(Input *input, const char *path) {
 	if(path == NULL || path[0] == '\0') { // invalid path
-		e_error_report(100);
+		e_error_report(ERR_I_FILE_NOT_FOUND);
         exit(1);
     } else {
 		input->input_file = fopen(path, MODE_READ);
         if(input->input_file == NULL) { // error opening file
-			e_error_report(107);
+			e_error_report(ERR_I_INVALID_PATH);
             exit(1);
         }
 		return 1;

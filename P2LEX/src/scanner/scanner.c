@@ -29,7 +29,7 @@
 void s_run_automatas(Automata** automata_list, int*automata_responses, char current_char, char lookahead_char, int has_lookahead){
 
     Lookahead *lookahead = malloc(sizeof(Lookahead));
-    if(!lookahead) e_error_report(203);
+    if(!lookahead) e_error_report(ERR_S_LOOKAHEAD_OUT_OF_BOUNDS);
 	lookahead->has = has_lookahead;
     lookahead->character = lookahead_char;
 

@@ -24,30 +24,30 @@
 Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, int *accepting_states, TokenCategory category){
     // validations for the parameters...
 	if(numstates <= 0 || numstates > MAXLEN){
-        e_error_report(306);
+        e_error_report(ERR_A_INCORRECT_CONFIG);
 		return NULL;
     }
     if(numcols <= 0 || numcols > MAXCOLS){
-        e_error_report(306);
+        e_error_report(ERR_A_INCORRECT_CONFIG);
         return NULL;
     }
 
     if(numsymbols <= 0 || numsymbols > MAXLEN){
-		e_error_report(306);
+		e_error_report(ERR_A_INCORRECT_CONFIG);
         return NULL;
     } 
 
     if(alphabet == NULL){
-        e_error_report(308);
+        e_error_report(ERR_A_ALPHABET_IS_NULL);
 		return NULL;
     }
     if(accepting_states == NULL){
-        e_error_report(309);
+        e_error_report(ERR_A_ACCEPTING_STATES_IS_NULL);
         return NULL;
     }
 
     if(initial_state < 0 || initial_state >= numstates){
-        e_error_report(306);
+        e_error_report(ERR_A_INCORRECT_CONFIG);
 		return NULL;
     }
 
@@ -55,7 +55,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
     Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
 
 	if(a == NULL){
-		e_error_report(307);
+		e_error_report(ERR_A_MEM_ALLOC_FAILURE);
 		return NULL;
     }
 
@@ -97,7 +97,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
 */
 int a_mapping_alphabet(Automata *automata, char c){
     if(automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return A_FAIL; // if the automata is null, return failure
     }
     int limit; // to indicate the limit of the alphabet to check...
@@ -112,7 +112,7 @@ int a_mapping_alphabet(Automata *automata, char c){
         if(automata->alphabet[i].name == c){ // if we find the character in the alphabet, return the column
             int col = automata->alphabet[i].col;
             if(col < 0 || col >= automata->numcols){ // if the column is invalid, return failure
-                e_error_report(310);
+                e_error_report(ERR_A_INVALID_ALPHABET);
 				return A_FAIL;
             }
             return col; // return the column of the transition table of the automata
@@ -132,7 +132,7 @@ int a_mapping_alphabet(Automata *automata, char c){
 */
 int a_next_state(Automata *automata, char c){
     if(automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return A_FAIL; // if the automata is null, return failure
     } 
     
@@ -167,7 +167,7 @@ int a_next_state(Automata *automata, char c){
 */
 int a_accepting_state(Automata *automata, int state){
     if(automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return 0; // if the automata is null, return failure
     }
     if(state < 0 || state >= automata->numstates) return 0; // if the state is invalid,  (not accepting)
@@ -190,7 +190,7 @@ int a_accepting_state(Automata *automata, int state){
 */
 int a_advance_automata(Automata *automata, char c){
 	if(automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return A_FAIL; // if the automata is null, return failure
     }
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
@@ -212,11 +212,11 @@ int a_advance_automata(Automata *automata, char c){
 */
 int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     if (automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return A_FAIL; // if the automata is null, return failure
     }
     if (lookahead == NULL){
-        e_error_report(314);
+        e_error_report(ERR_A_LOOKAHEAD_NULL);
 		return 0; // if the lookahead is null, return failure
     }
     if (lookahead->has == 0){
@@ -240,8 +240,8 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
 */
 int a_process(Automata *automata, char c, Lookahead *lookahead){
 	if(automata == NULL || lookahead == NULL){
-        e_error_report(311);
-		e_error_report(314);
+        e_error_report(ERR_A_AUTOMATA_NULL);
+		e_error_report(ERR_A_LOOKAHEAD_NULL);
 		return A_FAIL; // if the automata or lookahead is null, return failure
     }
     int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
@@ -264,7 +264,7 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
 */
 void a_reset_automata(Automata *automata){
     if(automata == NULL){
-        e_error_report(311);
+        e_error_report(ERR_A_AUTOMATA_NULL);
 		return;
     } 
     automata->current_state = automata->initial_state;

@@ -27,7 +27,7 @@ void print_arguments(Arguments* args) {
 }
 
 Arguments* process_arguments(int argc, char *argv[]) {
-	if(argc < 2) e_error_report(700);
+	if(argc < 2) e_error_report(ERR_MA_INVALID_ARG_NUMBER);
 
 	Arguments* args = (Arguments*) malloc(sizeof(Arguments));
 	args->input_path = NULL;

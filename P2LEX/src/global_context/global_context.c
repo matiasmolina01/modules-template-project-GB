@@ -71,7 +71,7 @@ void  gc_init_automatas(Automata* automata_list[]){
 */
 GlobalContext* gc_init(Arguments* arguments) {
     GlobalContext *global_context = (GlobalContext*) malloc(sizeof(GlobalContext));
-    if(global_context == NULL) e_error_report(800);
+    if(global_context == NULL) e_error_report(ERR_GC_MEMORY_LEAK);
 
     global_context->arguments = arguments;
 
