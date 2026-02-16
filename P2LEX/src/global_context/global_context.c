@@ -35,13 +35,6 @@ void gc_init_responses(int responses[], int num){
 */
 void  gc_init_automatas(Automata* automata_list[]){
     
-	keyword_transition_table();
-    identifiers_transition_table();
-    numbers_transition_table();
-    special_char_transition_table();
-    operators_transition_table();
-    literals_transition_table();
-
     automata_list[OPERATOR_AUTOMATA] = a_create_automata(NUM_SYMBOLS_OPERATOR_AUTOMATA, NUM_STATES_OPERATOR_AUTOMATA,
                                                  NUM_SYMBOLS_OPERATOR_AUTOMATA, operators_alphabet, operators_transitions,
                                                  START_STATE, START_STATE, operators_accepting_states, CAT_OPERATOR);

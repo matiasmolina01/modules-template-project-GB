@@ -138,7 +138,6 @@ int a_next_state(Automata *automata, char c){
     
     int cr = automata->current_state; // current state
     if(cr < 0 || cr >= automata->numstates){
-        e_error_report(312);
 		return A_FAIL; // if the current state is invalid, return failure
     }
 
@@ -151,7 +150,6 @@ int a_next_state(Automata *automata, char c){
     // error handling for the new state...
     if(new_state < 0) return 0; //(not accepted)
     if(new_state >= automata->numstates){
-        e_error_report(313);
 		return A_FAIL; // return A_FAIL 
     }
 
