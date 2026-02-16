@@ -36,6 +36,11 @@ add_test(NAME TestModuleErrorHandler COMMAND test_module_error_handler)
 message(STATUS " - (${PROJECT_NAME}) Test for module_error_handler added")
 
 # Test for input_handler
+add_executable(test_module_input_handler test_module_input_handler.c)
+target_link_libraries(test_module_input_handler PRIVATE input_handler utils)
+target_include_directories(test_module_input_handler PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleInputHandler COMMAND test_module_input_handler)
+message(STATUS " - (${PROJECT_NAME}) Test for module_input_handler added")
 
 # Test for output_handler
 
