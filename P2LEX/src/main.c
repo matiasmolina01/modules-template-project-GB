@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     // Arguments* args = process_arguments(argc, argv);
 
     #ifdef COUNTCONFIG
-        c_count_init("input.txt", stdout);
+        c_count_init(/*This has to be the input file from arguments (argv[1] probably)*/, stdout);
     #endif
 
     // GlobalContext* global_context = gc_init(args);
