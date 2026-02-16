@@ -20,8 +20,7 @@ char i_read_char(Input *input) {
     int c;
 
     if (input->input_file == NULL) {
-        fprintf(stderr, "i_read_char: input file not opened\n");
-        // TODO standarize error
+		e_error_report(100);
         return -1;
     }
 
@@ -61,14 +60,12 @@ int i_is_eof(Input *input) {
 
 int i_open_input(Input *input, const char *path) {
 	if(path == NULL || path[0] == '\0') { // invalid path
-        fprintf(stderr, "ioh_open_input: invalid path\n");
-        // TODO standarize error
+		e_error_report(100);
         exit(1);
     } else {
 		input->input_file = fopen(path, MODE_READ);
         if(input->input_file == NULL) { // error opening file
-            fprintf(stderr, "ioh_open_input: could not open input file '%s'\n", path);
-            // TODO standarize error
+			e_error_report(107);
             exit(1);
         }
 		return 1;
