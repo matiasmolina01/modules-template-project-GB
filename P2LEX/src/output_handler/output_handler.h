@@ -1,6 +1,7 @@
 #ifndef MODULE_OUTPUT_HANDLER_H
 #define MODULE_OUTPUT_HANDLER_H
 
+#include <stdio.h>
 #include "../main.h"
 
 #define RELEASE 0
@@ -10,6 +11,8 @@
 #define OUTFORMAT RELEASE
 #endif
 
-void o_output_handler(TokenList *list, const char *filename);
+typedef struct TokenList TokenList;
+
+int o_output_handler(const TokenList *list, const char *input_filename);
 
 #endif

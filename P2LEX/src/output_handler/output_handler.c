@@ -14,24 +14,25 @@
 
 #include "./output_handler.h"
 
-void o_output_handler(TokenList *list, const char *filename) {
-        if (!list || !filename) return -1;
+static void build_output_filename(const char *input, char *out, size_t size) {
+    snprintf(out, size, "%sscn", input);
+}
 
-    FILE *fp = fopen(filename, "w");
+int o_output_handler(const TokenList *list, const char *input_filename) {
+        if (!list || !input_filename) return -1;
+
+    char output_filename[512];
+    build_output_filename(input_filename, output_filename, sizeof(output_filename));
+
+    FILE *fp = fopen(output_filename, "w");
     if (!fp) return -1;
 
-    TokenNode *node = list->head;
-    while (node) {
-        Token *tok = &node->token;
-        if (tok) {
-                #if OUTFORMAT == RELEASE
-                    t_token_print_release(fp, tok);
-                #else
-                    t_token_print_debug(fp, tok);
-                #endif
-                    }
-        node = node->next;
-    }
+    #if OUTFORMAT == RELEASE
+        tl_token_list_print_release(fp, list);
+    #else
+        tl_token_list_print_debug(fp, list);
+    #endif
 
     fclose(fp);
+    return 0;
 }
