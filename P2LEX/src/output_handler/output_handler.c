@@ -25,13 +25,13 @@ int o_output_handler(const TokenList *list, const char *input_filename) {
     FILE *fp = fopen(output_filename, "w");
     if (!fp) return -1;
 
-    // #if OUTFORMAT == RELEASE
-    //     tl_token_list_print_release(fp, list);
-    // #else
-    //     tl_token_list_print_debug(fp, list);
-    // #endif
+    #if OUTFORMAT == RELEASE
+        tl_token_list_print_release(fp, list);
+    #else
+        tl_token_list_print_debug(fp, list);
+    #endif
 	
-	tl_token_list_print_release(fp, list);
+	//tl_token_list_print_release(fp, list);
 	//tl_token_list_print_debug(fp, list);
     fclose(fp);
     return 0;

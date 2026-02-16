@@ -36,6 +36,7 @@ static void c_build_dbg_filename(const char *input, char *out, size_t size) {
 
 /* Inicialización del sistema de conteo */
 void c_count_init(const char *filename, FILE *main_output) {
+    
     /* Inicializar contadores globales */
     COUNT_COMP = 0;
     COUNT_IO   = 0;
@@ -93,9 +94,7 @@ void c_count_log(int line, const char *func,
     );
 
     // TODO: comment this lines of code if we don't want to count the IO of writing to the file
-    if (written > 0) {
-        COUNT_IO += written;
-    }
+    (void)written; // avoid counting the logger's own IO here (instrument actual I/O sites instead)
 }
 
 void c_count_print_summary(void) {
