@@ -28,10 +28,7 @@
 #include "../main.h"
 
 typedef struct Arguments{
-	// TODO add any other neccesary argument to be processed
 	char *input_path;
-    char *output_path; 
-
 } Arguments;
 
 Arguments* process_arguments(int argc, char *argv[]);

@@ -13,6 +13,7 @@
 #define MSG_UNKNOWN_ERROR "Unknown error code: %d\n"
 
 //Error message constants for error_table
+//Input
 #define ERR_MSG_I_FILE_NOT_FOUND "Input file not found."
 #define ERR_MSG_I_PERMISSION_DENIED "Permission denied when accessing input file."
 #define ERR_MSG_I_EMPTY_INPUT "Input file is empty."
@@ -20,14 +21,15 @@
 #define ERR_MSG_I_READ_FAILURE "Failed to read from input file."
 #define ERR_MSG_I_BUFFER_OVERFLOW "Buffer overflow while reading input."
 #define ERR_MSG_I_INVALID_INPUT "Invalid input format."
-
+#define ERR_MSG_I_INVALID_PATH "Invalid input file path."
+//Scanner
 #define ERR_MSG_S_AUTOMATON_MISSING "Automaton definition is missing."
 #define ERR_MSG_S_AUTOMATA_INIT_FAILURE "Failed to initialize automata."
 #define ERR_MSG_S_AUTOMATA_SELECTION_FAILURE "Failed to select appropriate automaton for input."
 #define ERR_MSG_S_LOOKAHEAD_OUT_OF_BOUNDS "Lookahead exceeds input bounds."
 #define ERR_MSG_S_INFINITE_LOOP "Scanner entered an infinite loop."
 #define ERR_MSG_S_INVALID_TOKEN_DATA "Scanner produced invalid token data."
-
+//Automata
 #define ERR_MSG_A_CHAR_NOT_IN_ALPHABET "Input character not in automaton alphabet."
 #define ERR_MSG_A_UNDEFINED_TRANSITION "Automaton has undefined transition for input."
 #define ERR_MSG_A_REJECTS_VALID_LEXEME "Automaton incorrectly rejects valid lexeme."
@@ -43,7 +45,7 @@
 #define ERR_MSG_A_INVALID_CURRENT_STATE "Automaton has invalid current state."
 #define ERR_MSG_A_INVALID_NEW_STATE "Automaton has invalid new state after transition."
 #define ERR_MSG_A_LOOKAHEAD_NULL "Automaton lookahead is null."
-
+//Token
 #define ERR_MSG_T_MEM_ALLOC_TOKEN "Failed to allocate memory for token."
 #define ERR_MSG_T_MEM_ALLOC_LEXEME "Failed to allocate memory for lexeme."
 #define ERR_MSG_T_LIST_NOT_INITIALIZED "Token list is not initialized."
@@ -53,13 +55,20 @@
 #define ERR_MSG_T_LEXEME_NOT_NULL_TERMINATED "Lexeme string is not null-terminated."
 #define ERR_MSG_T_MEM_LEAK_FREEING "Memory leak detected when freeing token."
 #define ERR_MSG_T_MEM_ALLOC_TOKEN_NODE "Failed to allocate memory for token node."
-
+//Output
 #define ERR_MSG_O_FILE_OPEN_FAILURE "Failed to open output file."
 #define ERR_MSG_O_PERMISSION_DENIED "Permission denied when accessing output file."
 #define ERR_MSG_O_WRITE_FAILURE "Failed to write to output file."
 #define ERR_MSG_O_EMPTY_TOKEN_LIST "Token list is empty, nothing to write."
 #define ERR_MSG_O_NULL_TOKEN "Encountered null token in output handler."
 #define ERR_MSG_O_FILE_CLOSE_FAILURE "Failed to close output file."
+//Counter
+#define ERR_MSG_C_COUNT_FILE_CREATE_FAILURE "Failed to create count log file."
+//Module args
+#define ERR_MSG_MA_INVALID_ARG_NUMBER "Invalid number of arguments provided."
+//GlobalContext
+#define ERR_MSG_GC_INIT_FAILURE "Failed to initialize global context."
+#define ERR_MSG_GC_MEMORY_LEAK "Memory leak detected in global context."
 
 typedef enum ErrorStep{
 	STEP_PARSER,
@@ -76,6 +85,7 @@ typedef enum ErrorCode{
 	ERR_I_READ_FAILURE = 104,
 	ERR_I_BUFFER_OVERFLOW = 105,
 	ERR_I_INVALID_INPUT = 106,
+	ERR_I_INVALID_PATH = 107,
 
 	//Scanner 200-299
 	ERR_S_AUTOMATON_MISSING = 200,
@@ -119,7 +129,18 @@ typedef enum ErrorCode{
 	ERR_O_WRITE_FAILURE = 502,
 	ERR_O_EMPTY_TOKEN_LIST = 503,
 	ERR_O_NULL_TOKEN = 504,
-	ERR_O_FILE_CLOSE_FAILURE = 505
+	ERR_O_FILE_CLOSE_FAILURE = 505,
+
+	//Counter 600-699
+	ERR_C_COUNT_FILE_CREATE_FAILURE = 600,
+
+	//Module args 700-799
+	ERR_MA_INVALID_ARG_NUMBER = 700,
+
+	//GlobalContext 800-899
+	ERR_GC_INIT_FAILURE = 800,
+	ERR_GC_MEMORY_LEAK = 801
+
 } ErrorCode;
 
 typedef struct Error{
@@ -137,6 +158,7 @@ static Error error_table[] = {
 	{ERR_I_READ_FAILURE, STEP_SCANNER, ERR_MSG_I_READ_FAILURE},
 	{ERR_I_BUFFER_OVERFLOW, STEP_SCANNER, ERR_MSG_I_BUFFER_OVERFLOW},
 	{ERR_I_INVALID_INPUT, STEP_SCANNER, ERR_MSG_I_INVALID_INPUT},
+	{ERR_I_INVALID_PATH, STEP_SCANNER, ERR_MSG_I_INVALID_PATH},
 	//Scanner
 	{ERR_S_AUTOMATON_MISSING, STEP_SCANNER, ERR_MSG_S_AUTOMATON_MISSING},
 	{ERR_S_AUTOMATA_INIT_FAILURE, STEP_SCANNER, ERR_MSG_S_AUTOMATA_INIT_FAILURE},
@@ -176,7 +198,14 @@ static Error error_table[] = {
 	{ERR_O_WRITE_FAILURE, STEP_SCANNER, ERR_MSG_O_WRITE_FAILURE},
 	{ERR_O_EMPTY_TOKEN_LIST, STEP_SCANNER, ERR_MSG_O_EMPTY_TOKEN_LIST},
 	{ERR_O_NULL_TOKEN, STEP_SCANNER, ERR_MSG_O_NULL_TOKEN},
-	{ERR_O_FILE_CLOSE_FAILURE, STEP_SCANNER, ERR_MSG_O_FILE_CLOSE_FAILURE}
+	{ERR_O_FILE_CLOSE_FAILURE, STEP_SCANNER, ERR_MSG_O_FILE_CLOSE_FAILURE},
+	//Counter
+	{ERR_C_COUNT_FILE_CREATE_FAILURE, STEP_SCANNER, ERR_MSG_C_COUNT_FILE_CREATE_FAILURE},
+	//Module args
+	{ERR_MA_INVALID_ARG_NUMBER, STEP_PARSER, ERR_MSG_MA_INVALID_ARG_NUMBER},
+	//GlobalContext
+	{ERR_GC_INIT_FAILURE, STEP_PARSER, ERR_MSG_GC_INIT_FAILURE},
+	{ERR_GC_MEMORY_LEAK, STEP_PARSER, ERR_MSG_GC_MEMORY_LEAK}
 };
 
 void e_error_handler();

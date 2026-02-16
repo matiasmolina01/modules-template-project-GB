@@ -15,7 +15,7 @@ add_library(automata automata.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(automata PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because automata depends on utils
-target_link_libraries(automata PRIVATE utils error_handler counter language)
+target_link_libraries(automata PRIVATE utils error_handler counter token_handler language)
 
 # Print a status message during CMake configuration to confirm automata is processed
 message(STATUS "(${PROJECT_NAME}) automata configured: Added as static library")

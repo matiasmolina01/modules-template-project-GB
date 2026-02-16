@@ -15,6 +15,9 @@
 #include "./token_handler/token_handler.h"
 #include "./global_context/global_context.h"
 
+typedef struct GlobalContext GlobalContext;
+typedef struct Arguments Arguments;
+
 // Output file of project run: either a stdout or a filename with log extension (comment one out)
 #define PROJOUTFILENAME "./proj_modules_template.log"
 //#define PROJOUTFILENAME "stdout"

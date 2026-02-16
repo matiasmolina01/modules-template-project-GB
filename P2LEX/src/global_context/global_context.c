@@ -17,7 +17,7 @@
 
 void  gc_init_automatas(Automata* automata_list[]){
 
-    // TODO define automatas using macros delared in language.h
+    //TODO define automatas using macros delared in language.h
     //TODO automata_list[OPERATOR_AUTOMATA] = a_create_automata(...)
     //TODO automata_list[SPECIAL_CHAR_AUTOMATA] = a_create_automata(...)
     //TODO automata_list[NUMBERS_AUTOMATA] = a_create_automata(...)
@@ -33,7 +33,7 @@ void  gc_init_automatas(Automata* automata_list[]){
 */
 GlobalContext* gc_init(Arguments* arguments) {
     GlobalContext *global_context = (GlobalContext*) malloc(sizeof(GlobalContext));
-    if(global_context == NULL) exit(0); // TODO Put standarized error
+    if(global_context == NULL) e_error_report(800);
 
     global_context->arguments = arguments;
 
@@ -42,7 +42,7 @@ GlobalContext* gc_init(Arguments* arguments) {
     global_context->token_list = token_list;
 
     Automata* automatas_list[NUM_AUTOMATAS] = {};
-    gc_init_automatas(automatas_list);
+    //gc_init_automatas(automatas_list);
 
     Input* input = i_create();
 
@@ -54,7 +54,8 @@ GlobalContext* gc_init(Arguments* arguments) {
 }
 
 void gc_destroy(GlobalContext* global_context){
-    i_close_input(global_context->input);
+    //TODO fix
+	i_close_input(global_context->input);
     free(global_context->token_list);
     args_free(global_context->arguments);
     free(global_context);

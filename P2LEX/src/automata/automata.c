@@ -21,7 +21,7 @@
         Automata* --> pointer to the created automata.
         NULL --> failure (invalid parameters or memory allocation failure).
 */
-Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, AcceptingState *accept){
+Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, int *accepting_states, TokenCategory category){
     // validations for the parameters...
     if(numstates <= 0 || numstates > MAXLEN){
         //printf("Invalid number of states: %d. Must be between 1 and %d.\n", numstates, MAXLEN);// ------- ERROR @alex
@@ -45,7 +45,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
         e_error_report(308);
 		return NULL;
     }
-    if(accept == NULL){
+    if(accepting_states == NULL){
         //printf("Accepting states info is NULL.\n");// ------- ERROR @alex
         e_error_report(309);
         return NULL;
@@ -91,8 +91,12 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
     
     // copy the accepting states info
     for(int i = 0; i < numstates; i++){
-        a->accept[i] = accept[i];
+        if(accepting_states[i] == 1){
+            a->accept[i].flag = 1;
+            a->accept[i].category = category; 
+        }
     }
+
     return a; // return the created automata
 }
 
