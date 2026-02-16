@@ -27,6 +27,14 @@ message(STATUS " - (${PROJECT_NAME}) Test for module_automata added")
 # Test for scanner
 
 # Test for counter
+add_executable(test_module_counter test_module_counter.c)
+# Build the counter implementation into the test so COUNTCONFIG can be enabled for tests
+target_sources(test_module_counter PRIVATE ${PROJECT_SOURCE_DIR}/src/counter/counter.c)
+target_compile_definitions(test_module_counter PRIVATE COUNTCONFIG)
+target_link_libraries(test_module_counter PRIVATE utils error_handler)
+target_include_directories(test_module_counter PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleCounter COMMAND test_module_counter)
+message(STATUS " - (${PROJECT_NAME}) Test for module_counter added (counter compiled into test with COUNTCONFIG)")
 
 # Test for error_handler
 add_executable(test_module_error_handler test_module_error_handler.c)
