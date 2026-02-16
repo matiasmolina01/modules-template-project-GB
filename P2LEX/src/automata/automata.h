@@ -49,7 +49,7 @@ typedef struct Lookahead{
 #define A_CAN_CONTINUE 1 // used to indicate that the character is accepted and can continue with lookahead
 #define A_ADV_SUCCESS 1 // used to indicate that the automata advanced successfully to the next state
 #define A_ADV_FAIL 0 // used to indicate that the automata did not advance to the next
-#define A_NOT_ACCEPTED 0 // used to indicate that the character is not accepted by the automata
+#define A_NOT_ACCEPTED -1 // used to indicate that the character is not accepted by the automata
 #define A_ACCEPTED 1 // used to indicate that the character is accepted by the automata
 
 
