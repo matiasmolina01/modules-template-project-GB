@@ -50,6 +50,13 @@ extern int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOL
 extern int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA];
 extern int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA];
 
+extern int keyword_accepting_states[NUM_STATES_KEYWORD_AUTOMATA];
+extern int special_accepting_states[NUM_STATES_SPECIAL_CHAR_AUTOMATA];
+extern int operators_accepting_states[NUM_STATES_OPERATOR_AUTOMATA];
+extern int numbers_accepting_state[NUM_STATES_NUMBERS_AUTOMATA];
+extern int identifiers_accepting_state[NUM_STATES_IDENTIFIERS_AUTOMATA];
+extern int literals_accepting_state[NUM_STATES_LITERALS_AUTOMATA];
+
 
 extern AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA];
 
