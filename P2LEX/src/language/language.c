@@ -323,8 +323,8 @@ void literals_transition_table(){
     // a->transitions[1][1] = 1;
     // a->transitions[1][2] = 1;
     literals_transitions[0][2] = 1;
-    for(int i= 0 ; i < 65;i++){
-        if(i < 64){
+    for(int i= 0 ; i < NUM_SYMBOLS_LITERALS_AUTOMATA;i++){
+        if(i < NUM_SYMBOLS_LITERALS_AUTOMATA - 1){
              literals_transitions[1][i] = 1;
         }
         else{

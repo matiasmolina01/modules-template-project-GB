@@ -92,7 +92,9 @@ void s_accept_token(GlobalContext* global_context, int automata_idx){
     printf("[DEBUG SCANNER] s_accept_token: Accepting token from automata index %d.\n", automata_idx);
     Automata * accepted_automata = global_context->automatas_list[automata_idx];
 
-    TokenCategory category = (TokenCategory) accepted_automata->accept->category;
+	int st = accepted_automata->current_state;
+
+    TokenCategory category = accepted_automata->accept[st].category;
     printf("[DEBUG SCANNER] s_accept_token: Automata category resolved to %d.\n", category);
 
     s_process_token(global_context, category);
@@ -130,15 +132,15 @@ void s_check_responses(GlobalContext* global_context, int* automata_responses){
         printf("[DEBUG SCANNER] s_check_responses: Automata %d response is %d.\n", i, automata_responses[i]);
         switch(automata_responses[i]){
 
+            case A_CONTINUE:
+            printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_CONTINUE.\n", i);
+            token_status = CURRENT_TOKEN_CONTINUE;
+            break;
+
             case A_ACCEPT:
             printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_ACCEPT.\n", i);
             token_status = CURRENT_TOKEN_ACCEPTED;
             s_accept_token(global_context, i);
-            break;
-
-            case A_CONTINUE:
-            printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_CONTINUE.\n", i);
-            token_status = CURRENT_TOKEN_CONTINUE;
             break;
         } 
     }
@@ -197,7 +199,7 @@ void s_scanner(GlobalContext* global_context) {
         current_char = i_read_char(global_context->input);
         printf("[DEBUG SCANNER] s_scanner: Initial current_char is '%c' (ASCII: %d).\n", current_char, current_char);
         
-        s_get_lookahead(global_context, &lookahead, &has_lookahead);
+        //s_get_lookahead(global_context, &lookahead, &has_lookahead);
 
         // Create first token
         s_set_new_current_token(global_context);
@@ -210,7 +212,8 @@ void s_scanner(GlobalContext* global_context) {
     // MAIN LOOP: until file is completely processed
     printf("[DEBUG SCANNER] s_scanner: Entering main loop...\n");
     while(global_context->input->is_eof == NO_EOF){
-        printf("[DEBUG SCANNER] s_scanner: --- Loop Iteration Start ---\n");
+		printf("[DEBUG SCANNER] s_scanner: --- Loop Iteration Start ---\n");
+        s_get_lookahead(global_context, &lookahead, &has_lookahead);
 
         s_run_automatas(global_context->automatas_list, automata_reponses, current_char, lookahead, has_lookahead);
 
@@ -222,7 +225,6 @@ void s_scanner(GlobalContext* global_context) {
         printf("[DEBUG SCANNER] s_scanner: Shifting lookahead to current_char...\n");
         current_char = lookahead;
         
-        s_get_lookahead(global_context, &lookahead, &has_lookahead);
         printf("[DEBUG SCANNER] s_scanner: --- Loop Iteration End ---\n");
     }
 

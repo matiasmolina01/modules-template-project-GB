@@ -273,7 +273,8 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
     }
 	printf("[DEBUG AUTOMATA] a_process: Character '%c' accepted. Checking lookahead...\n", c);
     int can_continue = a_lookahead_process(automata, lookahead); 
-    if(can_continue == 1){ // if the character is not accepted, return fail
+    printf("----------------[DEBUG AUTOMATA] a_process: Lookahead check returned %d.\n", can_continue);
+	if(can_continue == 1){ // if the character is not accepted, return fail
         return A_CONTINUE; // can continue with lookahead
     }
 
