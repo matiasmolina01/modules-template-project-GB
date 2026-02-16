@@ -52,7 +52,7 @@ void automata_build(Automata *a){
             a->transitions[i][j] = -1;
         }
         a->accept[i].flag = 0;
-        a->accept[i].category[0] = '\0';
+        a->accept[i].category = CAT_NUMBER;
     }
 
     // DFA:
@@ -63,7 +63,7 @@ void automata_build(Automata *a){
 
     // Accepting state
     a->accept[1].flag = 1;
-    strcpy(a->accept[1].category, "CAT_NUMBER");
+    a->accept[1].category = CAT_NUMBER;
 }
 
 /* Pretty print helper for results */
