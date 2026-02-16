@@ -21,7 +21,7 @@ char i_read_char(Input *input) {
 
     if (input->input_file == NULL) {
 		e_error_report(100);
-        return -1;
+        return NULL;
     }
 
     input->column++;
