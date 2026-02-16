@@ -35,11 +35,6 @@
 
 #define NUM_STATES_LITERALS_AUTOMATA 3
 #define NUM_SYMBOLS_LITERALS_AUTOMATA 63
-// #define NUM_COLS_OPERATOR_AUTOMATA 4 ???? TODO
-
-
-// TODO define rest of automatas
-// ....
 
 
 typedef struct AlphabetSymbol{
