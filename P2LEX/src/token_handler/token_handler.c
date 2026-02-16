@@ -40,7 +40,7 @@ Token *t_token_create(int line, int column) {
     // Allocate memory for the lexeme and initialize it.
     t->lexeme = (char *)malloc(INITIAL_LEXEME_CAPACITY);
     if (!t->lexeme) {
-		e_error_report(401);
+		e_error_report(ERR_T_MEM_ALLOC_LEXEME);
         //e_error_report(); // This error happens when memory allocation for the token's lexeme fails. We should report this error appropriately.
         exit(EXIT_FAILURE);
     }
@@ -67,7 +67,7 @@ void t_token_append_char(Token *t, char c) {
 
         char *new_lexeme = (char *)realloc(t->lexeme, new_capacity);
         if (!new_lexeme) {
-			e_error_report(401);
+			e_error_report(ERR_T_MEM_ALLOC_LEXEME);
             //e_error_report(); // This error happens when memory allocation for expanding the token's lexeme fails. We should report this error appropriately.
             exit(EXIT_FAILURE);
         }
@@ -100,7 +100,7 @@ void t_token_destroy(Token *t) {
 TokenList *tl_token_list_init(void) {
     TokenList *list = (TokenList *)malloc(sizeof(TokenList));
     if (!list) {
-		e_error_report(400);
+		e_error_report(ERR_T_MEM_ALLOC_TOKEN);
         //e_error_report(); // This error happens when memory allocation for a new token list fails. We should report this error appropriately.
         exit(EXIT_FAILURE);
     }
@@ -118,7 +118,7 @@ void tl_token_list_add(TokenList *list, Token t) {
 
     TokenNode *node = (TokenNode *)malloc(sizeof(TokenNode));
     if (!node) {
-		e_error_report(408);
+		e_error_report(ERR_T_MEM_ALLOC_TOKEN_NODE);
         //e_error_report();  // This error happens when memory allocation for a new token node fails. We should report this error appropriately.
         exit(EXIT_FAILURE);
     }

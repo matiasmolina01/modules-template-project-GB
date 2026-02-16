@@ -1,6 +1,8 @@
 #ifndef TOKEN_HANDLER_H
 #define TOKEN_HANDLER_H
 
+#include "../main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
