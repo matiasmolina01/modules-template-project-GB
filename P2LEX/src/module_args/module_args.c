@@ -21,20 +21,26 @@
 
 #include "./module_args.h"
 
-void print_arguments(int argc, char *argv[]) {
-    fprintf(ofile, "Arguments received (%d):\n", argc);
-    for (int i = 0; i < argc; i++) {
-        fprintf(ofile, "Argument %d: %s\n", i, argv[i]);
-    }
-    fflush(ofile);
+void print_arguments(Arguments* args) {
+    printf("Arguments received:\n");
+    printf("Input path: %s\n", args->input_path);
+    printf("Output path: %s\n", args->output_path);
 }
 
-// TODO process arguments (similar to P1) into Arguments data structure
 Arguments* process_arguments(int argc, char *argv[]) {
-    Arguments* args = (Arguments*) malloc(sizeof(Arguments));
-    print_arguments(argc, argv);
-    fprintf(ofile, "Module arguments: not implemented yet\n");
-    fflush(ofile);
+    //TODO
+	//if(argc < 3) error_report();
+
+	Arguments* args = (Arguments*) malloc(sizeof(Arguments));
+	args->input_path = NULL;
+	args->output_path = NULL;
+
+	//INPUT AND OUTPUT FILEPATHS
+	args->input_path = argv[1];
+	args->output_path = argv[2];
+
+	//DEBUG FUNCTION
+	//print_arguments(args);
     return args;
 }
 

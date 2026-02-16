@@ -6,8 +6,8 @@ int main(int argc, char *argv[]) {
     
     printf("COMPILA!!\n");
 
-    // Arguments* args = process_arguments(argc, argv);
-
+    Arguments* args = process_arguments(argc, argv);
+	
     #ifdef COUNTCONFIG
         c_count_init(/*This has to be the input file from arguments (argv[1] probably)*/, stdout);
     #endif

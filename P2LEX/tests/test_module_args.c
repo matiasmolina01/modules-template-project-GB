@@ -25,8 +25,10 @@
 FILE *ofile = NULL; // file handler to send the module's output (to a file or stdout)
 
 void test_process_arguments(int argc, char *argv[]) {
-    print_arguments(argc, argv);
+    Arguments *args = process_arguments(argc, argv);
+    print_arguments(args);
     assert(argc >= 2); // At least the program name should be present
+    args_free(args);
 }
 
 int main(int argc, char *argv[]) {
