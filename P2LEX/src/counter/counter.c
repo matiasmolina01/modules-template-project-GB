@@ -92,11 +92,10 @@ void c_count_log(int line, const char *func,
         COUNT_COMP, COUNT_IO, COUNT_GEN
     );
 
-    /* Do not account the number of characters written by the logger as IO
-     * operations. COUNT_IO is intended to track logical IO increments performed
-     * via the COUNTIO macro; including logger byte counts double-counts IO and
-     * inflates the metric. If you prefer to include logger output bytes in the
-     * IO total, re-enable this increment. */
+    // TODO: comment this lines of code if we don't want to count the IO of writing to the file
+    if (written > 0) {
+        COUNT_IO += written;
+    }
 }
 
 void c_count_print_summary(void) {
