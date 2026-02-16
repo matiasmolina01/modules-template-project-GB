@@ -30,7 +30,8 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
 
     printf("[DEBUG SCANNER] s_run_automatas: Running automatas for current_char='%c' (ASCII: %d), lookahead='%c' (has_lookahead: %d).\n", current_char, current_char, lookahead_char, has_lookahead);
     Lookahead *lookahead = malloc(sizeof(Lookahead));
-    lookahead->has = has_lookahead;
+    if(!lookahead) e_error_report(203);
+	lookahead->has = has_lookahead;
     lookahead->character = lookahead_char;
     
     for(int i = 0; i < NUM_AUTOMATAS; i++){
