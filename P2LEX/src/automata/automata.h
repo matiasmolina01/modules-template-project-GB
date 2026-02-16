@@ -5,6 +5,8 @@
 #define MAXLEN 128
 #define MAXCOLS 128
 
+typedef enum TokenCategory TokenCategory; // to avoid circular dependency with token_handler.h
+
 /*
     struct to indicate the symbols of the alphabet of the automata.
 */
@@ -18,7 +20,7 @@ typedef struct AlphabetSymbol{
 */
 typedef struct AcceptingState{
     int flag; // to indicate if the state is accepting or not
-    char category[MAXLEN]; // to indicate the category of the token if the state is accepting
+    TokenCategory category; // to indicate the category of the token if the state is accepting
 } AcceptingState;
 
 /*
@@ -50,7 +52,7 @@ typedef struct Lookahead{
 
 
 // functions:
-Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, AcceptingState *accept); // to create an automata with the parameters.
+Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, int *accepting_state, TokenCategory category); // to create an automata with the parameters.
 int a_accepting_state(Automata *automata, int state); // if is accepting state or not. (handling to scanner)
 int a_advance_automata(Automata *automata, char character);
 int a_mapping_alphabet(Automata *automata, char character); // to map the character of the scanner to the column of the transition table of the automata.
