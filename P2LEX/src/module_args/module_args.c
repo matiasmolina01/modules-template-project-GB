@@ -24,20 +24,17 @@
 void print_arguments(Arguments* args) {
     printf("Arguments received:\n");
     printf("Input path: %s\n", args->input_path);
-    printf("Output path: %s\n", args->output_path);
 }
 
 Arguments* process_arguments(int argc, char *argv[]) {
     //TODO
-	//if(argc < 3) error_report();
+	//if(argc < 2) error_report();
 
 	Arguments* args = (Arguments*) malloc(sizeof(Arguments));
 	args->input_path = NULL;
-	args->output_path = NULL;
 
 	//INPUT AND OUTPUT FILEPATHS
 	args->input_path = argv[1];
-	args->output_path = argv[2];
 
 	//DEBUG FUNCTION
 	//print_arguments(args);
@@ -46,8 +43,8 @@ Arguments* process_arguments(int argc, char *argv[]) {
 
 void args_free(Arguments *args){ 
     if(args != NULL){
-        if(args->output_path != NULL){
-            free((void*)args->output_path);
+        if(args->input_path != NULL){
+            free((void*)args->input_path);
         }
         free(args);
     }

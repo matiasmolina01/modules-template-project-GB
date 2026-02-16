@@ -42,7 +42,7 @@ GlobalContext* gc_init(Arguments* arguments) {
     global_context->token_list = token_list;
 
     Automata* automatas_list[NUM_AUTOMATAS] = {};
-    gc_init_automatas(automatas_list);
+    //gc_init_automatas(automatas_list);
 
     Input* input = i_create();
 
@@ -54,7 +54,8 @@ GlobalContext* gc_init(Arguments* arguments) {
 }
 
 void gc_destroy(GlobalContext* global_context){
-    i_close_input(global_context->input);
+    //TODO fix
+	i_close_input(global_context->input);
     free(global_context->token_list);
     args_free(global_context->arguments);
     free(global_context);

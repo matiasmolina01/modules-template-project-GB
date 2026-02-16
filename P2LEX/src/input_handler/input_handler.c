@@ -42,7 +42,7 @@ char i_read_char(Input *input) {
 }
 
 void i_init(Input *input) {
-    input->input_file = NULL;
+	input->input_file = NULL;
     input->line_number = 0;
     input->is_eof = 0;
 }
@@ -60,17 +60,18 @@ int i_is_eof(Input *input) {
 }
 
 int i_open_input(Input *input, const char *path) {
-    if(path == NULL || path[0] == '\0') { // invalid path
+	if(path == NULL || path[0] == '\0') { // invalid path
         fprintf(stderr, "ioh_open_input: invalid path\n");
         // TODO standarize error
-        return 0;
+        exit(1);
     } else {
-        input->input_file = fopen(path, MODE_READ);
+		input->input_file = fopen(path, MODE_READ);
         if(input->input_file == NULL) { // error opening file
             fprintf(stderr, "ioh_open_input: could not open input file '%s'\n", path);
             // TODO standarize error
-            return 0;
+            exit(1);
         }
+		return 1;
     }
     return 1;
 }
