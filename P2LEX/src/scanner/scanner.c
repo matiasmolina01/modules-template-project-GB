@@ -127,6 +127,8 @@ void s_reject_token(GlobalContext* global_context){
 void s_check_responses(GlobalContext* global_context, int* automata_responses){
     printf("[DEBUG SCANNER] s_check_responses: Evaluating automata responses...\n");
     int token_status = CURRENT_TOKEN_FAIL;
+    int count_continue = 0;
+    int automata_accepted_idx;
 
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         printf("[DEBUG SCANNER] s_check_responses: Automata %d response is %d.\n", i, automata_responses[i]);
@@ -134,21 +136,31 @@ void s_check_responses(GlobalContext* global_context, int* automata_responses){
 
             case A_CONTINUE:
             printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_CONTINUE.\n", i);
-            token_status = CURRENT_TOKEN_CONTINUE;
+            count_continue++;
             break;
 
             case A_ACCEPT:
             printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_ACCEPT.\n", i);
             token_status = CURRENT_TOKEN_ACCEPTED;
-            s_accept_token(global_context, i);
+            automata_accepted_idx = i;
             break;
         } 
     }
 
-    if(token_status == CURRENT_TOKEN_FAIL){
+    if(count_continue > 0) return;
+
+    switch(token_status){
+        case CURRENT_TOKEN_FAIL:
         printf("[DEBUG SCANNER] s_check_responses: Status is CURRENT_TOKEN_FAIL. Rejecting token.\n");
         s_reject_token(global_context);
-    } else {
+        break;
+
+        case CURRENT_TOKEN_ACCEPTED:
+        printf("[DEBUG SCANNER] s_check_responses: Status is CURRENT_TOKEN_ACCEPT. Accept token.\n");
+        s_accept_token(global_context, automata_accepted_idx);
+        break;
+
+        default:
         printf("[DEBUG SCANNER] s_check_responses: Token status resolved to %d.\n", token_status);
     }
 }
