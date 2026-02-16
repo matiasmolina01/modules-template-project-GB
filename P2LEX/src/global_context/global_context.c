@@ -14,6 +14,20 @@
 
 #include "./global_context.h"
 
+
+/*
+    Initializes the automata respones as default state (A_CONTINUE)
+    Parameters:
+            int responses[]: empty array
+            int num: number of elements to be initialized in the array 
+*/
+void gc_init_responses(int responses[], int num){
+    for(int i = 0; i < num; i++){
+        responses[i] = A_CONTINUE;
+    }
+}
+
+
 /*
     Define automatas using macros delared in language.h
     Parameters:
@@ -82,6 +96,8 @@ GlobalContext* gc_init(Arguments* arguments) {
     global_context->input = input;
 
     i_open_input(global_context->input, arguments->input_path);
+
+    gc_init_responses(global_context->automata_responses, NUM_AUTOMATAS);
     
     return global_context;
 }
