@@ -16,7 +16,32 @@
 
 #include "./language.h"
 
+int keyword_accepting_states[NUM_STATES_KEYWORD_AUTOMATA] = {
+    0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1
 
+    
+};
+
+int special_accepting_states[NUM_STATES_SPECIAL_CHAR_AUTOMATA] = {
+    0, 1
+};
+
+int operators_accepting_states[NUM_STATES_OPERATOR_AUTOMATA] = {
+    0, 1
+};
+
+
+int numbers_accepting_state[NUM_STATES_NUMBERS_AUTOMATA] = {
+    0, 1
+};
+
+int identifiers_accepting_state[NUM_STATES_IDENTIFIERS_AUTOMATA] = {
+    0, 1
+};
+
+int literals_accepting_state[NUM_STATES_LITERALS_AUTOMATA] = {
+    0, 0, 1
+};
 
 AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA] = {
     {'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4},
@@ -110,6 +135,7 @@ char mapping_input_char(char c) {
 
     // return DEAD_TRANSITION; // símbolo no válido
 }
+
 
 
 
