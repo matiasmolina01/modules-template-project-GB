@@ -75,4 +75,8 @@ extern  AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA];
 
 typedef struct Automata Automata;
 
+#ifdef COUNTCONFIG
+    void l_count_language_stats(); // count language stats (alphabet sizes and transition table sizes)   
+#endif
+
 #endif

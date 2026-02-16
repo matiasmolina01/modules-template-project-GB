@@ -33,16 +33,23 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
 	lookahead->has = has_lookahead;
     lookahead->character = lookahead_char;
 
-    // DEBUG: Print what is being sent to the automatas
-    printf("\n[DEBUG] --- RUNNING AUTOMATAS ---\n");
-    printf("[DEBUG] current_char: '%c' (ASCII: %d)\n", current_char, current_char);
-    printf("[DEBUG] lookahead: '%c' (ASCII: %d), has_lookahead: %d\n", lookahead_char, lookahead_char, has_lookahead);
-    
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_run__;
+    c_count_local_init(&__cnt_local_s_run__);
+    COUNTGEN(1, __cnt_local_s_run__);
+#endif
+
+    // DEBUG: Print what is being sent to the automatas    
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         if(automata_responses[i] == A_CONTINUE) {
-			automata_responses[i] = a_process(automata_list[i], current_char, lookahead);
+#ifdef COUNTCONFIG
+            COUNTCOMP(1, __cnt_local_s_run__);
+#endif
+            automata_responses[i] = a_process(automata_list[i], current_char, lookahead);
             // DEBUG: Print the response from the automata
-            printf("[DEBUG] Automata [%d] processed character. Response: %d\n", i, automata_responses[i]);
+#ifdef COUNTCONFIG
+            COUNTGEN(1, __cnt_local_s_run__);
+#endif
         }
     }
     free(lookahead);
@@ -73,8 +80,17 @@ int s_is_separator(char* lexeme, char separators[], int separator_num){
 void s_reset_initial_state(GlobalContext* global_context){
     global_context->current_token = t_token_create(global_context->input->line_number, global_context->input->column);
 
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_reset__;
+    c_count_local_init(&__cnt_local_s_reset__);
+    COUNTGEN(1, __cnt_local_s_reset__); /* token create */
+#endif
+
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         a_reset_automata(global_context->automatas_list[i]);
+#ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_s_reset__); /* automata reset */
+#endif
     }
 
     gc_init_responses(global_context->automata_responses, NUM_AUTOMATAS);
@@ -91,8 +107,16 @@ void s_reset_initial_state(GlobalContext* global_context){
 void s_process_token(GlobalContext* global_context, TokenCategory category){
     char separators[SEPARATOR_NUM] = SEPARATORS;
     if(s_is_separator(global_context->current_token->lexeme, separators, SEPARATOR_NUM) == NO_SEPARATOR){
+#ifdef COUNTCONFIG
+        count_local_t __cnt_local_s_process__;
+        c_count_local_init(&__cnt_local_s_process__);
+        COUNTCOMP(1, __cnt_local_s_process__); /* separator check -> not separator */
+#endif
         t_token_update_category(global_context->current_token, category);
         tl_token_list_add(global_context->token_list, *global_context->current_token);
+#ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_s_process__); /* token accepted and added */
+#endif
     }
 
     // Creates new token and resets automatas
@@ -112,6 +136,12 @@ void s_accept_token(GlobalContext* global_context, int automata_idx){
 
     TokenCategory category = accepted_automata->accept[st].category;
 
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_accept__;
+    c_count_local_init(&__cnt_local_s_accept__);
+    COUNTGEN(1, __cnt_local_s_accept__); /* acceptance event */
+#endif
+
     s_process_token(global_context, category);
 }
 
@@ -122,6 +152,11 @@ void s_accept_token(GlobalContext* global_context, int automata_idx){
             global_context: global context with automata and token list
 */
 void s_reject_token(GlobalContext* global_context){
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_reject__;
+    c_count_local_init(&__cnt_local_s_reject__);
+    COUNTGEN(1, __cnt_local_s_reject__); /* reject event */
+#endif
     s_process_token(global_context, (TokenCategory) CAT_NONRECOGNIZED);
 }
 
@@ -137,6 +172,10 @@ void s_reject_token(GlobalContext* global_context){
 
 */
 void s_check_responses(GlobalContext* global_context){
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_check__;
+    c_count_local_init(&__cnt_local_s_check__);
+#endif
     int token_status = CURRENT_TOKEN_FAIL;
     int count_continue = 0;
     int automata_accepted_idx = -1;
@@ -146,11 +185,17 @@ void s_check_responses(GlobalContext* global_context){
 
             case A_CONTINUE:
             count_continue++;
+#ifdef COUNTCONFIG
+            COUNTCOMP(1, __cnt_local_s_check__);
+#endif
             break;
 
             case A_ACCEPT:
             token_status = CURRENT_TOKEN_ACCEPTED;
             automata_accepted_idx = i;
+#ifdef COUNTCONFIG
+            COUNTCOMP(1, __cnt_local_s_check__);
+#endif
             break;
         } 
     }
@@ -179,6 +224,12 @@ void s_check_responses(GlobalContext* global_context){
 void s_get_lookahead(GlobalContext* global_context, char*lookahead, int* has_lookahead){
     *lookahead = i_read_char(global_context->input);
     
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_look__;
+    c_count_local_init(&__cnt_local_s_look__);
+    COUNTGEN(1, __cnt_local_s_look__); /* got lookahead */
+#endif
+
     if (*lookahead == NULL){
         *has_lookahead = NO_LOOKAHEAD;
     } else {
@@ -195,6 +246,12 @@ void s_get_lookahead(GlobalContext* global_context, char*lookahead, int* has_loo
 void s_scanner(GlobalContext* global_context) {
     // INITIAL CONFIGURATION
 
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_s_scan__;
+    c_count_local_init(&__cnt_local_s_scan__);
+    COUNTGEN(1, __cnt_local_s_scan__); /* scanner entry */
+#endif
+
         // Initial configuration of automata responses
 
         s_reset_initial_state(global_context);
@@ -204,8 +261,14 @@ void s_scanner(GlobalContext* global_context) {
         int has_lookahead = HAS_LOOKAHEAD;
         
         current_char = i_read_char(global_context->input);
+    #ifdef COUNTCONFIG
+        COUNTIO(1, __cnt_local_s_scan__); /* read initial char */
+    #endif
 
         t_token_append_char(global_context->current_token, current_char);
+    #ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_s_scan__); /* appended char to token */
+    #endif
 
     // END OF INITIAL CONFIGURATION
 
@@ -219,9 +282,15 @@ void s_scanner(GlobalContext* global_context) {
 
 
         t_token_append_char(global_context->current_token, lookahead);
+#ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_s_scan__); /* appended lookahead char */
+#endif
 
 
         current_char = lookahead;
+#ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_s_scan__); /* loop iteration */
+#endif
         
     }
 }

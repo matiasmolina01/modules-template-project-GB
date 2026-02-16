@@ -19,20 +19,30 @@ static void build_output_filename(const char *input, char *out, size_t size) {
 }
 
 int o_output_handler(const TokenList *list, const char *input_filename) {
-	if (!list || !input_filename) return -1;
+    if (!list || !input_filename) return -1;
     char output_filename[512];
     build_output_filename(input_filename, output_filename, sizeof(output_filename));
     FILE *fp = fopen(output_filename, "w");
     if (!fp) return -1;
 
-    #if OUTFORMAT == RELEASE
-        tl_token_list_print_release(fp, list);
-    #else
-        tl_token_list_print_debug(fp, list);
-    #endif
-	
-	//tl_token_list_print_release(fp, list);
-	//tl_token_list_print_debug(fp, list);
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_oh__;
+    c_count_local_init(&__cnt_local_oh__);
+    COUNTIO(1, __cnt_local_oh__); /* file open */
+    COUNTGEN(1, __cnt_local_oh__); /* output handler entry */
+#endif
+
+#if OUTFORMAT == RELEASE
+    tl_token_list_print_release(fp, list);
+#else
+    tl_token_list_print_debug(fp, list);
+#endif
+
+    //tl_token_list_print_release(fp, list);
+    //tl_token_list_print_debug(fp, list);
     fclose(fp);
+#ifdef COUNTCONFIG
+    COUNTIO(1, __cnt_local_oh__); /* file close */
+#endif
     return 0;
 }

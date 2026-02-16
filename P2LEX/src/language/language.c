@@ -137,6 +137,30 @@ int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMAT
     {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 21 (Accepting State)
     {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}  // State 22 (Dead State)
 };
+
+#ifdef COUNTCONFIG
+/* Counts static language resources: alphabet sizes and transition table sizes. */
+void l_count_language_stats(void) {
+    count_local_t __cnt_local_lc__;
+    c_count_local_init(&__cnt_local_lc__);
+
+    /* Count alphabet symbol definitions */
+    COUNTGEN(NUM_SYMBOLS_KEYWORD_AUTOMATA, __cnt_local_lc__);
+    COUNTGEN(NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA, __cnt_local_lc__);
+    COUNTGEN(NUM_SYMBOLS_NUMBERS_AUTOMATA, __cnt_local_lc__);
+    COUNTGEN(NUM_SYMBOLS_LITERALS_AUTOMATA, __cnt_local_lc__);
+    COUNTGEN(NUM_SYMBOLS_IDENTIFIERS_AUTOMATA, __cnt_local_lc__);
+    COUNTGEN(NUM_SYMBOLS_OPERATOR_AUTOMATA, __cnt_local_lc__);
+
+    /* Count transition table entries (as comparisons) */
+    COUNTCOMP(NUM_STATES_KEYWORD_AUTOMATA * NUM_SYMBOLS_KEYWORD_AUTOMATA, __cnt_local_lc__);
+    COUNTCOMP(NUM_STATES_IDENTIFIERS_AUTOMATA * NUM_SYMBOLS_IDENTIFIERS_AUTOMATA, __cnt_local_lc__);
+    COUNTCOMP(NUM_STATES_NUMBERS_AUTOMATA * NUM_SYMBOLS_NUMBERS_AUTOMATA, __cnt_local_lc__);
+    COUNTCOMP(NUM_STATES_SPECIAL_CHAR_AUTOMATA * NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA, __cnt_local_lc__);
+    COUNTCOMP(NUM_STATES_OPERATOR_AUTOMATA * NUM_SYMBOLS_OPERATOR_AUTOMATA, __cnt_local_lc__);
+    COUNTCOMP(NUM_STATES_LITERALS_AUTOMATA * NUM_SYMBOLS_LITERALS_AUTOMATA, __cnt_local_lc__);
+}
+#endif
 	
 int identifiers_transitions[NUM_STATES_IDENTIFIERS_AUTOMATA][NUM_SYMBOLS_IDENTIFIERS_AUTOMATA] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 

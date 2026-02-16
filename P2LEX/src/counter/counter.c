@@ -50,6 +50,9 @@ void c_count_init(const char *filename, FILE *main_output) {
     // }
     //NO HACE FALTA INICIALIZARLO AQUÍ POR QUE SE INICIALIZA CADA VEZ QUE LLAMAS UNA FUNCIÓN
 
+    /* simple instrumentation: count this init call as a general operation */
+    COUNT_GEN += 1;
+
     /* Determinar a dónde enviar los mensajes de conteo */
     if (COUNTOUT == 1 && main_output != NULL) {
         /* Usar archivo de salida principal */
@@ -92,20 +95,20 @@ void c_count_log(int line, const char *func,
         local ? local->gen  : 0,
         COUNT_COMP, COUNT_IO, COUNT_GEN
     );
-
-    // TODO: comment this lines of code if we don't want to count the IO of writing to the file
-    (void)written; // avoid counting the logger's own IO here (instrument actual I/O sites instead)
+    /* update counters for the logging I/O and operation itself (avoid using COUNTIO macro to prevent recursion) */
+    COUNT_GEN += 1; /* one logging operation */
 }
 
 void c_count_print_summary(void) {
     if (!count_fp) return;
-
-    fprintf(count_fp,
+    int written = fprintf(count_fp,
         "\n=== COUNT SUMMARY ===\n"
         "TOTAL COMP: %ld\n"
         "TOTAL IO  : %ld\n"
         "TOTAL GEN : %ld\n",
         COUNT_COMP, COUNT_IO, COUNT_GEN);
+
+    COUNT_GEN += 1;
 }
 
 #endif

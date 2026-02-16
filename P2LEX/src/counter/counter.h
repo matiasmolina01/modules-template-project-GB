@@ -53,21 +53,18 @@ static inline void c_count_local_init(count_local_t *l) {
     do {                               \
         COUNT_COMP += (n);             \
         (local).comp += (n);           \
-        c_count_log(__LINE__, __func__, "COMP", (n), &(local)); \
     } while (0)
 
 #define COUNTIO(n, local)              \
     do {                               \
         COUNT_IO += (n);               \
         (local).io += (n);             \
-        c_count_log(__LINE__, __func__, "IO", (n), &(local));   \
     } while (0)
 
 #define COUNTGEN(n, local)             \
     do {                               \
         COUNT_GEN += (n);              \
         (local).gen += (n);            \
-        c_count_log(__LINE__, __func__, "GEN", (n), &(local));  \
     } while (0)
 
 #else

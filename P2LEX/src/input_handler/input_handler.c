@@ -19,6 +19,12 @@
 char i_read_char(Input *input) {
     int c;
 
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_irc__;
+    c_count_local_init(&__cnt_local_irc__);
+    COUNTGEN(1, __cnt_local_irc__); /* read_char entry */
+#endif
+
     if (input->input_file == NULL) {
 		e_error_report(ERR_I_FILE_NOT_FOUND);
         return NULL;
@@ -29,6 +35,9 @@ char i_read_char(Input *input) {
 
     if (c == EOF) {
         input->is_eof = IS_EOF;
+#ifdef COUNTCONFIG
+        COUNTGEN(1, __cnt_local_irc__); /* EOF encountered */
+#endif
         return NULL;   // indica EOF
     }
 
@@ -37,6 +46,9 @@ char i_read_char(Input *input) {
         input->column = 0;
     }
 
+#ifdef COUNTCONFIG
+    COUNTIO(1, __cnt_local_irc__); /* one char read */
+#endif
     return c;  // return del carácter 
 }
 
@@ -50,6 +62,11 @@ Input* i_create(void) {
     Input *input = (Input*) malloc(sizeof(Input));
     if (input == NULL) return NULL;
     i_init(input);
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_ic__;
+    c_count_local_init(&__cnt_local_ic__);
+    COUNTGEN(1, __cnt_local_ic__); /* input create */
+#endif
     return input;
 }
 
@@ -68,6 +85,12 @@ int i_open_input(Input *input, const char *path) {
 			e_error_report(ERR_I_INVALID_PATH);
             exit(1);
         }
+#ifdef COUNTCONFIG
+        count_local_t __cnt_local_open__;
+        c_count_local_init(&__cnt_local_open__);
+        COUNTIO(1, __cnt_local_open__); /* file opened */
+        COUNTGEN(1, __cnt_local_open__);
+#endif
 		return 1;
     }
     return 1;
@@ -81,5 +104,11 @@ int i_close_input(Input *input) {
     }
     input->line_number = 0; // reset line number
     input->is_eof = 0; // reset EOF status
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_close__;
+    c_count_local_init(&__cnt_local_close__);
+    COUNTIO(1, __cnt_local_close__); /* file close */
+    COUNTGEN(1, __cnt_local_close__);
+#endif
     return 1;
 }

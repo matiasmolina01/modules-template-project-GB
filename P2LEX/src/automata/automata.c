@@ -68,6 +68,12 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
     a->current_state = current_state;
 	a->alphabet = alphabet;
 
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local__;
+    c_count_local_init(&__cnt_local__);
+    COUNTGEN(1, __cnt_local__); // automata creation
+#endif
+
     //copy the transition table
     for(int r = 0; r < numstates; r++){
         for(int c = 0; c < numcols; c++){
@@ -109,11 +115,20 @@ int a_mapping_alphabet(Automata *automata, char c){
     }
 
     for(int i = 0; i < limit; i++){
+        /* count the character comparison */
+#ifdef COUNTCONFIG
+        count_local_t __cnt_local_map__;
+        c_count_local_init(&__cnt_local_map__);
+        COUNTCOMP(1, __cnt_local_map__);
+#endif
         if(automata->alphabet[i].name == c){ // if we find the character in the alphabet, return the column
             int col = automata->alphabet[i].col;
+#ifdef COUNTCONFIG
+            COUNTCOMP(2, __cnt_local_map__); // check col <0 || col >= numcols
+#endif
             if(col < 0 || col >= automata->numcols){ // if the column is invalid, return failure
                 e_error_report(ERR_A_INVALID_ALPHABET);
-				return A_FAIL;
+                return A_FAIL;
             }
             return col; // return the column of the transition table of the automata
         }
@@ -137,20 +152,37 @@ int a_next_state(Automata *automata, char c){
     } 
     
     int cr = automata->current_state; // current state
+    /* count state boundary checks */
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_next__;
+    c_count_local_init(&__cnt_local_next__);
+    COUNTCOMP(2, __cnt_local_next__);
+#endif
     if(cr < 0 || cr >= automata->numstates){
-		return A_FAIL; // if the current state is invalid, return failure
+        return A_FAIL; // if the current state is invalid, return failure
     }
 
     int col = a_mapping_alphabet(automata, c); // get the column of the transition table of the automata for the character
+#ifdef COUNTCONFIG
+    COUNTCOMP(1, __cnt_local_next__); // mapping result check
+#endif
     if(col < 0) return A_NOT_ACCEPTED; // if the character is not in the alphabet, return A_NOT_ACCEPTED (not accepted) --> a_mapping_alphabet returns A_FAIL (-1 < 0)
 
     // if the character is in the alphabet...
     int new_state = automata->transitions[cr][col]; // ...get the new state from the transition table of the automata
 
     // error handling for the new state...
-    if(new_state < 0) return A_NOT_ACCEPTED; //(not accepted)
+    if(new_state < 0) {
+#ifdef COUNTCONFIG
+        COUNTCOMP(1, __cnt_local_next__);
+#endif
+        return A_NOT_ACCEPTED; //(not accepted)
+    }
+#ifdef COUNTCONFIG
+    COUNTCOMP(1, __cnt_local_next__); // bounds check for new_state
+#endif
     if(new_state >= automata->numstates){
-		return A_FAIL; // return A_FAIL 
+        return A_FAIL; // return A_FAIL 
     }
 
     return new_state; // return the new state after the transition
@@ -168,10 +200,25 @@ int a_next_state(Automata *automata, char c){
 int a_accepting_state(Automata *automata, int state){
     if(automata == NULL){
         e_error_report(ERR_A_AUTOMATA_NULL);
-		return A_FAIL; // if the automata is null, return failure
+        /* count the null check */
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_acc__;
+    c_count_local_init(&__cnt_local_acc__);
+    COUNTCOMP(1, __cnt_local_acc__);
+#endif
+        return A_FAIL; // if the automata is null, return failure
     }
+    /* state bounds check */
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_acc2__;
+    c_count_local_init(&__cnt_local_acc2__);
+    COUNTCOMP(2, __cnt_local_acc2__);
+#endif
     if(state < 0 || state >= automata->numstates) return A_NOT_ACCEPTED; // if the state is invalid,  (not accepting)
     if(automata->accept[state].flag == A_ACCEPTED){
+#ifdef COUNTCONFIG
+        COUNTCOMP(1, __cnt_local_acc2__);
+#endif
         return A_ACCEPTED;
     }
     return A_NOT_ACCEPTED;
@@ -189,11 +236,21 @@ int a_accepting_state(Automata *automata, int state){
         A_FAIL (-1) --> failure
 */
 int a_advance_automata(Automata *automata, char c){
-	if(automata == NULL){
+    if(automata == NULL){
         e_error_report(ERR_A_AUTOMATA_NULL);
-		return A_FAIL; // if the automata is null, return failure
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_adv__;
+    c_count_local_init(&__cnt_local_adv__);
+    COUNTCOMP(1, __cnt_local_adv__);
+#endif
+        return A_FAIL; // if the automata is null, return failure
     }
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_adv2__;
+    c_count_local_init(&__cnt_local_adv2__);
+    COUNTCOMP(2, __cnt_local_adv2__); // check for fail / not accepted
+#endif
     if(new_state == A_FAIL) return A_FAIL; // if there is a failure in getting the next state, return failure
     if(new_state == A_NOT_ACCEPTED) return A_ADV_FAIL; // if the character is not accepted, return ADV_FAIL
     automata->current_state = new_state; // update the current state of the automata to the new state
@@ -211,17 +268,32 @@ int a_advance_automata(Automata *automata, char c){
 int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     if (automata == NULL){
         e_error_report(ERR_A_AUTOMATA_NULL);
-		return A_FAIL; // if the automata is null, return failure
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_la__;
+    c_count_local_init(&__cnt_local_la__);
+    COUNTCOMP(1, __cnt_local_la__);
+#endif
+        return A_FAIL; // if the automata is null, return failure
     }
     if (lookahead == NULL){
         e_error_report(ERR_A_LOOKAHEAD_NULL);
-		return A_CAN_NOT_CONTINUE; // if the lookahead is null, return failure
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_la2__;
+    c_count_local_init(&__cnt_local_la2__);
+    COUNTCOMP(1, __cnt_local_la2__);
+#endif
+        return A_CAN_NOT_CONTINUE; // if the lookahead is null, return failure
     }
     if (lookahead->has == 0){
         return A_CAN_NOT_CONTINUE; // and lookahead has no character -> is not accepting
     }
 
     int new_state = a_next_state(automata, lookahead->character); // get the next state from the transition table of the automata for the lookahead character
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_la3__;
+    c_count_local_init(&__cnt_local_la3__);
+    COUNTCOMP(1, __cnt_local_la3__);
+#endif
     if(new_state > 0) return A_CAN_CONTINUE; // if have new_state, there are valid transitions with the lookahead character (can continue)
 
     return A_CAN_NOT_CONTINUE; // if not have next state with lookahead character, return A_CAN_NOT_CONTINUE (is not accepting)
@@ -237,17 +309,32 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
         -1 (A_FAIL) --> cannot consume the current character or stopped in a non-accepting state.
 */
 int a_process(Automata *automata, char c, Lookahead *lookahead){
-	if(automata == NULL || lookahead == NULL){
+    if(automata == NULL || lookahead == NULL){
         e_error_report(ERR_A_AUTOMATA_NULL);
-		e_error_report(ERR_A_LOOKAHEAD_NULL);
-		return A_FAIL; // if the automata or lookahead is null, return failure
+        e_error_report(ERR_A_LOOKAHEAD_NULL);
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_proc_err__;
+    c_count_local_init(&__cnt_local_proc_err__);
+    COUNTCOMP(2, __cnt_local_proc_err__);
+#endif
+        return A_FAIL; // if the automata or lookahead is null, return failure
     }
+#ifdef COUNTCONFIG
+    count_local_t __cnt_local_proc__;
+    c_count_local_init(&__cnt_local_proc__);
+#endif
     int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
+#ifdef COUNTCONFIG
+    COUNTCOMP(2, __cnt_local_proc__); // adv == 0 || adv == A_FAIL
+#endif
     if(adv == 0 || adv == A_FAIL){ // if the character is not accepted or there is a failure, return fail
         return A_FAIL; // if the character is not accepted, return fail
     }
     int can_continue = a_lookahead_process(automata, lookahead); 
-	if(can_continue == A_CAN_CONTINUE){ // if the character is not accepted, return fail
+#ifdef COUNTCONFIG
+    COUNTCOMP(1, __cnt_local_proc__);
+#endif
+    if(can_continue == A_CAN_CONTINUE){ // if the character is not accepted, return fail
         return A_CONTINUE; // can continue with lookahead
     }
 
