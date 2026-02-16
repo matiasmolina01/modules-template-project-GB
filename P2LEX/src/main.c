@@ -4,8 +4,6 @@
 
 int main(int argc, char *argv[]) {
     
-    printf("COMPILA!!\n");
-
     Arguments* args = process_arguments(argc, argv);
 	
     #ifdef COUNTCONFIG
@@ -13,7 +11,6 @@ int main(int argc, char *argv[]) {
     #endif
 
     GlobalContext* global_context = gc_init(args);
-	printf("Global context initialized\n");
     s_scanner(global_context);
 
     #ifdef COUNTCONFIG
@@ -21,6 +18,7 @@ int main(int argc, char *argv[]) {
     #endif
 
     o_output_handler(global_context->token_list, args->input_path);
+	
 	//gc_destroy(global_context);
 
     return 0;

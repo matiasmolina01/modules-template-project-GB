@@ -10,11 +10,15 @@
 #define HAS_LOOKAHEAD 1
 #define NO_LOOKAHEAD 0
 
+#define IS_SEPARATOR 1
+#define NO_SEPARATOR 0
+
 typedef struct GlobalContext GlobalContext;
 typedef struct Automata Automata;
 typedef struct Lookahead Lookahead;
 typedef enum TokenCategory TokenCategory;
 
+int s_is_separator(char* lexeme, char separators[], int separator_num);
 void s_reset_initial_state(GlobalContext* global_context);
 void s_run_automatas(Automata** automata_list, int* automata_responses, char current_char, char lookahead_char, int has_lookahead);
 void s_process_token(GlobalContext* global_context, TokenCategory category);

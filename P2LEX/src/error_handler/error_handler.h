@@ -65,7 +65,7 @@
 //Counter
 #define ERR_MSG_C_COUNT_FILE_CREATE_FAILURE "Failed to create count log file."
 //Module args
-#define ERR_MSG_MA_INVALID_ARG_NUMBER "Invalid number of arguments provided."
+#define ERR_MSG_MA_INVALID_ARG_NUMBER "Invalid number of arguments provided.\nUsage: modules_template_main.exe <input_file.c>"
 //GlobalContext
 #define ERR_MSG_GC_INIT_FAILURE "Failed to initialize global context."
 #define ERR_MSG_GC_MEMORY_LEAK "Memory leak detected in global context."
