@@ -21,9 +21,11 @@ typedef struct GlobalContext{
 	TokenList* token_list;
 	Input* input;
 	Arguments* arguments;
+	int automata_responses[NUM_AUTOMATAS];
 }GlobalContext;
 
-void gc_init_automatas(Automata** automata_list);
+void gc_init_responses(int responses[], int num);
+void gc_init_automatas(Automata* automata_list[]);
 
 GlobalContext* gc_init(Arguments* arguments);
 void gc_destroy(GlobalContext* global_context);

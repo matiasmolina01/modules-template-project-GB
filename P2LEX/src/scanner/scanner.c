@@ -16,19 +16,7 @@
 #include "./scanner.h"
 #include <stdio.h> // Added purely for the debug printfs
 
-/*
-    Initializes the automata respones as default state (A_CONTINUE)
-    Parameters:
-            int responses[]: empty array
-            int num: number of elements to be initialized in the array 
-*/
-void s_init_responses(int responses[], int num){
-    printf("[DEBUG SCANNER] s_init_responses: Initializing %d automata responses to A_CONTINUE.\n", num);
-    for(int i = 0; i < num; i++){
-        responses[i] = A_CONTINUE;
-        printf("[DEBUG SCANNER] s_init_responses: responses[%d] set to A_CONTINUE.\n", i);
-    }
-}
+
 
 /*
     Calls the a_process function for each automata which had a A_CONTINUE response
@@ -59,13 +47,21 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
 }
 
 /*
-    Creates a new token and sets it to the current_token variable
+    Creates a new token and sets it to the current_token variable.
+    Reset Automatas.
+    Reset automata responses.
     Parameter:
         global_context: GlobalContext with input information (line, col) and current token
 */
-void s_set_new_current_token(GlobalContext* global_context){
+void s_reset_initial_state(GlobalContext* global_context){
     printf("[DEBUG SCANNER] s_set_new_current_token: Creating new token at Line: %d, Col: %d.\n", global_context->input->line_number, global_context->input->column);
     global_context->current_token = t_token_create(global_context->input->line_number, global_context->input->column);
+
+    for(int i = 0; i < NUM_AUTOMATAS; i++){
+        a_reset_automata(global_context->automatas_list[i]);
+    }
+
+    gc_init_responses(global_context->automata_responses, NUM_AUTOMATAS);
 }
 
 /*
@@ -83,11 +79,7 @@ void s_process_token(GlobalContext* global_context, TokenCategory category){
     printf("[DEBUG SCANNER] s_process_token: Token added to token_list.\n");
 
     // Creates new token and resets automatas
-    s_set_new_current_token(global_context);
-
-    for(int i = 0; i < NUM_AUTOMATAS; i++){
-        a_reset_automata(global_context->automatas_list[i]);
-    }
+    s_reset_initial_state(global_context);
 }
 
 /*
@@ -130,15 +122,15 @@ void s_reject_token(GlobalContext* global_context){
         automata_responses: array of automata responses.
 
 */
-void s_check_responses(GlobalContext* global_context, int* automata_responses){
+void s_check_responses(GlobalContext* global_context){
     printf("[DEBUG SCANNER] s_check_responses: Evaluating automata responses...\n");
     int token_status = CURRENT_TOKEN_FAIL;
     int count_continue = 0;
     int automata_accepted_idx;
 
     for(int i = 0; i < NUM_AUTOMATAS; i++){
-        printf("[DEBUG SCANNER] s_check_responses: Automata %d response is %d.\n", i, automata_responses[i]);
-        switch(automata_responses[i]){
+        printf("[DEBUG SCANNER] s_check_responses: Automata %d response is %d.\n", i, global_context->automata_responses[i]);
+        switch(global_context->automata_responses[i]){
 
             case A_CONTINUE:
             printf("[DEBUG SCANNER] s_check_responses: Automata %d triggered A_CONTINUE.\n", i);
@@ -206,8 +198,8 @@ void s_scanner(GlobalContext* global_context) {
 
         // Initial configuration of automata responses
         printf("[DEBUG SCANNER] s_scanner: Starting initial configuration...\n");
-        int automata_reponses[NUM_AUTOMATAS];
-        s_init_responses(automata_reponses, NUM_AUTOMATAS);
+
+        s_reset_initial_state(global_context);
 
         // Initial configuration of current char and lookahead
         char current_char, lookahead;
@@ -216,11 +208,7 @@ void s_scanner(GlobalContext* global_context) {
         printf("[DEBUG SCANNER] s_scanner: Reading initial current_char...\n");
         current_char = i_read_char(global_context->input);
         printf("[DEBUG SCANNER] s_scanner: Initial current_char is '%c' (ASCII: %d).\n", current_char, current_char);
-        
-        //s_get_lookahead(global_context, &lookahead, &has_lookahead);
 
-        // Create first token
-        s_set_new_current_token(global_context);
         printf("[DEBUG SCANNER] s_scanner: Appending current_char to token...\n");
         t_token_append_char(global_context->current_token, current_char);
 
@@ -233,9 +221,9 @@ void s_scanner(GlobalContext* global_context) {
 		printf("[DEBUG SCANNER] s_scanner: --- Loop Iteration Start ---\n");
         s_get_lookahead(global_context, &lookahead, &has_lookahead);
 
-        s_run_automatas(global_context->automatas_list, automata_reponses, current_char, lookahead, has_lookahead);
+        s_run_automatas(global_context->automatas_list, global_context->automata_responses, current_char, lookahead, has_lookahead);
 
-        s_check_responses(global_context, automata_reponses);
+        s_check_responses(global_context);
 
         printf("[DEBUG SCANNER] s_scanner: Appending lookahead '%c' to token...\n", lookahead);
         t_token_append_char(global_context->current_token, lookahead);
