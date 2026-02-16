@@ -59,16 +59,12 @@ int i_is_eof(Input *input) {
 }
 
 int i_open_input(Input *input, const char *path) {
-	printf("Inputopen\n");
 	if(path == NULL || path[0] == '\0') { // invalid path
-		printf("Error1?\n");
 		e_error_report(100);
         exit(1);
     } else {
-		printf("Inputpath detected\n");
 		input->input_file = fopen(path, MODE_READ);
         if(input->input_file == NULL) { // error opening file
-			printf("Error2?\n");
 			e_error_report(107);
             exit(1);
         }

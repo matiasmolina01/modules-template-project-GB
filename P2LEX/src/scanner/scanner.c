@@ -41,18 +41,21 @@ void s_init_responses(int responses[], int num){
 void s_run_automatas(Automata** automata_list, int*automata_responses, char current_char, char lookahead_char, int has_lookahead){
 
     printf("[DEBUG SCANNER] s_run_automatas: Running automatas for current_char='%c' (ASCII: %d), lookahead='%c' (has_lookahead: %d).\n", current_char, current_char, lookahead_char, has_lookahead);
-    Lookahead lookahead = {has_lookahead, lookahead_char};
+    Lookahead *lookahead = malloc(sizeof(Lookahead));
+    lookahead->has = has_lookahead;
+    lookahead->character = lookahead_char;
     
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         printf("[DEBUG SCANNER] s_run_automatas: Checking automata index %d...\n", i);
-        if(automata_list[i] == A_CONTINUE) {
+        if(automata_responses[i] == A_CONTINUE) {
             printf("[DEBUG SCANNER] s_run_automatas: Automata %d state is A_CONTINUE. Calling a_process...\n", i);
-            automata_responses[i] = a_process(automata_list[i], current_char, &lookahead);
+			automata_responses[i] = a_process(automata_list[i], current_char, lookahead);
             printf("[DEBUG SCANNER] s_run_automatas: Automata %d returned response code %d.\n", i, automata_responses[i]);
         } else {
             printf("[DEBUG SCANNER] s_run_automatas: Automata %d skipped (not A_CONTINUE).\n", i);
         }
     }
+    free(lookahead);
 }
 
 /*

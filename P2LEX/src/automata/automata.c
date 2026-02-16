@@ -23,7 +23,6 @@
 */
 Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, int *accepting_states, TokenCategory category){
     // validations for the parameters...
-    printf("Creating automata with numstates=%d numcols=%d numsymbols=%d\n", numstates, numcols, numsymbols);
 	if(numstates <= 0 || numstates > MAXLEN){
 		//printf("Invalid number of states: %d. Must be between 1 and %d.\n", numstates, MAXLEN);// ------- ERROR @alex
         e_error_report(306);
@@ -57,52 +56,38 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
         e_error_report(306);
 		return NULL;
     }
-	printf("STARTING AUTOMATA CREATION\n");
+
     // AUTOMATA CREATION
     Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
-    printf("Memory allocated for automata at %p\n", (void*)a);
+
 	if(a == NULL){
         //printf("Memory allocation failed for automata.\n");// ------- ERROR @alex
 		e_error_report(307);
 		return NULL;
     }
-	printf("Memory allocation successful for automata.\n");
+
     memset(a, 0, sizeof(*a)); // initialize all fields to 0
-	printf("Automata structure initialized to zero.\n");
+
     a->numstates = numstates;
     a->numcols = numcols;
     a->numsymbols = numsymbols;
     a->initial_state = initial_state;
     a->current_state = current_state;
-	printf("Automata fields set: numstates=%d, numcols=%d, numsymbols=%d, initial_state=%d, current_state=%d\n", a->numstates, a->numcols, a->numsymbols, a->initial_state, a->current_state);
-    // copy the alphabet
 	a->alphabet = alphabet;
-    // for(int i = 0; i < numsymbols; i++){
-    //     a->alphabet[i] = alphabet[i];
-	// 	if(a->alphabet[i].col < 0 || a->alphabet[i].col >= numcols){ // alphabet not valid
-    //         free(a);
-    //         //printf("Invalid column in alphabet symbol: %d. Must be between 0 and %d.\n", a->alphabet[i].col, numcols - 1);// ------- ERROR @alex
-    //         e_error_report(310);
-	// 		return NULL;
-    //     }
-    // }
+
     //copy the transition table
-	printf("Copying transition table for automata category %d\n", category);
     for(int r = 0; r < numstates; r++){
         for(int c = 0; c < numcols; c++){
             a->transitions[r][c] = trans[r][c]; // copy the transition table from the input array
         }
     }
-    printf("Transition table copied successfully.\n");
     // copy the accepting states info
-    printf("Setting accepting states for category %d\n", category);
 	for(int i = 0; i < numstates; i++){
         if(accepting_states[i] == 1){
             a->accept[i].flag = 1;
             a->accept[i].category = category; 
         }
     }
-	printf("Automata created successfully with initial state %d and current state %d\n", a->initial_state, a->current_state);
 
     return a; // return the created automata
 }
@@ -219,11 +204,13 @@ int a_accepting_state(Automata *automata, int state){
         A_FAIL (-1) --> failure
 */
 int a_advance_automata(Automata *automata, char c){
-    if(automata == NULL){
+    printf("[DEBUG AUTOMATA] a_advance_automata: Attempting to advance automata with character '%c' (ASCII: %d) from current state %d.\n", c, c, automata->current_state);
+	if(automata == NULL){
         //printf("Automata is NULL.\n"); // ------- ERROR @alex
         e_error_report(311);
 		return A_FAIL; // if the automata is null, return failure
     }
+	printf("[DEBUG AUTOMATA] a_advance_automata: Mapping character '%c' to alphabet column...\n", c);
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
     if(new_state > 0){ // we consider that the initial state is always 0, so the new state cannot be 0.
         automata->current_state = new_state; // advance to the new state
@@ -272,17 +259,19 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
         -1 (A_FAIL) --> cannot consume the current character or stopped in a non-accepting state.
 */
 int a_process(Automata *automata, char c, Lookahead *lookahead){
-    if(automata == NULL || lookahead == NULL){
+    printf("[DEBUG AUTOMATA] a_process: Processing character '%c' (ASCII: %d) with automata at current state %d.\n", c, c, automata->current_state);
+	if(automata == NULL || lookahead == NULL){
         //printf("Automata or Lookahead is NULL.\n"); // ------- ERROR @alex
         e_error_report(311);
 		e_error_report(314);
 		return A_FAIL; // if the automata or lookahead is null, return failure
     }
+	printf("[DEBUG AUTOMATA] a_process: Attempting to advance automata with character '%c'...\n", c);
     int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
     if(adv == 0 || adv == A_FAIL){ // if the character is not accepted or there is a failure, return fail
         return A_FAIL; // if the character is not accepted, return fail
     }
-
+	printf("[DEBUG AUTOMATA] a_process: Character '%c' accepted. Checking lookahead...\n", c);
     int can_continue = a_lookahead_process(automata, lookahead); 
     if(can_continue == 1){ // if the character is not accepted, return fail
         return A_CONTINUE; // can continue with lookahead
