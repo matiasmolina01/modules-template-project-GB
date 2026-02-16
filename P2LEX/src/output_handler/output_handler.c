@@ -18,7 +18,7 @@ void o_output_handler(TokenList *list, const char *filename) {
         if (!list || !filename) return -1;
 
     FILE *fp = fopen(filename, "w");
-    if (!fp) return -1;
+    if (!fp) return;
 
     TokenNode *node = list->head;
     while (node) {
