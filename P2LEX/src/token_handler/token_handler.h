@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum {
+typedef enum TokenCategory{
     CAT_NUMBER,
     CAT_IDENTIFIER,
     CAT_KEYWORD,
