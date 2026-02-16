@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
         c_count_print_summary();
     #endif
 
+    // o_output_handler(global_context->token_list, args->input_path);
     //gc_destroy(global_context);
 
     return 0;
