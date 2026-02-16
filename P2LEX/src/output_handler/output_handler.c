@@ -15,7 +15,7 @@
 #include "./output_handler.h"
 
 void o_output_handler(TokenList *list, const char *filename) {
-        if (!list || !filename) return -1;
+        if (!list || !filename) return;
 
     FILE *fp = fopen(filename, "w");
     if (!fp) return;
