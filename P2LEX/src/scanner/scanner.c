@@ -71,6 +71,7 @@ void s_set_new_current_token(GlobalContext* global_context){
 /*
     Function to process the token for a given category.
     Updates the token category and adds it to the final token list.
+    Finally sets new current token and reset automata.
     Parameters:
         global_context: global context with token and token list
         category: one of the valid token categories 
@@ -80,6 +81,13 @@ void s_process_token(GlobalContext* global_context, TokenCategory category){
     t_token_update_category(global_context->current_token, category);
     tl_token_list_add(global_context->token_list, *global_context->current_token);
     printf("[DEBUG SCANNER] s_process_token: Token added to token_list.\n");
+
+    // Creates new token and resets automatas
+    s_set_new_current_token(global_context);
+
+    for(int i = 0; i < NUM_AUTOMATAS; i++){
+        a_reset_automata(global_context->automatas_list[i]);
+    }
 }
 
 /*
@@ -98,7 +106,6 @@ void s_accept_token(GlobalContext* global_context, int automata_idx){
     printf("[DEBUG SCANNER] s_accept_token: Automata category resolved to %d.\n", category);
 
     s_process_token(global_context, category);
-    s_set_new_current_token(global_context);
 }
 
 
@@ -110,7 +117,6 @@ void s_accept_token(GlobalContext* global_context, int automata_idx){
 void s_reject_token(GlobalContext* global_context){
     printf("[DEBUG SCANNER] s_reject_token: Rejecting token. Assigning CAT_NONRECOGNIZED.\n");
     s_process_token(global_context, (TokenCategory) CAT_NONRECOGNIZED);
-    s_set_new_current_token(global_context);
 }
 
 
