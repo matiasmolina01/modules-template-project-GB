@@ -15,7 +15,7 @@
 
 
 #include "./language.h"
-#include "../automata/automata.h"
+
 
 
 AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA] = {
@@ -93,7 +93,7 @@ int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMAT
 int identifiers_transitions[NUM_STATES_IDENTIFIERS_AUTOMATA][NUM_SYMBOLS_IDENTIFIERS_AUTOMATA];
 int numbers_transitions[NUM_STATES_NUMBERS_AUTOMATA][NUM_SYMBOLS_NUMBERS_AUTOMATA];
 int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA];
-int operators_transitions[NUM_STATES_OPERATORS_AUTOMATA][NUM_SYMBOLS_OPERATORS_AUTOMATA];
+int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA];
 int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA];
 
 char mapping_input_char(char c) {
@@ -260,8 +260,8 @@ void special_char_transition_table(){
 
 void operators_transition_table(){
 
-    for (int i = 0; i < NUM_STATES_OPERATORS_AUTOMATA; i++) {
-        for (int j = 0; j < NUM_SYMBOLS_OPERATORS_AUTOMATA; j++) {
+    for (int i = 0; i < NUM_STATES_OPERATOR_AUTOMATA; i++) {
+        for (int j = 0; j < NUM_SYMBOLS_OPERATOR_AUTOMATA; j++) {
             operators_transitions[i][j] = DEAD_TRANSITION;
         }
         // a->accept[i].flag = 0;
