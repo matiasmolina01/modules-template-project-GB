@@ -3,6 +3,7 @@
 
 #include "../main.h"
 
+
 #define NUM_AUTOMATAS 6
 
 #define OPERATOR_AUTOMATA 0
@@ -20,7 +21,7 @@
 
 
 #define NUM_STATES_KEYWORD_AUTOMATA 25
-#define NUM_SYMBOLS_KEYWORD_AUTOMATA 17
+#define NUM_SYMBOLS_KEYWORD_AUTOMATA 26
 
 #define NUM_STATES_NUMBERS_AUTOMATA 2
 #define NUM_SYMBOLS_NUMBERS_AUTOMATA 10
@@ -33,40 +34,44 @@
 
 
 #define NUM_STATES_LITERALS_AUTOMATA 3
-#define NUM_SYMBOLS_LITERALS_AUTOMATA 65
-// #define NUM_COLS_OPERATOR_AUTOMATA 4 ???? TODO
-// TODO define rest of automatas
-// ....
+#define NUM_SYMBOLS_LITERALS_AUTOMATA 63
+
+
+typedef struct AlphabetSymbol{
+    char name; // symbol of the alphabet
+    int col; // columna in the table
+} AlphabetSymbol;
+
 
 extern int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMATA];
 extern int identifiers_transitions[NUM_STATES_IDENTIFIERS_AUTOMATA][NUM_SYMBOLS_IDENTIFIERS_AUTOMATA];
 extern int numbers_transitions[NUM_STATES_NUMBERS_AUTOMATA][NUM_SYMBOLS_NUMBERS_AUTOMATA];
 extern int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA];
-extern int operators_transitions[NUM_STATES_OPERATORS_AUTOMATA][NUM_SYMBOLS_OPERATORS_AUTOMATA];
+extern int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA];
 extern int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA];
 
 
 extern AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA];
 
 extern AlphabetSymbol special_char_alphabet[NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA];
-extern AlphabetSymbol numbers_alphabet[NUM_SYMBOLS_NUMBERS_AUTOMATA];
+extern  AlphabetSymbol numbers_alphabet[NUM_SYMBOLS_NUMBERS_AUTOMATA];
 
-extern AlphabetSymbol literals_alphabet[NUM_SYMBOLS_LITERALS_AUTOMATA];
+extern  AlphabetSymbol literals_alphabet[NUM_SYMBOLS_LITERALS_AUTOMATA];
 
 
-extern AlphabetSymbol identifiers_alphabet[NUM_SYMBOLS_IDENTIFIERS_AUTOMATA];
+extern  AlphabetSymbol identifiers_alphabet[NUM_SYMBOLS_IDENTIFIERS_AUTOMATA];
 
-extern AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA];
+extern  AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA];
 
 typedef struct Automata Automata;
 
 char mapping_input_char(char c);
-void keyword_transition_table(Automata *a);
-void identifiers_transition_table(Automata *a);
-void numbers_transition_table(Automata *a);
-void special_char_transition_table(Automata *a);
-void operators_transition_table(Automata *a);
-void literals_transition_table(Automata *a);
+void keyword_transition_table();
+void identifiers_transition_table();
+void numbers_transition_table();
+void special_char_transition_table();
+void operators_transition_table();
+void literals_transition_table();
 // Automata** l_init_automatas();
 
 

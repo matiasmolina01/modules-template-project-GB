@@ -43,6 +43,11 @@ add_test(NAME TestModuleInputHandler COMMAND test_module_input_handler)
 message(STATUS " - (${PROJECT_NAME}) Test for module_input_handler added")
 
 # Test for output_handler
+add_executable(test_module_output_handler test_module_output_handler.c)
+target_link_libraries(test_module_output_handler PRIVATE output_handler utils token_handler)
+target_include_directories(test_module_output_handler PRIVATE ${PROJECT_SOURCE_DIR}/src)
+add_test(NAME TestModuleOutputHandler COMMAND test_module_output_handler)
+message(STATUS " - (${PROJECT_NAME}) Test for module_output_handler added")
 
 # Test for token_handler
 add_executable(test_module_token_handler test_module_token_handler.c)

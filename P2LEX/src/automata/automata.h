@@ -10,11 +10,7 @@ typedef enum TokenCategory TokenCategory; // to avoid circular dependency with t
 /*
     struct to indicate the symbols of the alphabet of the automata.
 */
-typedef struct AlphabetSymbol{
-    char name; // symbol of the alphabet
-    int col; // columna in the table
-} AlphabetSymbol;
-
+typedef struct AlphabetSymbol AlphabetSymbol;
 /*
     struct to indicate if each state is accepting, and if it is, the category of the token that it accepts.
 */
@@ -30,7 +26,7 @@ typedef struct Automata{
     int numsymbols; // actual number of symbols of the alphabet of the automata
     int numstates; // actual number of states of the automata
     int numcols; // number of columns in the compressed table
-    AlphabetSymbol alphabet[MAXLEN]; // the alphabet of the automata
+    AlphabetSymbol *alphabet; // the alphabet of the automata
     int transitions[MAXLEN][MAXCOLS]; // the transition table of the automata
     int initial_state; // to indicate the initial state of the automata    
     int current_state; // to indicate the current state of the automata
