@@ -29,8 +29,8 @@ char i_read_char(Input *input) {
     c = fgetc(input->input_file);
 
     if (c == EOF) {
-        input->is_eof = 1;
-        return 0;   // indica EOF
+        input->is_eof = IS_EOF;
+        return NULL;   // indica EOF
     }
 
     if (c == '\n') {

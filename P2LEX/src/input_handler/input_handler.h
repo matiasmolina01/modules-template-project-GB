@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 #define MODE_READ "r"
+#define IS_EOF 1
+#define NO_EOF 0
 
 typedef struct Input {
     FILE *input_file;   

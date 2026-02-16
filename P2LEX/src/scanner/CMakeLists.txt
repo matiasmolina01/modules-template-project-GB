@@ -15,7 +15,7 @@ add_library(scanner scanner.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(scanner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because scanner depends on utils
-target_link_libraries(scanner PRIVATE utils error_handler counter token_handler automata output_handler)
+target_link_libraries(scanner PRIVATE utils error_handler counter token_handler automata output_handler input_handler)
 
 # Print a status message during CMake configuration to confirm scanner is processed
 message(STATUS "(${PROJECT_NAME}) scanner configured: Added as static library")
