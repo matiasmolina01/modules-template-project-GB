@@ -32,10 +32,17 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
     if(!lookahead) e_error_report(203);
 	lookahead->has = has_lookahead;
     lookahead->character = lookahead_char;
+
+    // DEBUG: Print what is being sent to the automatas
+    printf("\n[DEBUG] --- RUNNING AUTOMATAS ---\n");
+    printf("[DEBUG] current_char: '%c' (ASCII: %d)\n", current_char, current_char);
+    printf("[DEBUG] lookahead: '%c' (ASCII: %d), has_lookahead: %d\n", lookahead_char, lookahead_char, has_lookahead);
     
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         if(automata_responses[i] == A_CONTINUE) {
 			automata_responses[i] = a_process(automata_list[i], current_char, lookahead);
+            // DEBUG: Print the response from the automata
+            printf("[DEBUG] Automata [%d] processed character. Response: %d\n", i, automata_responses[i]);
         }
     }
     free(lookahead);
