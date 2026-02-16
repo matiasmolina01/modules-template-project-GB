@@ -200,14 +200,21 @@ void t_token_print_debug(FILE *out, const Token *t) {
 
 // Function to print all tokens in a token list in a format suitable for release output. 
 void tl_token_list_print_release(FILE *out, const TokenList *list) {
-    if (!out || !list) return;
+    if (!out || !list || !list->head) return;
 
     TokenNode *current = list->head;
+    int current_line = current->token.line;
 
     while (current) {
+        //New line when line number changes 
+        if (current->token.line != current_line) {
+            fprintf(out, "\n");
+            current_line = current->token.line;
+        }
+
         t_token_print_release(out, &current->token);
 
-        if (current->next)
+        if (current->next && current->next->token.line == current_line)
             fprintf(out, " ");
 
         current = current->next;
@@ -218,9 +225,19 @@ void tl_token_list_print_release(FILE *out, const TokenList *list) {
 
 // Function to print all tokens in a token list in a detailed format suitable for debugging. 
 void tl_token_list_print_debug(FILE *out, const TokenList *list) {
-    if (!out || !list) return;
+    if (!out) return;
+
+    if(!list) {
+        fprintf(out, "[TOKEN LIST is NULL]\n");
+        return;
+    }
 
     fprintf(out, "[TOKEN LIST size=%d]\n", list->size);
+
+    if(list->size == 0) {
+        fprintf(out, "  (empty)\n\n");
+        return;
+    }
 
     TokenNode *current = list->head;
     int index = 0;
@@ -233,6 +250,8 @@ void tl_token_list_print_debug(FILE *out, const TokenList *list) {
         current = current->next;
         index++;
     }
+
+    fprintf(out, "\n");
 }
 
 // Old placeholder 
