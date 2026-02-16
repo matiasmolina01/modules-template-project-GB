@@ -20,9 +20,9 @@ void o_output_handler(TokenList *list, const char *filename) {
     FILE *fp = fopen(filename, "w");
     if (!fp) return -1;
 
-    Token *node = token_list_head(list);
+    TokenNode *node = list->head;
     while (node) {
-        Token *tok = token_node_get(node);
+        Token *tok = &node->token;
         if (tok) {
                 #if OUTFORMAT == RELEASE
                     t_token_print_release(fp, tok);
@@ -30,7 +30,7 @@ void o_output_handler(TokenList *list, const char *filename) {
                     t_token_print_debug(fp, tok);
                 #endif
                     }
-        node = token_node_next(node);
+        node = node->next;
     }
 
     fclose(fp);
