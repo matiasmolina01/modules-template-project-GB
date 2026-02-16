@@ -289,12 +289,16 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     }
 
     int new_state = a_next_state(automata, lookahead->character); // get the next state from the transition table of the automata for the lookahead character
+<<<<<<< HEAD
 #ifdef COUNTCONFIG
     count_local_t __cnt_local_la3__;
     c_count_local_init(&__cnt_local_la3__);
     COUNTCOMP(1, __cnt_local_la3__);
 #endif
     if(new_state > 0) return A_CAN_CONTINUE; // if have new_state, there are valid transitions with the lookahead character (can continue)
+=======
+    if(new_state != A_NOT_ACCEPTED && new_state != automata->numsymbols-1) return A_CAN_CONTINUE; // if have new_state, there are valid transitions with the lookahead character (can continue)
+>>>>>>> ce4fa3a93d879540c2b86ea4eb64e468e6aee413
 
     return A_CAN_NOT_CONTINUE; // if not have next state with lookahead character, return A_CAN_NOT_CONTINUE (is not accepting)
 }
@@ -319,6 +323,7 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
 #endif
         return A_FAIL; // if the automata or lookahead is null, return failure
     }
+<<<<<<< HEAD
 #ifdef COUNTCONFIG
     count_local_t __cnt_local_proc__;
     c_count_local_init(&__cnt_local_proc__);
@@ -328,6 +333,11 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
     COUNTCOMP(2, __cnt_local_proc__); // adv == 0 || adv == A_FAIL
 #endif
     if(adv == 0 || adv == A_FAIL){ // if the character is not accepted or there is a failure, return fail
+=======
+    
+    int adv = a_advance_automata(automata, c); // try to advance the automata with the current character
+    if(adv == A_FAIL){ // if the character is not accepted or there is a failure, return fail
+>>>>>>> ce4fa3a93d879540c2b86ea4eb64e468e6aee413
         return A_FAIL; // if the character is not accepted, return fail
     }
     int can_continue = a_lookahead_process(automata, lookahead); 
@@ -338,7 +348,7 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
         return A_CONTINUE; // can continue with lookahead
     }
 
-    if(a_accepting_state(automata, automata->current_state) == A_ACCEPTED){ // if the new state is accepting, return accept
+    if(automata->accept[automata->current_state].flag == A_ACCEPTED){ // if the new state is accepting, return accept
         return A_ACCEPT;
     }
     return A_FAIL; // if the new state is not accepting, return fail
