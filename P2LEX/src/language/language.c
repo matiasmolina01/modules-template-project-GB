@@ -150,19 +150,19 @@ void keyword_transition_table(){
         // a->accept[i].category[0] = '\0';
     }
 
-   keyword_transitions[0][2] = 18;
+    keyword_transitions[0][2] = 18;
     keyword_transitions[0][4] = 3;
     keyword_transitions[0][7] = 1;
-   keyword_transitions[0][11] = 12;
+    keyword_transitions[0][11] = 12;
     keyword_transitions[0][15] = 22;
     keyword_transitions[0][16] = 7;
 
     keyword_transitions[1][5] = 2;
-   keyword_transitions[1][9] = 22;
+    keyword_transitions[1][9] = 22;
 
     keyword_transitions[3][8] = 4;
 
-   keyword_transitions[4][12] = 5;
+    keyword_transitions[4][12] = 5;
 
     keyword_transitions[5][4] = 6;
 
@@ -191,8 +191,6 @@ void keyword_transition_table(){
     keyword_transitions[20][11] =21;
 
     keyword_transitions[22][13] = 23;
-
-
 }
 
 
@@ -250,14 +248,8 @@ void numbers_transition_table(){
 
         for(int i= 0; i <10;i++){
             numbers_transitions[0][i] = 1;
-             numbers_transitions[1][i] = 1;
+            numbers_transitions[1][i] = 1;
         }
-
-        
-
-
-
-
     }
 
 
@@ -273,8 +265,8 @@ void special_char_transition_table(){
     }
 
 
-     special_char_transitions[0][0] = 1;
-   special_char_transitions[0][1] = 1;
+    special_char_transitions[0][0] = 1;
+    special_char_transitions[0][1] = 1;
     special_char_transitions[0][2] = 1;
     special_char_transitions[0][3] = 1;
     special_char_transitions[0][4] = 1;
@@ -294,14 +286,10 @@ void operators_transition_table(){
         // a->accept[i].flag = 0;
         // a->accept[i].category[0] = '\0';
     }
-
-
-     operators_transitions[0][0] = 1;
-   operators_transitions[0][1] = 1;
+    operators_transitions[0][0] = 1;
+    operators_transitions[0][1] = 1;
     operators_transitions[0][2] = 1;
-   operators_transitions[0][3] = 1;
-    
-    
+    operators_transitions[0][3] = 1;
 }
 
 
@@ -330,11 +318,7 @@ void literals_transition_table(){
         else{
             literals_transitions[1][i] = 2;
         }
-       
     }
 
-
-    
-    
 }
 
