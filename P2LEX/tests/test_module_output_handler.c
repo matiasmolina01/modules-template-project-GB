@@ -46,10 +46,10 @@ static void test_build_filename_and_write(void) {
 
     /* prepare a token list with one token */
     TokenList *list = tl_token_list_init();
-    Token t = t_token_create(1, 1);
-    t_token_append_char(&t, 'z');
-    t_token_update_category(&t, CAT_IDENTIFIER);
-    tl_token_list_add(list, t);
+    Token *t = t_token_create(1, 1);
+    t_token_append_char(t, 'z');
+    t_token_update_category(t, CAT_IDENTIFIER);
+    tl_token_list_add(list, *t);
 
     /* ensure no leftover file */
     remove(outname);
