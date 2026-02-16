@@ -36,6 +36,9 @@
 #define NUM_STATES_LITERALS_AUTOMATA 3
 #define NUM_SYMBOLS_LITERALS_AUTOMATA 63
 
+#define SEPARATORS {' ', '\t', '\n'}
+#define SEPARATOR_NUM 3
+
 
 typedef struct AlphabetSymbol{
     char name; // symbol of the alphabet

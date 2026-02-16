@@ -47,6 +47,21 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
 }
 
 /*
+    Util function to check if a lexeme is a separator
+    Parameters:
+        lexeme: char*
+        separators: list of separators
+        separator_num: number of separators
+*/
+int s_is_separator(char* lexeme, char separators[], int separator_num){
+    for(int i = 0; i < separator_num; i++){
+        if(*lexeme == separators[i]) return IS_SEPARATOR;
+    }
+    return NO_SEPARATOR;
+}
+
+
+/*
     Creates a new token and sets it to the current_token variable.
     Reset Automatas.
     Reset automata responses.
@@ -74,9 +89,12 @@ void s_reset_initial_state(GlobalContext* global_context){
 */
 void s_process_token(GlobalContext* global_context, TokenCategory category){
     printf("[DEBUG SCANNER] s_process_token: Processing token with category code %d.\n", category);
-    t_token_update_category(global_context->current_token, category);
-    tl_token_list_add(global_context->token_list, *global_context->current_token);
-    printf("[DEBUG SCANNER] s_process_token: Token added to token_list.\n");
+    char separators[SEPARATOR_NUM] = SEPARATORS;
+    if(s_is_separator(global_context->current_token->lexeme, separators, SEPARATOR_NUM) == NO_SEPARATOR){
+        t_token_update_category(global_context->current_token, category);
+        tl_token_list_add(global_context->token_list, *global_context->current_token);
+        printf("[DEBUG SCANNER] s_process_token: Token added to token_list.\n");
+    }
 
     // Creates new token and resets automatas
     s_reset_initial_state(global_context);
