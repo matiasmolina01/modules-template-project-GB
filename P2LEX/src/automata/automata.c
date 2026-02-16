@@ -142,13 +142,13 @@ int a_next_state(Automata *automata, char c){
     }
 
     int col = a_mapping_alphabet(automata, c); // get the column of the transition table of the automata for the character
-    if(col < 0) return 0; // if the character is not in the alphabet, return 0 (not accepted) --> a_mapping_alphabet returns A_FAIL (-1 < 0)
+    if(col < 0) return A_NOT_ACCEPTED; // if the character is not in the alphabet, return A_NOT_ACCEPTED (not accepted) --> a_mapping_alphabet returns A_FAIL (-1 < 0)
 
     // if the character is in the alphabet...
     int new_state = automata->transitions[cr][col]; // ...get the new state from the transition table of the automata
 
     // error handling for the new state...
-    if(new_state < 0) return 0; //(not accepted)
+    if(new_state < 0) return A_NOT_ACCEPTED; //(not accepted)
     if(new_state >= automata->numstates){
 		return A_FAIL; // return A_FAIL 
     }
@@ -168,13 +168,13 @@ int a_next_state(Automata *automata, char c){
 int a_accepting_state(Automata *automata, int state){
     if(automata == NULL){
         e_error_report(ERR_A_AUTOMATA_NULL);
-		return 0; // if the automata is null, return failure
+		return A_FAIL; // if the automata is null, return failure
     }
-    if(state < 0 || state >= automata->numstates) return 0; // if the state is invalid,  (not accepting)
-    if(automata->accept[state].flag == 1){
-        return 1;
+    if(state < 0 || state >= automata->numstates) return A_NOT_ACCEPTED; // if the state is invalid,  (not accepting)
+    if(automata->accept[state].flag == A_ACCEPTED){
+        return A_ACCEPTED;
     }
-    return 0;
+    return A_NOT_ACCEPTED;
 }
 
 /*
@@ -184,8 +184,8 @@ int a_accepting_state(Automata *automata, int state){
     (MAIN FUNCTION TO ADVANCE THE AUTOMATA WITH A CHARACTER)
 
     Returns:
-        1 --> if the character is accepted and the automata has advanced to the next state and the new state is inside current state.
-        0 --> if the character is not accepted and the automata has not advanced to the next state.
+        ADV_SUCCESS (1) --> if the character is accepted and the automata has advanced to the next state and the new state is inside current state.
+        ADV_FAIL (0) --> if the character is not accepted and the automata has not advanced to the next state.
         A_FAIL (-1) --> failure
 */
 int a_advance_automata(Automata *automata, char c){
@@ -194,20 +194,18 @@ int a_advance_automata(Automata *automata, char c){
 		return A_FAIL; // if the automata is null, return failure
     }
     int new_state = a_next_state(automata, c); // get the new state from the transition table of the automata for the character
-    if(new_state > 0){ // we consider that the initial state is always 0, so the new state cannot be 0.
-        automata->current_state = new_state; // advance to the new state
-        return 1; // character accepted and automata advanced to the next state (success)
-    }
-    return new_state; // 0 or A_FAIL (-1)
-
+    if(new_state == A_FAIL) return A_FAIL; // if there is a failure in getting the next state, return failure
+    if(new_state == A_NOT_ACCEPTED) return A_ADV_FAIL; // if the character is not accepted, return ADV_FAIL
+    automata->current_state = new_state; // update the current state of the automata to the new state
+    return A_ADV_SUCCESS; // character accepted and automata advanced to the next state (success)
 }
 
 /*
     Function to processes the lookahead character of the automata.
 
     Returns:
-        1 --> if there are valid transitions with the lookahead character (can continue)
-        0 --> if is not accepting
+        A_CAN_CONTINUE --> if there are valid transitions with the lookahead character (can continue)
+        A_CAN_NOT_CONTINUE --> if there are no valid transitions with the lookahead character (cannot continue)
         A_FAIL (-1) --> failure
 */
 int a_lookahead_process(Automata *automata, Lookahead *lookahead){
@@ -217,16 +215,16 @@ int a_lookahead_process(Automata *automata, Lookahead *lookahead){
     }
     if (lookahead == NULL){
         e_error_report(ERR_A_LOOKAHEAD_NULL);
-		return 0; // if the lookahead is null, return failure
+		return A_CAN_NOT_CONTINUE; // if the lookahead is null, return failure
     }
     if (lookahead->has == 0){
-        return 0; // and lookahead has no character -> is not accepting
+        return A_CAN_NOT_CONTINUE; // and lookahead has no character -> is not accepting
     }
 
     int new_state = a_next_state(automata, lookahead->character); // get the next state from the transition table of the automata for the lookahead character
-    if(new_state > 0) return 1; // if have new_state, there are valid transitions with the lookahead character (can continue)
+    if(new_state > 0) return A_CAN_CONTINUE; // if have new_state, there are valid transitions with the lookahead character (can continue)
 
-    return 0; // if not have next state with lookahead character, return 0 (is not accepting)
+    return A_CAN_NOT_CONTINUE; // if not have next state with lookahead character, return A_CAN_NOT_CONTINUE (is not accepting)
 }
 
 /*
@@ -249,14 +247,14 @@ int a_process(Automata *automata, char c, Lookahead *lookahead){
         return A_FAIL; // if the character is not accepted, return fail
     }
     int can_continue = a_lookahead_process(automata, lookahead); 
-	if(can_continue == 1){ // if the character is not accepted, return fail
+	if(can_continue == A_CAN_CONTINUE){ // if the character is not accepted, return fail
         return A_CONTINUE; // can continue with lookahead
     }
 
-    if(a_accepting_state(automata, automata->current_state) == 1){ // if the new state is accepting, return accept
+    if(a_accepting_state(automata, automata->current_state) == A_ACCEPTED){ // if the new state is accepting, return accept
         return A_ACCEPT;
     }
-    return A_FAIL;
+    return A_FAIL; // if the new state is not accepting, return fail
 }
 
 /*
