@@ -20,7 +20,7 @@
             automata_list: list of automatas to be created
 */
 void  gc_init_automatas(Automata* automata_list[]){
-
+	printf("Inside automaton\n");
     
     automata_list[OPERATOR_AUTOMATA] = a_create_automata(NUM_SYMBOLS_OPERATOR_AUTOMATA, NUM_STATES_OPERATOR_AUTOMATA,
                                                  NUM_SYMBOLS_OPERATOR_AUTOMATA, operators_alphabet, operators_transitions,
@@ -65,10 +65,11 @@ GlobalContext* gc_init(Arguments* arguments) {
     TokenList *token_list = tl_token_list_init();
 
     global_context->token_list = token_list;
-
+	printf("entering automatas thing\n");
     Automata* automatas_list[NUM_AUTOMATAS] = {};
     gc_init_automatas(automatas_list);
 
+	printf("input\n");
     Input* input = i_create();
 
     global_context->input = input;

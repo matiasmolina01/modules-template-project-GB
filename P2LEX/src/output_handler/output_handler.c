@@ -19,11 +19,12 @@ static void build_output_filename(const char *input, char *out, size_t size) {
 }
 
 int o_output_handler(const TokenList *list, const char *input_filename) {
-        if (!list || !input_filename) return -1;
-
+    printf("1\n");    
+	if (!list || !input_filename) return -1;
+	printf("2\n");  
     char output_filename[512];
     build_output_filename(input_filename, output_filename, sizeof(output_filename));
-
+	printf("3\n");  
     FILE *fp = fopen(output_filename, "w");
     if (!fp) return -1;
 

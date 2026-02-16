@@ -51,7 +51,7 @@ void s_run_automatas(Automata** automata_list, int*automata_responses, char curr
         global_context: GlobalContext with input information (line, col) and current token
 */
 void s_set_new_current_token(GlobalContext* global_context){
-    global_context->current_token = tl_token_create(global_context->input->line_number, global_context->input->column);
+    global_context->current_token = t_token_create(global_context->input->line_number, global_context->input->column);
 }
 
 /*

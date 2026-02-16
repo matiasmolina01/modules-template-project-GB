@@ -23,8 +23,9 @@
 */
 Automata* a_create_automata(int numsymbols, int numstates, int numcols, AlphabetSymbol *alphabet, int trans[MAXLEN][MAXCOLS], int initial_state, int current_state, int *accepting_states, TokenCategory category){
     // validations for the parameters...
-    if(numstates <= 0 || numstates > MAXLEN){
-        //printf("Invalid number of states: %d. Must be between 1 and %d.\n", numstates, MAXLEN);// ------- ERROR @alex
+    printf("Creating automata with numstates=%d numcols=%d numsymbols=%d\n", numstates, numcols, numsymbols);
+	if(numstates <= 0 || numstates > MAXLEN){
+		//printf("Invalid number of states: %d. Must be between 1 and %d.\n", numstates, MAXLEN);// ------- ERROR @alex
         e_error_report(306);
 		return NULL;
     }
@@ -56,46 +57,52 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
         e_error_report(306);
 		return NULL;
     }
-
+	printf("STARTING AUTOMATA CREATION\n");
     // AUTOMATA CREATION
     Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
-    if(a == NULL){
+    printf("Memory allocated for automata at %p\n", (void*)a);
+	if(a == NULL){
         //printf("Memory allocation failed for automata.\n");// ------- ERROR @alex
 		e_error_report(307);
 		return NULL;
     }
+	printf("Memory allocation successful for automata.\n");
     memset(a, 0, sizeof(*a)); // initialize all fields to 0
-
+	printf("Automata structure initialized to zero.\n");
     a->numstates = numstates;
     a->numcols = numcols;
     a->numsymbols = numsymbols;
     a->initial_state = initial_state;
     a->current_state = current_state;
-
+	printf("Automata fields set: numstates=%d, numcols=%d, numsymbols=%d, initial_state=%d, current_state=%d\n", a->numstates, a->numcols, a->numsymbols, a->initial_state, a->current_state);
     // copy the alphabet
-    for(int i = 0; i < numsymbols; i++){
-        a->alphabet[i] = alphabet[i];
-        if(a->alphabet[i].col < 0 || a->alphabet[i].col >= numcols){ // alphabet not valid
-            free(a);
-            //printf("Invalid column in alphabet symbol: %d. Must be between 0 and %d.\n", a->alphabet[i].col, numcols - 1);// ------- ERROR @alex
-            e_error_report(310);
-			return NULL;
-        }
-    }
-    // copy the transition table
+	a->alphabet = alphabet;
+    // for(int i = 0; i < numsymbols; i++){
+    //     a->alphabet[i] = alphabet[i];
+	// 	if(a->alphabet[i].col < 0 || a->alphabet[i].col >= numcols){ // alphabet not valid
+    //         free(a);
+    //         //printf("Invalid column in alphabet symbol: %d. Must be between 0 and %d.\n", a->alphabet[i].col, numcols - 1);// ------- ERROR @alex
+    //         e_error_report(310);
+	// 		return NULL;
+    //     }
+    // }
+    //copy the transition table
+	printf("Copying transition table for automata category %d\n", category);
     for(int r = 0; r < numstates; r++){
         for(int c = 0; c < numcols; c++){
             a->transitions[r][c] = trans[r][c]; // copy the transition table from the input array
         }
     }
-    
+    printf("Transition table copied successfully.\n");
     // copy the accepting states info
-    for(int i = 0; i < numstates; i++){
+    printf("Setting accepting states for category %d\n", category);
+	for(int i = 0; i < numstates; i++){
         if(accepting_states[i] == 1){
             a->accept[i].flag = 1;
             a->accept[i].category = category; 
         }
     }
+	printf("Automata created successfully with initial state %d and current state %d\n", a->initial_state, a->current_state);
 
     return a; // return the created automata
 }

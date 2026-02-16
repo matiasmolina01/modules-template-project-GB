@@ -35,7 +35,7 @@ typedef struct TokenList{
 } TokenList;
 
 // Token functions
-Token t_token_create(int line, int column);
+Token* t_token_create(int line, int column);
 void t_token_append_char(Token *t, char c);
 void t_token_update_category(Token *t, TokenCategory cat);
 void t_token_destroy(Token *t);

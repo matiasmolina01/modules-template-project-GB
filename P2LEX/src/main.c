@@ -13,15 +13,15 @@ int main(int argc, char *argv[]) {
     #endif
 
     GlobalContext* global_context = gc_init(args);
-	
-    //s_scanner(global_context);
+	printf("Global context initialized\n");
+    s_scanner(global_context);
 
     #ifdef COUNTCONFIG
         c_count_print_summary();
     #endif
 
-    // o_output_handler(global_context->token_list, args->input_path);
-    //gc_destroy(global_context);
+    o_output_handler(global_context->token_list, args->input_path);
+	//gc_destroy(global_context);
 
     return 0;
 }

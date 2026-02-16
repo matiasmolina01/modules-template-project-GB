@@ -34,24 +34,24 @@ static const char *token_category_to_string(TokenCategory cat) {
 
 // Function to create a new token with specified line and column. This only stores the 
 // position information; the lexeme and category will be set later, adding one character at a time.
-Token t_token_create(int line, int column) {
-    Token t;
+Token *t_token_create(int line, int column) {
+    Token *t = (Token*) malloc(sizeof(Token));
 
     // Allocate memory for the lexeme and initialize it.
-    t.lexeme = (char *)malloc(INITIAL_LEXEME_CAPACITY);
-    if (!t.lexeme) {
+    t->lexeme = (char *)malloc(INITIAL_LEXEME_CAPACITY);
+    if (!t->lexeme) {
 		e_error_report(401);
         //e_error_report(); // This error happens when memory allocation for the token's lexeme fails. We should report this error appropriately.
         exit(EXIT_FAILURE);
     }
 
-    t.length = 0;
-    t.capacity = INITIAL_LEXEME_CAPACITY;
-    t.lexeme[0] = '\0';
+    t->length = 0;
+    t->capacity = INITIAL_LEXEME_CAPACITY;
+    t->lexeme[0] = '\0';
 
-    t.category = CAT_NONRECOGNIZED;
-    t.line = line;
-    t.column = column;
+    t->category = CAT_NONRECOGNIZED;
+    t->line = line;
+    t->column = column;
 
     return t;
 }
