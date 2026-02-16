@@ -1,5 +1,3 @@
-
-
 #ifndef MODULE_COUNTER_H
 #define MODULE_COUNTER_H
 
@@ -29,58 +27,59 @@ typedef struct {
 } count_local_t;
 
 
-
 /* Inicializa contadores globales */
-void count_init(void);
+void c_count_init(const char *filename, FILE *main_output);
 
 
 /* Muestra resumen final */
-void count_print_summary(void);
+void c_count_print_summary(void);
 
 
 /* Función de logging */
-void count_log(int line,
+void c_count_log(int line,
                const char *func,
                const char *type,
                int inc,
                count_local_t *local);
 
-/* === Macros de conteo === */
 
-#define COUNTCOMP(n, func) \
-    do { \
-        COUNT_COMP += (n); \ //Actualiza variable global
-        (func).comp += (n); \ //Actualiza variable local
-        count_log(__LINE__, __func__, "COMP", (n), &(func)); \
-    } while(0)
+static inline void c_count_local_init(count_local_t *l) {
+    l->comp = 0;
+    l->io   = 0;
+    l->gen  = 0;
+}
 
-#define COUNTIO(n, func) \
-    do { \
-        COUNT_IO += (n); \
-        (func).io += (n); \
-        count_log(__LINE__, __func__, "IO", (n), &(func)); \
-    } while(0)
+#define COUNTCOMP(n, local)            \
+    do {                               \
+        COUNT_COMP += (n);             \
+        (local).comp += (n);           \
+        c_count_log(__LINE__, __func__, "COMP", (n), &(local)); \
+    } while (0)
 
-#define COUNTGEN(n, func) \
-    do { \
-        COUNT_GEN += (n); \
-        (func).gen += (n); \
-        count_log(__LINE__, __func__, "GEN", (n), &(func)); \
-    } while(0)
+#define COUNTIO(n, local)              \
+    do {                               \
+        COUNT_IO += (n);               \
+        (local).io += (n);             \
+        c_count_log(__LINE__, __func__, "IO", (n), &(local));   \
+    } while (0)
+
+#define COUNTGEN(n, local)             \
+    do {                               \
+        COUNT_GEN += (n);              \
+        (local).gen += (n);            \
+        c_count_log(__LINE__, __func__, "GEN", (n), &(local));  \
+    } while (0)
 
 #else
 
 /* === RELEASE: coste cero === */
-#define COUNTCOMP(n, func)
-#define COUNTIO(n, func)
-#define COUNTGEN(n, func)
+#define COUNTCOMP(n, local)
+#define COUNTIO(n, local)
+#define COUNTGEN(n, local)
 
-
-#define count_init()
-#define count_local_init(local)
+#define count_init(filename, main_output)
 #define count_print_summary()
-
-
+#define count_local_init(local)
 
 #endif /* COUNTCONFIG */
 

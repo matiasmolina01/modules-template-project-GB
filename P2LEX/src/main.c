@@ -8,9 +8,17 @@ int main(int argc, char *argv[]) {
 
     // Arguments* args = process_arguments(argc, argv);
 
+    #ifdef COUNTCONFIG
+        c_count_init("input.txt", stdout);
+    #endif
+
     // GlobalContext* global_context = gc_init(args);
 
     // s_scanner(global_context);
+
+    #ifdef COUNTCONFIG
+        c_count_print_summary();
+    #endif
 
     // gc_destroy(global_context);
 
