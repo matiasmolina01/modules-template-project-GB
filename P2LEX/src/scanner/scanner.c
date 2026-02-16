@@ -126,7 +126,7 @@ void s_check_responses(GlobalContext* global_context){
     printf("[DEBUG SCANNER] s_check_responses: Evaluating automata responses...\n");
     int token_status = CURRENT_TOKEN_FAIL;
     int count_continue = 0;
-    int automata_accepted_idx;
+    int automata_accepted_idx = -1;
 
     for(int i = 0; i < NUM_AUTOMATAS; i++){
         printf("[DEBUG SCANNER] s_check_responses: Automata %d response is %d.\n", i, global_context->automata_responses[i]);
@@ -149,17 +149,12 @@ void s_check_responses(GlobalContext* global_context){
 
     switch(token_status){
         case CURRENT_TOKEN_FAIL:
-        printf("[DEBUG SCANNER] s_check_responses: Status is CURRENT_TOKEN_FAIL. Rejecting token.\n");
         s_reject_token(global_context);
         break;
 
         case CURRENT_TOKEN_ACCEPTED:
-        printf("[DEBUG SCANNER] s_check_responses: Status is CURRENT_TOKEN_ACCEPT. Accept token.\n");
         s_accept_token(global_context, automata_accepted_idx);
         break;
-
-        default:
-        printf("[DEBUG SCANNER] s_check_responses: Token status resolved to %d.\n", token_status);
     }
 }
 
@@ -209,7 +204,6 @@ void s_scanner(GlobalContext* global_context) {
         current_char = i_read_char(global_context->input);
         printf("[DEBUG SCANNER] s_scanner: Initial current_char is '%c' (ASCII: %d).\n", current_char, current_char);
 
-        printf("[DEBUG SCANNER] s_scanner: Appending current_char to token...\n");
         t_token_append_char(global_context->current_token, current_char);
 
     // END OF INITIAL CONFIGURATION
@@ -225,13 +219,12 @@ void s_scanner(GlobalContext* global_context) {
 
         s_check_responses(global_context);
 
-        printf("[DEBUG SCANNER] s_scanner: Appending lookahead '%c' to token...\n", lookahead);
+
         t_token_append_char(global_context->current_token, lookahead);
 
-        printf("[DEBUG SCANNER] s_scanner: Shifting lookahead to current_char...\n");
+
         current_char = lookahead;
         
-        printf("[DEBUG SCANNER] s_scanner: --- Loop Iteration End ---\n");
     }
 
     printf("[DEBUG SCANNER] s_scanner: === SCANNER FINISHED (EOF REACHED) ===\n");

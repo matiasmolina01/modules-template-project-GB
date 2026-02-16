@@ -86,6 +86,7 @@ Automata* a_create_automata(int numsymbols, int numstates, int numcols, Alphabet
         if(accepting_states[i] == 1){
             a->accept[i].flag = 1;
             a->accept[i].category = category; 
+            printf("-----------------------------------------------------[DEBUG AUTOMATA] a_create_automata: State %d is an accepting state with category %d.\n", i, category);
         }
     }
 

@@ -19,8 +19,6 @@
 
 int keyword_accepting_states[NUM_STATES_KEYWORD_AUTOMATA] = {
     0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1
-
-    
 };
 
 int special_accepting_states[NUM_STATES_SPECIAL_CHAR_AUTOMATA] = {
@@ -112,7 +110,7 @@ AlphabetSymbol identifiers_alphabet[NUM_SYMBOLS_IDENTIFIERS_AUTOMATA] = {
 };
 
 AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA] = {
-    {'+', 0}, {'-', 1}, {'*', 2}, {'/', 3}
+    {'+', 0}, {'-', 1}, {'*', 2}, {'=', 3}
 };
 
 int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMATA];
@@ -121,23 +119,6 @@ int numbers_transitions[NUM_STATES_NUMBERS_AUTOMATA][NUM_SYMBOLS_NUMBERS_AUTOMAT
 int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA];
 int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA];
 int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA];
-
-char mapping_input_char(char c) {
-
-    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-        return 'S' ; // LETTER
-    }
-
-    if (c >= '0' && c <= '9') {
-        return 'D'; // DIGIT
-    }
-    return c;
-    
-
-    // return DEAD_TRANSITION; // símbolo no válido
-}
-
-
 
 
 void keyword_transition_table(){
