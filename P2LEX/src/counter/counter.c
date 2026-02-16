@@ -64,8 +64,7 @@ void c_count_init(const char *filename, FILE *main_output) {
         count_fp = fopen(dbgname, "w");
         
         if (!count_fp) {
-            // TODO: error report
-            perror("Error al crear archivo de conteo");
+            e_error_report(600);
             count_fp = NULL; // fallback a stdout
         }
     } else {

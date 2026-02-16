@@ -27,8 +27,7 @@ void print_arguments(Arguments* args) {
 }
 
 Arguments* process_arguments(int argc, char *argv[]) {
-    //TODO
-	//if(argc < 2) error_report();
+	if(argc < 2) e_error_report(700);
 
 	Arguments* args = (Arguments*) malloc(sizeof(Arguments));
 	args->input_path = NULL;
