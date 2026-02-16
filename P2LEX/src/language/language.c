@@ -110,7 +110,7 @@ AlphabetSymbol identifiers_alphabet[NUM_SYMBOLS_IDENTIFIERS_AUTOMATA] = {
 };
 
 AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA] = {
-    {'+', 0}, {'-', 1}, {'*', 2}, {'=', 3}
+    {'+', 0}, {'>', 1}, {'*', 2}, {'=', 3}
 };
 
 int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMATA];
