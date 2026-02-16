@@ -109,6 +109,9 @@ GlobalContext* gc_init(Arguments* arguments) {
         global_context: GlobalContext to be destroyed.
 */
 void gc_destroy(GlobalContext* global_context){
+    for(int i = 0; i < NUM_AUTOMATAS; i++){
+        a_destroy_automata(global_context->automatas_list[i]);
+    }
 	i_close_input(global_context->input);
     tl_token_list_destroy(global_context->token_list);
     t_token_destroy(global_context->current_token);
