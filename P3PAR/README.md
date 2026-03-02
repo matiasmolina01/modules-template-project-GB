@@ -240,56 +240,54 @@ The language module defines the alphabet symbols and finite state transition tab
 
 ---
 
-## Automata
-The automata module implements a deterministic finite automaton **DFA** used by the scanner.
+## Automata (LR Action Table)
+The Automata module implements the LR automaton used by the parser (SRA).
+It does not perform character transitions like a scanner DFA.
 
 Its responsibility is to interact with the Scanner module by providing the following functionalities:
-- **execute state transitions** of an automaton
-- **indicate if the state is accepting state**
-- **tells if can continue with lookahead**
+- storing the **LR action table** 
+- providing access to actions `(SHIFT, REDUCE, ACCEPT, ERROR)`
+- maintaining the current state
 - **reset the automaton**
+
+
+
+#### Changes between the last lab
+The automaton stores a 2D action table:
+`action_table[state][symbol_id]`
+
 
 #### Functions
 
 | FUNCTION | DESCRIPTION | INTERESTED MODULES | RETURN |
 |----------|------------|-------------------|--------|
-| `a_create_automata(...)`| Function to create an automata with the parameters. | SCANNER | `Automata*` --> pointer to the created automata. <br>`NULL` --> failure (invalid parameters or memory allocation failure). |
-| `int a_process(Automata *automata, char c, Lookahead *lookahead)` | Processes one transition step of the automaton. Consumes `c`, checks whether it can continue using the provided `Lookahead`, and determines whether to continue, accept, or fail. | SCANNER | `A_CONTINUE (0)` – automaton can continue.<br>`A_ACCEPT (1)` – Current character consumed, cannot continue, but the current state is accepting.<br>`A_FAIL (-1)` – Cannot consume the current character or stopped in a non-accepting state. |
-| `int a_mapping_alphabet(Automata *automata, char c)` | Maps a character to the corresponding column in the compressed transition table of the automaton. | --- | `col` → column index of transition table.<br>`A_FAIL (-1)` → character not found or invalid column. |
-| `int a_next_state(Automata *automata, char c)` | Computes the next state from the current state using character `c`. | --- | `new_state` → next valid state.<br>`0` → character not accepted.<br>`A_FAIL (-1)` → invalid state or failure. |
-| `int a_accepting_state(Automata *automata, int state)` | Checks whether a given state is an accepting state. | --- | `1` → accepting state.<br>`0` → not accepting.<br> |
-| `int a_advance_automata(Automata *automata, char c)` | Advances the automaton one step if the character is accepted, updating the current state. | --- | `1` → character accepted and state advanced.<br>`0` → character not accepted.<br>`A_FAIL (-1)` → failure. |
-| `int a_lookahead_process(Automata *automata, Lookahead *lookahead)` | Processes the lookahead character to determine if the automaton can continue. | --- | `1` → valid transition exists (can continue).<br>`0` → no valid transition exists..<br>`A_FAIL (-1)` → failure. |
-| `void a_reset_automata(Automata *automata)` | Resets the automaton to its initial state. | SCANNER | No return value. |
-|`void a_destroy_automata(Automata *automata)`|Function to free the memory of the automata.| SCANNER | No return value. |
+| `a_create_automata(...)`| Function to create an automata with the parameters. | SRA | `Automata*` --> pointer to the created automata. <br>`NULL` --> failure (invalid parameters or memory allocation failure). |
+| `Action a_get_action(const Automata *a, int state, int symbol_id)` | Returns the action stored in the table at ``[state][symbol_id]``. | SRA | `Action` → SHIFT,REDUCE,ACCEPT or ERROR |
+| `int a_reset_automata(Automata *automata)` | Resets the automaton to its initial state. | SRA | `0` → success <br> `A_EMPTY_ERROR` → if automata is null |
+|`int a_destroy_automata(Automata *automata)`|Function to free the memory of the automata.| SRA | `0` → success <br> `A_EMPTY_ERROR` → if automata is null |
 
-#### Design Notes
-- State `0` is always the initial state.
-- No valid transition returns to state `0`.
-- Lookahead does not modify the automaton state.
+#### Design considerations
+- `initial_state` is **always** `0`
+- `current_state` is set to `initial_state` at creation
+- No `numcols` (as the last lab) is needed (`numcols = numsymbols`)
+- No `accept_state` (as the last lab) is needed `ACT_ACCEPT` defines acceptance
+- The auomtaton does not execute parsing logic - it returns actions
 
 #### Structs
 
 ------
-##### AlphabetSymbol
+##### Automata
 
 ------
 
 | Field | Type | Description |
 |-------|------|------------|
-| `name` | `char` | Character that represents a symbol of the automaton alphabet. |
-| `col` | `int` | Column index in the compressed transition table corresponding to the symbol. |
-
-------
-
-#### AcceptingState
-
-------
-
-| Field | Type | Description |
-|-------|------|------------|
-| `flag` | `int` | Indicates whether the state is accepting (1 = accepting, 0 = not accepting). |
-| `category` | `TokenCategory` | Category or token type associated with the accepting state. |
+| `numsymbols` | `int` | Number of grammar symbols (columns of the action table). |
+| `numstates` | `int` | Number of LR states (rows of the action table). |
+| `alphabet` | `AlphabetSymbol*` | Array of grammar symbols. |
+| `action_table` | `Action**` | 2D LR action table. |
+| `initial_state` | `int` | Initial state (always 0). |
+| `current_state` | `int` | Current state of the automaton. |
 
 ---
 

@@ -1,22 +1,17 @@
 /* 
  * tests/test_module_automata.c
  * 
- * This module is responsible to process the automata transtions, and as a intermediate step to the scanner,
- * to check if the automata is in an accepting state or if the lookahead can continue with the automata.
+ * This module is responsible to return the action of an automata given a state and a symbol.
  *  
- * The functions of this module are called from the scanner module, and they are tested in this test module.
  * 
  * This module has to manipulate launch.json to set the program arguments for running/debugging. 
  * So the contributors of this module have to have "ownership" of launch.json file too.
  * 
  * It includes the test cases of the all functions into this module:
- *      - a_accepting_state
- *      - a_advance_automata
- *      - a_lookahead_process
- *      - a_next_state
- *      - a_mapping_alphabet
- *      - a_process
- *      - a_reset_automata
+ * - a_create_automata
+ * - a_get_action
+ * - a_reset_automata
+ * - a_destroy_automata
  *
  * The constants and configurations of the tests are defined in the header file test_module_automata.h.
  * 
