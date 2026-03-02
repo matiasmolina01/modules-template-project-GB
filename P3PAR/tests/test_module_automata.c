@@ -25,205 +25,130 @@
  * Update 1: To comprobe all functions into this module.
  * Author: Matias Molina
  * Date: 13/02/2026
+ * 
+ * Update 2: The modifications to LAB3
+ * Author: Matias Molina
+ * Date: 02/03/2026
 */
 #include "../tests/test_module_automata.h"
 
-FILE *ofile = NULL;
 
-// create a function to build an temporal automata, f.e. Numbers automata
-void automata_build(Automata *a){
-    assert(a != NULL); // does not be null
-    memset(a, 0, sizeof(*a)); // initialize all fields to 0 (including the arrays of the struct)
+static void report(const char *name, int ok) {
+    printf("%-48s : %s\n", name, ok ? "PASS" : "FAIL");
+}
 
-    a->numstates  = 2;   // 0 start, 1 accepting
-    a->numcols    = 1;   // only one class of symbols (digits)
-    a->numsymbols = 1;
+// function to create a action table for testing
+static Action **build_table(int numstates, int numsymbols){
+    Action **t = (Action**)malloc((size_t)numstates * sizeof(Action*)); // allocate memory for the action table
+    if (!t) return NULL;
 
-    a->initial_state = 0;
-    a->current_state = 0;
-
-    // Reduced alphabet: D = digit (0..9)
-    a->alphabet[0].name = 'D';
-    a->alphabet[0].col  = 0;
-
-    // Init transitions to -1 (dead) and accept info to 0
-    for (int i = 0; i < MAXLEN; i++) {
-        for (int j = 0; j < MAXCOLS; j++) {
-            a->transitions[i][j] = -1;
+    for (int s = 0; s < numstates; s++) {
+        t[s] = (Action*)malloc((size_t)numsymbols * sizeof(Action));
+        if (!t[s]) {
+            for (int k = 0; k < s; k++) free(t[k]);
+            free(t);
+            return NULL;
         }
-        a->accept[i].flag = 0;
-        a->accept[i].category = CAT_NUMBER;
+        for (int c = 0; c < numsymbols; c++) {
+            t[s][c].type = ACT_ERROR;
+            t[s][c].state = -1;
+            t[s][c].rule = NULL;
+        }
     }
 
-    // DFA:
-    // state 0: D -> 1
-    // state 1: D -> 1
-    a->transitions[0][0] = 1;
-    a->transitions[1][0] = 1;
+    // set a couple actions
+    t[0][0].type = ACT_SHIFT;
+    t[0][0].state = 1;
 
-    // Accepting state
-    a->accept[1].flag = 1;
-    a->accept[1].category = CAT_NUMBER;
+    t[1][2].type = ACT_ACCEPT;
+
+    return t;
 }
 
-/* Pretty print helper for results */
-static const char* res_name(int r){
-    if (r == A_CONTINUE) return "A_CONTINUE";
-    if (r == A_ACCEPT)   return "A_ACCEPT";
-    if (r == A_FAIL)     return "A_FAIL";
-    return "UNKNOWN";
+// in the lab, must be done by parser or language modules.
+static void free_table(Action **t, int numstates) {
+    if (!t) return;
+    for (int s = 0; s < numstates; s++) free(t[s]);
+    free(t);
 }
 
-// to prove the test mapping function of the alphabet of the automata, and the error handling of it.
-static void test_mapping_alphabet(){
-    Automata a;
-    automata_build(&a); // build the automata.
+static void test_create_and_basic_fields(void){
+    int numstates = 2, numsymbols = 3;
+    Action **table = build_table(numstates, numsymbols);
+    report("build_table != NULL", table != NULL);
+    if (!table) return;
 
-    fprintf(ofile, "\n[TEST] a_mapping_alphabet\n"); // print the name of the test
+    // alphabet can be dummy for this test (only pointer storage is tested)
+    AlphabetSymbol *alphabet = (AlphabetSymbol*)0x1; // sentinel non-NULL pointer
 
-    int colD = a_mapping_alphabet(&a, 'D');
-    fprintf(ofile, "mapping('D') = %d (expected 0)\n", colD);
-    assert(colD == 0);
+    Automata *a = a_create_automata(numsymbols, numstates, table, alphabet, 0);
+    report("a_create_automata != NULL", a != NULL);
+    if (!a) { free_table(table, numstates); return; }
 
-    int colX = a_mapping_alphabet(&a, 'X');
-    fprintf(ofile, "mapping('X') = %d (expected A_FAIL=%d)\n", colX, A_FAIL);
-    assert(colX == A_FAIL);
+    report("numstates set", a->numstates == numstates);
+    report("numsymbols set", a->numsymbols == numsymbols);
+    report("initial_state set", a->initial_state == 0);
+    report("current_state == initial_state", a->current_state == a->initial_state);
+    report("action_table pointer set", a->action_table == table);
+
+    a_destroy_automata(a);
+    free_table(table, numstates);
 }
 
-static void test_next_and_advance(){
-    Automata a;
-    automata_build(&a);
+static void test_get_action(void)
+{
+    int numstates = 2, numsymbols = 3;
+    Action **table = build_table(numstates, numsymbols);
+    if (!table) { report("build_table for get_action", 0); return; }
 
-    fprintf(ofile, "\n[TEST] a_next_state + a_advance_automata\n"); // print the name of the test
-    fprintf(ofile, "initial current_state = %d\n", a.current_state);
+    AlphabetSymbol *alphabet = (AlphabetSymbol*)0x1;
+    Automata *a = a_create_automata(numsymbols, numstates, table, alphabet, 0);
+    if (!a) { report("create for get_action", 0); free_table(table, numstates); return; }
 
-    int ns = a_next_state(&a, 'D');
-    fprintf(ofile, "next_state(state=%d, 'D') = %d (expected 1)\n", 0, ns);
-    assert(ns == 1);
+    Action act;
 
-    int adv = a_advance_automata(&a, 'D');
-    fprintf(ofile, "advance('D') = %d, current_state now = %d (expected 1)\n", adv, a.current_state);
-    assert(adv == 1);
-    assert(a.current_state == 1);
+    act = a_get_action(a, 0, 0);
+    report("get_action SHIFT", act.type == ACT_SHIFT && act.state == 1);
 
-    // Now loop on D at state 1
-    ns = a_next_state(&a, 'D');
-    fprintf(ofile, "next_state(state=%d, 'D') = %d (expected 1)\n", 1, ns);
-    assert(ns == 1);
+    act = a_get_action(a, 1, 2);
+    report("get_action ACCEPT", act.type == ACT_ACCEPT);
 
-    // character not in alphabet => next_state returns 0 (not accepted)
-    ns = a_next_state(&a, 'X');
-    fprintf(ofile, "next_state(state=%d, 'X') = %d (expected 0)\n", a.current_state, ns);
-    assert(ns == 0);
+    act = a_get_action(a, 0, 1);
+    report("get_action default ERROR", act.type == ACT_ERROR);
+
+    act = a_get_action(a, -1, 0);
+    report("get_action invalid state -> ERROR", act.type == ACT_ERROR);
+
+    act = a_get_action(a, 0, 99);
+    report("get_action invalid symbol -> ERROR", act.type == ACT_ERROR);
+
+    a_destroy_automata(a);
+    free_table(table, numstates);
 }
 
-// to test the function a_accepting_state, and the error handling of it.
-static void test_accepting_state(){ 
-    Automata a;
-    automata_build(&a);
+static void test_reset(void)
+{
+    int numstates = 2, numsymbols = 3;
+    Action **table = build_table(numstates, numsymbols);
+    if (!table) { report("build_table for reset", 0); return; }
 
-    fprintf(ofile, "\n[TEST] a_accepting_state\n");
-    fprintf(ofile, "accepting(0) = %d (expected 0)\n", a_accepting_state(&a, 0));
-    assert(a_accepting_state(&a, 0) == 0);
+    AlphabetSymbol *alphabet = (AlphabetSymbol*)0x1;
+    Automata *a = a_create_automata(numsymbols, numstates, table, alphabet, 0);
+    if (!a) { report("create for reset", 0); free_table(table, numstates); return; }
 
-    fprintf(ofile, "accepting(1) = %d (expected 1)\n", a_accepting_state(&a, 1));
-    assert(a_accepting_state(&a, 1) == 1);
+    a->current_state = 1;
+    a_reset_automata(a);
+    report("reset sets current_state to initial_state", a->current_state == a->initial_state);
+
+    a_destroy_automata(a);
+    free_table(table, numstates);
 }
-
-// a_lookahead_process
-static void test_lookahead_process(){
-    Automata a;
-    automata_build(&a);
-
-    fprintf(ofile, "\n[TEST] a_lookahead_process\n");
-
-    // Move to accepting state by consuming one D
-    assert(a_advance_automata(&a, 'D') == 1);
-    assert(a.current_state == 1);
-
-    Lookahead la;
-    la.has = 1;
-    la.character = 'D';
-
-    int can = a_lookahead_process(&a, &la);
-    fprintf(ofile, "lookahead='D' from state 1 => %d (expected 1)\n", can);
-    assert(can == 1);
-
-    la.character = 'X';
-    can = a_lookahead_process(&a, &la);
-    fprintf(ofile, "lookahead='X' from state 1 => %d (expected 0)\n", can);
-    assert(can == 0);
-}
-
-// a_process
-static void test_process(){
-    Automata a;
-    automata_build(&a);
-
-    fprintf(ofile, "\n[TEST] a_process\n");
-
-    Lookahead la;
-
-    // Case 1: current='D', lookahead='D' => can continue
-    la.has = 1;
-    la.character = 'D';
-
-    int r = a_process(&a, 'D', &la);
-    fprintf(ofile, "process(c='D', la='D') => %s (%d), current_state=%d\n",
-            res_name(r), r, a.current_state);
-    assert(r == A_CONTINUE);
-
-    // Case 2: current='D', lookahead='X' => cannot continue, but accepting => ACCEPT
-    la.character = 'X';
-    r = a_process(&a, 'D', &la);
-    fprintf(ofile, "process(c='D', la='X') => %s (%d), current_state=%d\n",
-            res_name(r), r, a.current_state);
-    assert(r == A_ACCEPT);
-
-    // Case 3: fail: current='X' not accepted
-    a_reset_automata(&a);
-    la.character = 'D';
-    r = a_process(&a, 'X', &la);
-    fprintf(ofile, "process(c='X', la='D') => %s (%d), current_state=%d\n",
-            res_name(r), r, a.current_state);
-    assert(r == A_FAIL);
-}
-
-// a_reset_automata
-static void test_reset(){
-    Automata a;
-    automata_build(&a);
-
-    fprintf(ofile, "\n[TEST] a_reset_automata\n");
-    assert(a_advance_automata(&a, 'D') == 1);
-    fprintf(ofile, "before reset, current_state=%d\n", a.current_state);
-
-    a_reset_automata(&a);
-    fprintf(ofile, "after reset, current_state=%d (expected %d)\n", a.current_state, a.initial_state);
-    assert(a.current_state == a.initial_state);
-}
-
 
 int main(int argc, char *argv[]) {
-    (void)argc; (void)argv; // parameters.
-
-    ofile = stdout;
-    ofile = set_output_test_file(MODARGSTESTLOGFILENAME);
-
-    // printf("Starting tests for Module automata...\n");
-    fprintf(ofile, "Starting tests for Module automata...\n");
-
-    test_mapping_alphabet();
-    test_next_and_advance();
-    test_accepting_state();
-    test_lookahead_process();
-    test_process();
+    printf("\nStarting tests for Module DFA (LR action table)...\n");
+    test_create_and_basic_fields();
+    test_get_action();
     test_reset();
-
-    printf("Finished tests for Module automata...\n\n");
-    fprintf(ofile, "Finished tests for Module automata...\n\n");
-
-    fclose(ofile);
+    printf("Finished tests for Module DFA.\n\n");
     return 0;
-
 }
