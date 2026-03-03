@@ -37,19 +37,8 @@ static const char *token_category_to_string(TokenCategory cat) {
 Token *t_token_create(int line, int column) {
     Token *t = (Token*) malloc(sizeof(Token));
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_create__;
-    c_count_local_init(&__cnt_local_t_create__);
-    COUNTGEN(1, __cnt_local_t_create__); /* token allocation */
-#endif
-
     // Allocate memory for the lexeme and initialize it.
     t->lexeme = (char *)malloc(INITIAL_LEXEME_CAPACITY);
-    if (!t->lexeme) {
-		e_error_report(ERR_T_MEM_ALLOC_LEXEME);
-        //e_error_report(); // This error happens when memory allocation for the token's lexeme fails. We should report this error appropriately.
-        exit(EXIT_FAILURE);
-    }
 
     t->length = 0;
     t->capacity = INITIAL_LEXEME_CAPACITY;
@@ -59,10 +48,6 @@ Token *t_token_create(int line, int column) {
     t->line = line;
     t->column = column;
 
-#ifdef COUNTCONFIG
-    COUNTGEN(1, __cnt_local_t_create__); /* lexeme buffer allocated */
-#endif
-
     return t;
 }
 
@@ -71,47 +56,25 @@ Token *t_token_create(int line, int column) {
 void t_token_append_char(Token *t, char c) {
     if (!t) return;
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_append__;
-    c_count_local_init(&__cnt_local_t_append__);
-    COUNTCOMP(1, __cnt_local_t_append__); /* null check */
-#endif
-
     // Check if we need to resize the lexeme buffer to accommodate the new character and null terminator.
     if (t->length + 1 >= t->capacity) {
         size_t new_capacity = t->capacity * 2;
 
         char *new_lexeme = (char *)realloc(t->lexeme, new_capacity);
-        if (!new_lexeme) {
-			e_error_report(ERR_T_MEM_ALLOC_LEXEME);
-            //e_error_report(); // This error happens when memory allocation for expanding the token's lexeme fails. We should report this error appropriately.
-            exit(EXIT_FAILURE);
-        }
+
 
         t->lexeme = new_lexeme;
         t->capacity = new_capacity;
 
-#ifdef COUNTCONFIG
-        COUNTGEN(1, __cnt_local_t_append__); /* lexeme buffer expanded */
-#endif
     }
 
     t->lexeme[t->length++] = c;
     t->lexeme[t->length] = '\0';
-
-#ifdef COUNTCONFIG
-    COUNTGEN(1, __cnt_local_t_append__); /* char appended */
-#endif
 }
 
 // Function to update the category of a token. This allows us to set the token's category after we have built its lexeme and determined its type.
 void t_token_update_category(Token *t, TokenCategory cat) {
     if (!t) return;
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_update__;
-    c_count_local_init(&__cnt_local_t_update__);
-    COUNTGEN(1, __cnt_local_t_update__); /* category update */
-#endif
     t->category = cat;
 }
 
@@ -123,32 +86,16 @@ void t_token_destroy(Token *t) {
     t->lexeme = NULL;
     t->length = 0;
     t->capacity = 0;
-
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_destroy__;
-    c_count_local_init(&__cnt_local_t_destroy__);
-    COUNTGEN(1, __cnt_local_t_destroy__); /* token destroy */
-#endif
 }
 
 // Function to initialize a token list. This sets up the list to be empty and ready to store tokens.
 TokenList *tl_token_list_init(void) {
     TokenList *list = (TokenList *)malloc(sizeof(TokenList));
-    if (!list) {
-		e_error_report(ERR_T_MEM_ALLOC_TOKEN);
-        //e_error_report(); // This error happens when memory allocation for a new token list fails. We should report this error appropriately.
-        exit(EXIT_FAILURE);
-    }
+
 
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
-
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_tl_init__;
-    c_count_local_init(&__cnt_local_tl_init__);
-    COUNTGEN(1, __cnt_local_tl_init__); /* token list init */
-#endif
 
     return list;
 }
@@ -158,11 +105,6 @@ void tl_token_list_add(TokenList *list, Token t) {
     if (!list) return;
 
     TokenNode *node = (TokenNode *)malloc(sizeof(TokenNode));
-    if (!node) {
-		e_error_report(ERR_T_MEM_ALLOC_TOKEN_NODE);
-        //e_error_report();  // This error happens when memory allocation for a new token node fails. We should report this error appropriately.
-        exit(EXIT_FAILURE);
-    }
 
     node->token = t;
     node->next = NULL;
@@ -177,12 +119,6 @@ void tl_token_list_add(TokenList *list, Token t) {
 
     list->size++;
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_tl_add__;
-    c_count_local_init(&__cnt_local_tl_add__);
-    COUNTGEN(1, __cnt_local_tl_add__); /* node allocated */
-    COUNTGEN(1, __cnt_local_tl_add__); /* size increment */
-#endif
 }
 
 // Function to update a token's category and add it to a token list. This is a convenience function that combines updating the token's category and adding it to the list in one step.
@@ -203,11 +139,6 @@ int tl_token_list_size(const TokenList *list) {
 void tl_token_list_destroy(TokenList *list) {
     if (!list) return;
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_tl_destroy__;
-    c_count_local_init(&__cnt_local_tl_destroy__);
-#endif
-
     TokenNode *current = list->head;
 
     while (current) {
@@ -217,10 +148,6 @@ void tl_token_list_destroy(TokenList *list) {
         t_token_destroy(&current->token);
 
         free(current);
-        
-#ifdef COUNTCONFIG
-        COUNTGEN(1, __cnt_local_tl_destroy__); /* node destroyed */
-#endif
         current = next;
     }
 
@@ -235,11 +162,6 @@ void tl_token_list_destroy(TokenList *list) {
 void t_token_print_release(FILE *out, const Token *t) {
     if (!out || !t) return;
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_print_rel__;
-    c_count_local_init(&__cnt_local_t_print_rel__);
-    COUNTIO(1, __cnt_local_t_print_rel__);
-#endif
 
     fprintf(out, "<%s, %s>",
             t->lexeme ? t->lexeme : "",
@@ -249,12 +171,6 @@ void t_token_print_release(FILE *out, const Token *t) {
 // Function to print a token in a detailed format suitable for debugging. 
 void t_token_print_debug(FILE *out, const Token *t) {
     if (!out || !t) return;
-
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_t_print_dbg__;
-    c_count_local_init(&__cnt_local_t_print_dbg__);
-    COUNTIO(1, __cnt_local_t_print_dbg__);
-#endif
 
     fprintf(out,
         "<lexeme=\"%s\", category=%s, line=%d, column=%d, length=%zu, capacity=%zu>",
@@ -271,11 +187,6 @@ void t_token_print_debug(FILE *out, const Token *t) {
 void tl_token_list_print_release(FILE *out, const TokenList *list) {
     if (!out || !list || !list->head) return;
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_tl_print_rel__;
-    c_count_local_init(&__cnt_local_tl_print_rel__);
-#endif
-
     TokenNode *current = list->head;
     int current_line = current->token.line;
 
@@ -290,10 +201,6 @@ void tl_token_list_print_release(FILE *out, const TokenList *list) {
 
         if (current->next && current->next->token.line == current_line)
             fprintf(out, " ");
-
-#ifdef COUNTCONFIG
-        COUNTIO(1, __cnt_local_tl_print_rel__);
-#endif
 
         current = current->next;
     }
@@ -310,11 +217,6 @@ void tl_token_list_print_debug(FILE *out, const TokenList *list) {
         return;
     }
 
-#ifdef COUNTCONFIG
-    count_local_t __cnt_local_tl_print_dbg__;
-    c_count_local_init(&__cnt_local_tl_print_dbg__);
-#endif
-
     fprintf(out, "[TOKEN LIST size=%d]\n", list->size);
 
     if(list->size == 0) {
@@ -329,10 +231,6 @@ void tl_token_list_print_debug(FILE *out, const TokenList *list) {
         fprintf(out, "  %d: ", index);
         t_token_print_debug(out, &current->token);
         fprintf(out, "\n");
-
-#ifdef COUNTCONFIG
-        COUNTIO(1, __cnt_local_tl_print_dbg__);
-#endif
 
         current = current->next;
         index++;

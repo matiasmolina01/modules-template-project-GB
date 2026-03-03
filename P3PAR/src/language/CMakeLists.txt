@@ -15,7 +15,7 @@ add_library(language language.c)
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(language PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because language depends on utils
-target_link_libraries(language PRIVATE utils error_handler counter automata)
+target_link_libraries(language PRIVATE utils automata)
 
 # Print a status message during CMake configuration to confirm language is processed
 message(STATUS "(${PROJECT_NAME}) language configured: Added as static library")

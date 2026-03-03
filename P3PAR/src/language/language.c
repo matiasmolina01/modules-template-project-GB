@@ -3,203 +3,125 @@
  * language.c 
  *
  * Usage:
- *     Called from the automata module or test modules to check what type of character is it.
+ *     Implement the functions to load the language.txt into the Language data structures
  *
  * Status:
  *     Initial development — logic to handle language is not yet implemented.
  *
  * 
- * Author: []
+ * Author: [Franco Olano Melo]
  * -----------------------------------------------------------------------------
  */
 
-
-
 #include "./language.h"
 
-int keyword_accepting_states[NUM_STATES_KEYWORD_AUTOMATA] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0
-};
+/* Parses the symbols section from the file and populates the Language structure, returning nothing. */
+void parse_symbols(FILE *file, Language *lang) {
+    char line[MAX_LINE_LEN];
+    char name[MAX_NAME_LEN];
+    char type[MAX_NAME_LEN];
+    lang->symbols = malloc(DEFAULT_CAPACITY * sizeof(Symbol*));
 
-int special_accepting_states[NUM_STATES_SPECIAL_CHAR_AUTOMATA] = {
-    0, 1, 0
-};
+    while (fgets(line, sizeof(line), file) && line[0] != '[') {
+        if (line[0] == '\n') continue;
 
-int operators_accepting_states[NUM_STATES_OPERATOR_AUTOMATA] = {
-    0, 1, 0
-};
-
-int numbers_accepting_state[NUM_STATES_NUMBERS_AUTOMATA] = {
-    0, 1, 0
-};
-
-int identifiers_accepting_state[NUM_STATES_IDENTIFIERS_AUTOMATA] = {
-    0, 1, 0
-};
-
-int literals_accepting_state[NUM_STATES_LITERALS_AUTOMATA] = {
-    0, 0, 1, 0
-};
-
-AlphabetSymbol keyword_alphabet[NUM_SYMBOLS_KEYWORD_AUTOMATA] = {
-    {'i', 0}, {'f', 1}, {'n', 2}, {'t', 3}, {'e', 4}, {'l', 5}, {'s', 6}, {'w', 7}, 
-    {'h', 8}, {'r', 9}, {'u', 10}, {'c', 11}, {'a', 12}, {'v', 13}, {'o', 14}, {'d', 15}
-};
-
-AlphabetSymbol special_char_alphabet[NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA] = {
-    {'(', 0}, 
-    {')', 1}, 
-    {'[', 2}, 
-    {']', 3}, 
-    {';', 4}, 
-    {'{', 5}, 
-    {'}', 6}, 
-    {',', 7}
-};
-
-AlphabetSymbol numbers_alphabet[NUM_SYMBOLS_NUMBERS_AUTOMATA] = {
-    {'0', 0}, {'1', 1}, {'2', 2}, {'3', 3}, {'4', 4},
-    {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}
-};
-
-AlphabetSymbol literals_alphabet[NUM_SYMBOLS_LITERALS_AUTOMATA] = {
-    // a-z -> columnas 0-25
-    {'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4},
-    {'f', 5}, {'g', 6}, {'h', 7}, {'i', 8}, {'j', 9},
-    {'k', 10}, {'l', 11}, {'m', 12}, {'n', 13}, {'o', 14},
-    {'p', 15}, {'q', 16}, {'r', 17}, {'s', 18}, {'t', 19},
-    {'u', 20}, {'v', 21}, {'w', 22}, {'x', 23}, {'y', 24}, {'z', 25},
-
-    // A-Z -> columnas 26-51
-    {'A', 26}, {'B', 27}, {'C', 28}, {'D', 29}, {'E', 30},
-    {'F', 31}, {'G', 32}, {'H', 33}, {'I', 34}, {'J', 35},
-    {'K', 36}, {'L', 37}, {'M', 38}, {'N', 39}, {'O', 40},
-    {'P', 41}, {'Q', 42}, {'R', 43}, {'S', 44}, {'T', 45},
-    {'U', 46}, {'V', 47}, {'W', 48}, {'X', 49}, {'Y', 50}, {'Z', 51},
-
-    // 0-9 -> columnas 52-61
-    {'0', 52}, {'1', 53}, {'2', 54}, {'3', 55}, {'4', 56},
-    {'5', 57}, {'6', 58}, {'7', 59}, {'8', 60}, {'9', 61},
-
-    // " -> columna 62 (La llave para abrir/cerrar el literal)
-    {'"', 62}
-};
-
-AlphabetSymbol identifiers_alphabet[NUM_SYMBOLS_IDENTIFIERS_AUTOMATA] = {
-    // a-z -> columnas 0-25
-    {'a', 0}, {'b', 1}, {'c', 2}, {'d', 3}, {'e', 4},
-    {'f', 5}, {'g', 6}, {'h', 7}, {'i', 8}, {'j', 9},
-    {'k', 10}, {'l', 11}, {'m', 12}, {'n', 13}, {'o', 14},
-    {'p', 15}, {'q', 16}, {'r', 17}, {'s', 18}, {'t', 19},
-    {'u', 20}, {'v', 21}, {'w', 22}, {'x', 23}, {'y', 24}, {'z', 25},
-
-    // A-Z -> columnas 26-51
-    {'A', 26}, {'B', 27}, {'C', 28}, {'D', 29}, {'E', 30},
-    {'F', 31}, {'G', 32}, {'H', 33}, {'I', 34}, {'J', 35},
-    {'K', 36}, {'L', 37}, {'M', 38}, {'N', 39}, {'O', 40},
-    {'P', 41}, {'Q', 42}, {'R', 43}, {'S', 44}, {'T', 45},
-    {'U', 46}, {'V', 47}, {'W', 48}, {'X', 49}, {'Y', 50}, {'Z', 51},
-
-    // 0-9 -> columnas 52-61 (Solo se aceptan a partir del Estado 1)
-    {'0', 52}, {'1', 53}, {'2', 54}, {'3', 55}, {'4', 56},
-    {'5', 57}, {'6', 58}, {'7', 59}, {'8', 60}, {'9', 61}
-};
-
-AlphabetSymbol operators_alphabet[NUM_SYMBOLS_OPERATOR_AUTOMATA] = {
-    {'=', 0}, 
-    {'+', 1}, 
-    {'>', 2}, 
-    {'*', 3}
-};
-
-int keyword_transitions[NUM_STATES_KEYWORD_AUTOMATA][NUM_SYMBOLS_KEYWORD_AUTOMATA] = {
-    {1, 22, 22, 22, 3, 22, 22, 6, 22, 10, 22, 15, 22, 18, 22, 22}, // State 0
-    {22, 21, 2, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 1
-    {22, 22, 22, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 2
-    {22, 22, 22, 22, 22, 4, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 3
-    {22, 22, 22, 22, 22, 22, 5, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 4
-    {22, 22, 22, 22, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 5
-    {22, 22, 22, 22, 22, 22, 22, 22, 7, 22, 22, 22, 22, 22, 22, 22}, // State 6
-    {8, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 7
-    {22, 22, 22, 22, 22, 9, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 8
-    {22, 22, 22, 22, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 9
-    {22, 22, 22, 22, 11, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 10
-    {22, 22, 22, 12, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 11
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 13, 22, 22, 22, 22, 22}, // State 12
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 14, 22, 22, 22, 22, 22, 22}, // State 13
-    {22, 22, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 14
-    {22, 22, 22, 22, 22, 22, 22, 22, 16, 22, 22, 22, 22, 22, 22, 22}, // State 15
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 17, 22, 22, 22}, // State 16
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 21, 22, 22, 22, 22, 22, 22}, // State 17
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 19, 22}, // State 18
-    {20, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 19
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 21}, // State 20
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}, // State 21 (Accepting State)
-    {22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22}  // State 22 (Dead State)
-};
-
-#ifdef COUNTCONFIG
-/* Counts static language resources: alphabet sizes and transition table sizes. */
-void l_count_language_stats(void) {
-    count_local_t __cnt_local_lc__;
-    c_count_local_init(&__cnt_local_lc__);
-
-    /* Count alphabet symbol definitions */
-    COUNTGEN(NUM_SYMBOLS_KEYWORD_AUTOMATA, __cnt_local_lc__);
-    COUNTGEN(NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA, __cnt_local_lc__);
-    COUNTGEN(NUM_SYMBOLS_NUMBERS_AUTOMATA, __cnt_local_lc__);
-    COUNTGEN(NUM_SYMBOLS_LITERALS_AUTOMATA, __cnt_local_lc__);
-    COUNTGEN(NUM_SYMBOLS_IDENTIFIERS_AUTOMATA, __cnt_local_lc__);
-    COUNTGEN(NUM_SYMBOLS_OPERATOR_AUTOMATA, __cnt_local_lc__);
-
-    /* Count transition table entries (as comparisons) */
-    COUNTCOMP(NUM_STATES_KEYWORD_AUTOMATA * NUM_SYMBOLS_KEYWORD_AUTOMATA, __cnt_local_lc__);
-    COUNTCOMP(NUM_STATES_IDENTIFIERS_AUTOMATA * NUM_SYMBOLS_IDENTIFIERS_AUTOMATA, __cnt_local_lc__);
-    COUNTCOMP(NUM_STATES_NUMBERS_AUTOMATA * NUM_SYMBOLS_NUMBERS_AUTOMATA, __cnt_local_lc__);
-    COUNTCOMP(NUM_STATES_SPECIAL_CHAR_AUTOMATA * NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA, __cnt_local_lc__);
-    COUNTCOMP(NUM_STATES_OPERATOR_AUTOMATA * NUM_SYMBOLS_OPERATOR_AUTOMATA, __cnt_local_lc__);
-    COUNTCOMP(NUM_STATES_LITERALS_AUTOMATA * NUM_SYMBOLS_LITERALS_AUTOMATA, __cnt_local_lc__);
+        Symbol *sym = malloc(sizeof(Symbol));
+        sscanf(line, FMT_SYMBOL, &sym->id, name, type);
+        
+        sym->name = strdup(name);
+        sym->is_terminal = (strcmp(type, STR_TERMINAL) == 0) ? 1 : 0;
+        
+        if (!sym->is_terminal) {
+            lang->num_nonterminals++;
+        }
+        lang->symbols[lang->num_symbols++] = sym;
+    }
 }
-#endif
-	
-int identifiers_transitions[NUM_STATES_IDENTIFIERS_AUTOMATA][NUM_SYMBOLS_IDENTIFIERS_AUTOMATA] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-     2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-};
 
-int numbers_transitions[NUM_STATES_NUMBERS_AUTOMATA][NUM_SYMBOLS_NUMBERS_AUTOMATA] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-};
+/* Parses the rules section from the file and populates the Language structure, returning nothing. */
+void parse_rules(FILE *file, Language *lang) {
+    char line[MAX_LINE_LEN];
+    lang->rules = malloc(DEFAULT_CAPACITY * sizeof(Rule*));
 
-int special_char_transitions[NUM_STATES_SPECIAL_CHAR_AUTOMATA][NUM_SYMBOLS_SPECIAL_CHAR_AUTOMATA] = {
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {2, 2, 2, 2, 2, 2, 2, 2},
-    {2, 2, 2, 2, 2, 2, 2, 2}
-};
+    while (fgets(line, sizeof(line), file) && line[0] != '[') {
+        if (line[0] == '\n') continue;
 
-int operators_transitions[NUM_STATES_OPERATOR_AUTOMATA][NUM_SYMBOLS_OPERATOR_AUTOMATA] = {
-    {1, 1, 1, 1},
-    {2, 2, 2, 2},
-    {2, 2, 2, 2}
-};
+        Rule *rule = malloc(sizeof(Rule));
+        rule->rhs = malloc(MAX_RHS_LEN * sizeof(int));
+        rule->rhs_length = 0;
 
-int literals_transitions[NUM_STATES_LITERALS_AUTOMATA][NUM_SYMBOLS_LITERALS_AUTOMATA] = {
-    {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-    {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-    {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3}
-};
+        int offset = 0, read_chars = 0;
+        sscanf(line, FMT_RULE_HDR, &rule->id, &rule->lhs, &read_chars);
+        offset += read_chars;
 
+        int rhs_val;
+        while (sscanf(line + offset, FMT_RHS_ITEM, &rhs_val, &read_chars) == 1) {
+            rule->rhs[rule->rhs_length++] = rhs_val;
+            offset += read_chars;
+        }
 
+        lang->rules[lang->num_rules++] = rule;
+    }
+}
+
+/* Parses the actions matrix from the file and populates the Language structure, returning nothing. */
+void parse_actions(FILE *file, Language *lang) {
+    char line[MAX_LINE_LEN];
+    lang->action_table = malloc(DEFAULT_CAPACITY * sizeof(Action*));
+
+    while (fgets(line, sizeof(line), file) && line[0] != '[') {
+        if (line[0] == '\n') continue;
+
+        Action *state_actions = malloc(lang->num_symbols * sizeof(Action));
+        int offset = 0, read_chars = 0;
+        char act_type;
+        int act_state, act_rule;
+        int sym_idx = 0;
+
+        while (sscanf(line + offset, FMT_ACTION, &act_type, &act_state, &act_rule, &read_chars) == 3) {
+            state_actions[sym_idx].state = act_state;
+            state_actions[sym_idx].rule = NULL;
+
+            if (act_type == CHAR_SHIFT) {
+                state_actions[sym_idx].type = ACT_SHIFT;
+            } else if (act_type == CHAR_REDUCE) {
+                state_actions[sym_idx].type = ACT_REDUCE;
+                state_actions[sym_idx].rule = lang->rules[act_rule];
+            } else if (act_type == CHAR_ACCEPT) {
+                state_actions[sym_idx].type = ACT_ACCEPT;
+            } else {
+                state_actions[sym_idx].type = ACT_ERROR;
+            }
+
+            sym_idx++;
+            offset += read_chars;
+        }
+        lang->action_table[lang->num_states++] = state_actions;
+    }
+}
+
+/* Creates and returns a Language struct by parsing the provided formatted text file path. */
+Language* get_language(const char* language_file_path) {
+    FILE *file = fopen(language_file_path, READ_MODE);
+    if (!file) return NULL;
+
+    Language *lang = calloc(1, sizeof(Language));
+    char line[MAX_LINE_LEN];
+
+    while (fgets(line, sizeof(line), file)) {
+        if (strcmp(line, SEC_SYMBOLS) == 0) {
+            parse_symbols(file, lang);
+        } else if (strcmp(line, SEC_START) == 0) {
+            if (fgets(line, sizeof(line), file)) {
+                lang->start_symbol = atoi(line);
+            }
+        } else if (strcmp(line, SEC_RULES) == 0) {
+            parse_rules(file, lang);
+        } else if (strcmp(line, SEC_ACTIONS) == 0) {
+            parse_actions(file, lang);
+        }
+    }
+
+    fclose(file);
+    return lang;
+}

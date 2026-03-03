@@ -57,9 +57,6 @@ target_link_libraries(modules_template_main PRIVATE
   utils  
   language
   automata
-  scanner
-  counter
-  error_handler
   input_handler
   module_args 
   output_handler
