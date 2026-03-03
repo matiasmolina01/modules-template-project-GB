@@ -64,42 +64,73 @@ void parse_rules(FILE *file, Language *lang) {
     }
 }
 
-/* Parses the actions matrix from the file and populates the Language structure, returning nothing. */
-void parse_actions(FILE *file, Language *lang) {
-    char line[MAX_LINE_LEN];
-    lang->action_table = malloc(DEFAULT_CAPACITY * sizeof(Action*));
+/* Helper function to construct a single Action struct based on the parsed characters and IDs. */
+Action create_action(char act_type, int act_state, int act_rule, Language *lang) {
+    Action act;
+    act.state = act_state;
+    act.rule = NULL;
 
-    while (fgets(line, sizeof(line), file) && line[0] != '[') {
-        if (line[0] == '\n') continue;
-
-        Action *state_actions = malloc(lang->num_symbols * sizeof(Action));
-        int offset = 0, read_chars = 0;
-        char act_type;
-        int act_state, act_rule;
-        int sym_idx = 0;
-
-        while (sscanf(line + offset, FMT_ACTION, &act_type, &act_state, &act_rule, &read_chars) == 3) {
-            state_actions[sym_idx].state = act_state;
-            state_actions[sym_idx].rule = NULL;
-
-            if (act_type == CHAR_SHIFT) {
-                state_actions[sym_idx].type = ACT_SHIFT;
-            } else if (act_type == CHAR_REDUCE) {
-                state_actions[sym_idx].type = ACT_REDUCE;
-                state_actions[sym_idx].rule = lang->rules[act_rule];
-            } else if (act_type == CHAR_ACCEPT) {
-                state_actions[sym_idx].type = ACT_ACCEPT;
-            } else {
-                state_actions[sym_idx].type = ACT_ERROR;
-            }
-
-            sym_idx++;
-            offset += read_chars;
-        }
-        lang->action_table[lang->num_states++] = state_actions;
+    if (act_type == CHAR_SHIFT) {
+        act.type = ACT_SHIFT;
+    } else if (act_type == CHAR_REDUCE) {
+        act.type = ACT_REDUCE;
+        act.rule = lang->rules[act_rule];
+    } else if (act_type == CHAR_ACCEPT) {
+        act.type = ACT_ACCEPT;
+    } else {
+        act.type = ACT_ERROR;
     }
+
+    return act;
 }
 
+/* Processes a single text line to allocate and return an array of Actions for one state. */
+Action* parse_action_line(char *line, Language *lang) {
+    Action *state_actions = malloc(lang->num_symbols * sizeof(Action));
+    char *ptr = line;
+    int read_chars = 0;
+    char act_type;
+    int act_state, act_rule;
+    int sym_idx = 0;
+
+    // Read formatted actions until the line ends or we hit the symbol count limit
+    while (sym_idx < lang->num_symbols && 
+           sscanf(ptr, " %c-%d-%d%n", &act_type, &act_state, &act_rule, &read_chars) == 3) {
+        
+        state_actions[sym_idx] = create_action(act_type, act_state, act_rule, lang);
+        
+        sym_idx++;
+        ptr += read_chars;
+    }
+    
+    // Fill any missing trailing symbols in the matrix row with ACT_ERROR
+    while(sym_idx < lang->num_symbols) {
+         state_actions[sym_idx] = create_action(CHAR_ERROR, 0, 0, lang);
+         sym_idx++;
+    }
+
+    return state_actions;
+}
+
+/* Main loop that reads the [ACTIONS] section and builds the SRA Action table. */
+void parse_actions(FILE *file, Language *lang) {
+    char line[MAX_LINE_LEN];
+    int capacity = DEFAULT_CAPACITY;
+    
+    lang->action_table = malloc(capacity * sizeof(Action*));
+    lang->num_states = 0;
+
+    while (fgets(line, sizeof(line), file) && line[0] != '[') {
+        if (line[0] == '\n' || line[0] == '\r') continue;
+
+        if (lang->num_states >= capacity) {
+            capacity *= 2;
+            lang->action_table = realloc(lang->action_table, capacity * sizeof(Action*));
+        }
+
+        lang->action_table[lang->num_states++] = parse_action_line(line, lang);
+    }
+}
 /* Creates and returns a Language struct by parsing the provided formatted text file path. */
 Language* get_language(const char* language_file_path) {
     FILE *file = fopen(language_file_path, READ_MODE);

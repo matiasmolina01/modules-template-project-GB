@@ -25,7 +25,16 @@ void print_language(Language *lang, FILE *out) {
     }
 
     fprintf(out, "=== LANGUAGE LOADED SUCCESSFULLY ===\n");
-    fprintf(out, "Start Symbol ID: %d\n", lang->start_symbol);
+    
+    // Find and print the actual name of the start symbol
+    char *start_name = "UNKNOWN";
+    for (int i = 0; i < lang->num_symbols; i++) {
+        if (lang->symbols[i]->id == lang->start_symbol) {
+            start_name = lang->symbols[i]->name;
+            break;
+        }
+    }
+    fprintf(out, "Start Symbol: %s (ID: %d)\n", start_name, lang->start_symbol);
     
     fprintf(out, "\n--- Symbols (Total: %d, Non-Terminals: %d) ---\n", lang->num_symbols, lang->num_nonterminals);
     for (int i = 0; i < lang->num_symbols; i++) {
@@ -37,9 +46,28 @@ void print_language(Language *lang, FILE *out) {
     fprintf(out, "\n--- Grammar Rules (Total: %d) ---\n", lang->num_rules);
     for (int i = 0; i < lang->num_rules; i++) {
         Rule *r = lang->rules[i];
-        fprintf(out, "  Rule %2d: Symbol %2d -> [ ", r->id, r->lhs);
+        
+        // Find LHS symbol name
+        char *lhs_name = "???";
+        for (int k = 0; k < lang->num_symbols; k++) {
+            if (lang->symbols[k]->id == r->lhs) {
+                lhs_name = lang->symbols[k]->name;
+                break;
+            }
+        }
+
+        fprintf(out, "  Rule %2d: %s -> [ ", r->id, lhs_name);
+        
+        // Find and print RHS symbol names
         for (int j = 0; j < r->rhs_length; j++) {
-            fprintf(out, "%d ", r->rhs[j]);
+            char *rhs_name = "???";
+            for (int k = 0; k < lang->num_symbols; k++) {
+                if (lang->symbols[k]->id == r->rhs[j]) {
+                    rhs_name = lang->symbols[k]->name;
+                    break;
+                }
+            }
+            fprintf(out, "%s ", rhs_name);
         }
         fprintf(out, "]\n");
     }
@@ -47,9 +75,9 @@ void print_language(Language *lang, FILE *out) {
     fprintf(out, "\n--- SRA Action Table (Total States: %d) ---\n", lang->num_states);
     fprintf(out, "  State | ");
     for (int j = 0; j < lang->num_symbols; j++) {
-        fprintf(out, "%-5d ", lang->symbols[j]->id);
+        fprintf(out, "%-5s ", lang->symbols[j]->name);
     }
-    fprintf(out, "\n  ---------------------------------------------------\n");
+    fprintf(out, "\n  ------------------------------------------------------------------------\n");
 
     for (int i = 0; i < lang->num_states; i++) {
         fprintf(out, "  %5d | ", i);

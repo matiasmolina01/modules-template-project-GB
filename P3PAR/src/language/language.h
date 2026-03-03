@@ -20,7 +20,7 @@
 #include "../main.h"
 
 /* Defines the different types of actions the SRA can perform. */
-typedef enum {
+typedef enum ActionType{
     ACT_SHIFT,
     ACT_REDUCE,
     ACT_ACCEPT,
