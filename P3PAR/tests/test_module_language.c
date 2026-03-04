@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
     if (ofile != stdout) fprintf(ofile, "Starting tests for Module Language...\n");
     
     // Provide a default path if no arguments are passed, otherwise use argv[1]
-    const char *target_file = (argc >= 2) ? argv[1] : "./test_files/language.txt";
+    const char *target_file = (argc >= 2) ? argv[1] : "./P3PAR/tests/test_files/language.txt";
     
     test_get_language(target_file);      
     

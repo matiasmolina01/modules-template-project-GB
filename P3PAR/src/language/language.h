@@ -7,7 +7,7 @@
  *      In charge of loading the language information into the program
  *
  * Status:
- *     Initial development — logic to handle language is not yet implemented.
+ *     Finished.
  *
  * 
  * Author: [Franco Olano Melo]
