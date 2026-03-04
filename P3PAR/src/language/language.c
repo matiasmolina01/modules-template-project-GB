@@ -188,3 +188,61 @@ Language* get_language(const char* language_file_path) {
     fclose(file);
     return lang;
 }
+
+/* Frees all dynamically allocated memory associated with the Language symbols, returning nothing. */
+void free_symbols(Language *lang) {
+    if (lang->symbols != NULL) {
+        for (int i = 0; i < lang->num_symbols; i++) {
+            if (lang->symbols[i] != NULL) {
+                if (lang->symbols[i]->name != NULL) {
+                    free(lang->symbols[i]->name);
+                }
+                free(lang->symbols[i]);
+            }
+        }
+        free(lang->symbols);
+        lang->symbols = NULL;
+    }
+}
+
+/* Frees all dynamically allocated memory associated with the Language rules, returning nothing. */
+void free_rules(Language *lang) {
+    if (lang->rules != NULL) {
+        for (int i = 0; i < lang->num_rules; i++) {
+            if (lang->rules[i] != NULL) {
+                if (lang->rules[i]->rhs != NULL) {
+                    free(lang->rules[i]->rhs);
+                }
+                free(lang->rules[i]);
+            }
+        }
+        free(lang->rules);
+        lang->rules = NULL;
+    }
+}
+
+/* Frees all dynamically allocated memory associated with the Language action table, returning nothing. */
+void free_actions(Language *lang) {
+    if (lang->action_table != NULL) {
+        for (int i = 0; i < lang->num_states; i++) {
+            if (lang->action_table[i] != NULL) {
+                free(lang->action_table[i]);
+            }
+        }
+        free(lang->action_table);
+        lang->action_table = NULL;
+    }
+}
+
+/* Frees all dynamically allocated memory associated with the Language structure, returning nothing. */
+void free_language(Language *lang) {
+    if (lang == NULL) {
+        return;
+    }
+
+    free_symbols(lang);
+    free_rules(lang);
+    free_actions(lang);
+
+    free(lang);
+}

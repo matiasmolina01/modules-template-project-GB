@@ -93,4 +93,7 @@ typedef struct Language {
 /* Creates and returns a Language struct by parsing the provided formatted text file path. */
 Language* get_language(const char* language_file_path);
 
+/* Frees all dynamically allocated memory associated with the Language structure. */
+void free_language(Language *lang);
+
 #endif
