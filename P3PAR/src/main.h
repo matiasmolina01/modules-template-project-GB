@@ -11,6 +11,8 @@
 #include "./output_handler/output_handler.h"
 #include "./token_handler/token_handler.h"
 #include "./global_context/global_context.h"
+#include "./stack/stack.h"
+#include "./sra/sra.h"
 
 
 // Output file of project run: either a stdout or a filename with log extension (comment one out)

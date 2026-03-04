@@ -32,6 +32,8 @@ add_subdirectory(input_handler)
 add_subdirectory(module_args)
 add_subdirectory(output_handler)
 add_subdirectory(token_handler)
+add_subdirectory(stack)
+add_subdirectory(sra)
 
 message(STATUS "   - (${PROJECT_NAME}) Added modules subdirectories")
 

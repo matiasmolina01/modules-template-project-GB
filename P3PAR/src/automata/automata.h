@@ -1,6 +1,8 @@
 #ifndef MODULE_AUTOMATA_H
 #define MODULE_AUTOMATA_H
 
+typedef struct Automata Automata;
+
 #include "../main.h"
 #define MAXLEN 128
 #define MAXCOLS 128
