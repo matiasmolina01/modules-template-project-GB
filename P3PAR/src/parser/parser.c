@@ -13,3 +13,20 @@
  */
 
 #include "./parser.h"
+
+Parser* parser_create(SRA* sra, TokenList* tokens){
+    if(!sra || !tokens) return NULL;
+
+    Parser* p = malloc(sizeof(Parser));
+    if(!p) return NULL;
+
+    p->SRA = sra;
+    p->token = tokens;
+
+    return p;
+}
+
+void parser_destroy(Parser* parser){
+    if(!parser) return;
+    free(parser);
+}
