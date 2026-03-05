@@ -19,6 +19,7 @@
 void sra_shift(SRA* sra, int state, Symbol input_symbol){
 	//push stackitem int state, int symbolid
 	stack_push(sra->stack, input_symbol.id, state);
+	
 }
 
 void sra_reduce(SRA* sra, Rule* rule){
