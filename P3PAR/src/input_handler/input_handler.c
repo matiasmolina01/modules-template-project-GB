@@ -18,7 +18,7 @@
 //Para leer carácter por carácter
 
 
-void i_read_elements_from_file(Input *input){
+void i_read_elements_from_file(Input *input, GlobalContext *global_context){
     
     
    int r;
@@ -33,7 +33,7 @@ void i_read_elements_from_file(Input *input){
         t_token_set_lexeme(token, value);
         category= t_string_to_category(string_category);
         t_token_update_category(token, category);
-        tl_token_list_add(Global_context->token_list, *token);
+        tl_token_list_add(global_context->tokenlist, *token);
     
         
         

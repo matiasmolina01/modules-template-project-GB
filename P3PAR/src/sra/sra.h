@@ -21,7 +21,7 @@
 typedef struct SRA{
 	Automata* automata;
 	Stack* stack;
-} SRA;
+}SRA;
 
 void sra_shift(SRA* sra, int state, Symbol input_symbol);
 

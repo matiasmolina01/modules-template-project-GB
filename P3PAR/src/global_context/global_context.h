@@ -3,11 +3,15 @@
 
 #include "../main.h"
 
-typedef struct Language Language;
+
 
 /* * Holds the overarching data structures required throughout the parsing process.
  * Currently contains the loaded Language definitions.
  */
+
+ typedef struct Language Language;
+typedef struct SRA SRA;
+typedef struct TokenList TokenList;
 typedef struct GlobalContext {
     Language* language;
     SRA* sra;

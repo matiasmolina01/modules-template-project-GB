@@ -11,6 +11,8 @@
 #define NO_EOF 0
 #define  MAX_LEN 100
 
+typedef struct GlobalContext GlobalContext;
+
 typedef struct Input {
     FILE *input_file;   
     int is_eof;
@@ -18,7 +20,7 @@ typedef struct Input {
 } Input;
 
 
-void i_read_elements_from_file(Input *input);
+void i_read_elements_from_file(Input *input, GlobalContext *global_context);
 
 void i_init(Input *input);
 
