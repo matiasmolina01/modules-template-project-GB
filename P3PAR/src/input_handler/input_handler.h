@@ -6,12 +6,15 @@
 
 
 
+
 #define MODE_READ "r"
 #define IS_EOF 1
 #define NO_EOF 0
 #define  MAX_LEN 100
 
 typedef struct GlobalContext GlobalContext;
+typedef struct TokenList TokenList;
+
 
 typedef struct Input {
     FILE *input_file;   

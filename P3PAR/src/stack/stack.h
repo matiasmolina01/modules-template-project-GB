@@ -16,7 +16,7 @@
 #ifndef MODULE_STACK_H
 #define MODULE_STACK_H
 
-typedef struct Stack Stack;
+
 
 #include "../main.h"
 

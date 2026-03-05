@@ -19,25 +19,37 @@
 // }
 
 
-const char *symbol_to_string(TokenCategory s) {
-    switch (s) {
-        case CAT_NUMBER: return "NUM";
-        case CAT_PLUS:   return "+";
-        case CAT_EOF:    return "$";
-        case CAT_MULT:   return "*";
-        case CAT_OPEN_PARENTHESIS: return "(";
-        case CAT_CLOSE_PARENTHESIS: return ")";
-        case CAT_S: return "s";
-        case CAT_E: return "e";
-        case CAT_T: return "t";
-        case CAT_F: return "f";
+// const char *symbol_to_string(SymbolCategory s) {
+//     switch (s) {
+//         case CAT_NUMBER: return "NUM";
+//         case CAT_PLUS:   return "+";
+//         case CAT_EOF:    return "$";
+//         case CAT_MULT:   return "*";
+//         case CAT_OPEN_PARENTHESIS: return "(";
+//         case CAT_CLOSE_PARENTHESIS: return ")";
+//         case CAT_S: return "s";
+//         case CAT_E: return "e";
+//         case CAT_T: return "t";
+//         case CAT_F: return "f";
+//     }
+// }
+
+ const char *symbol_to_string(Language language, int symbol_id){
+    for(i = 0; i < num_symbols; i++){
+        if(language->symbols[i]->id == symbol_id){
+            return language->symbols[i]->name;
+        }
+
     }
-}
 
 
-void stack_instance_to_string( Stack *stack, char* string){
+
+ }
+
+void stack_instance_to_string( Stack *stack, char* string, Language *language){
+    int pos = 0;
     for(int i= 0; i< stack->size; i++){
-        pos += snprintf(string+pos, MAX_LEN-pos, "{%s, %d}", symbol_to_string(stack->stacklist[i].symbol_id), stack->stacklist[i].state );
+        pos += snprintf(string+pos, MAX_LEN-pos, "(%s, %d) ", symbol_to_string(language, stack->stacklist[i].symbol_id), stack->stacklist[i].state );
 
         if(pos >= MAX_LEN) break;
         
@@ -62,15 +74,20 @@ FILE *o_open_output_file(const char *input_filename) {
 }
 
 
-int o_output_handler(const Token *lookahead, const Stack *stack, cost char *operation, const char *input_filename, const int state) {
+int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state, Language *language) {
    
 
     char buffer[MAX_LEN];
-
-    stack_instance_to_string(stack, buffer);
+    
+    stack_instance_to_string(stack, buffer, language);
     //Printing the operations
     // stack_string = o_stack_to_string(stack);
-    fprintf("STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_left);
+
+    //We need to go though tokenList from index to the end to get remaining input left
+
+
+
+    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_left);
 
     fclose(fp);
 
