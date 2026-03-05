@@ -52,12 +52,13 @@ typedef struct Automata{
 // No magic numbers... (requirements)
 #define A_EMPTY_ERROR -1 // used to indicate that automata dynamic memory is empty (== NULL)
 #define A_FAIL -2 // used to indicate that automata action is a fail
+#define INITIAL_STATE 0 // to indicate the initial state of the automata, we can change it if we want to start from another state, but for now we will start from 0 (the first state of the automata)
 
 // functions:
 
-Automata* a_create_automata(int numsymbols, int numstates, Action** action_table ,Symbol *alphabet, int initial_state); // to create an automata with the parameters.
+Automata* a_create_automata(int numsymbols, int numstates, Action** action_table ,Symbol *alphabet); // to create an automata with the parameters.
 Action a_get_action(Automata *automata, int state, int symbol_id); // to get the action of the automata given a state (row) and a symbol id (column).
-int a_reset_automata(Automata *automata); // to reset the automata to the initial state.
+int a_reset_automata(Automata *automata, int initial_state); // to reset the automata to the initial state.
 int a_destroy_automata(Automata *automata); // to free the memory of the automata 
 
 
