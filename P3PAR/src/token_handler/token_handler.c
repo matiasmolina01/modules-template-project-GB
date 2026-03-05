@@ -31,10 +31,36 @@ static const char *token_category_to_string(TokenCategory cat) {
     }
 }
 
+#include <string.h>
 
+TokenCategory t_string_to_category(const char *category) {
+
+    if (strcmp(category, "NUMBER") == 0)
+        return CAT_NUMBER;
+
+    if (strcmp(category, "IDENTIFIER") == 0)
+        return CAT_IDENTIFIER;
+
+    if (strcmp(category, "KEYWORD") == 0)
+        return CAT_KEYWORD;
+
+    if (strcmp(category, "LITERAL") == 0)
+        return CAT_LITERAL;
+
+    if (strcmp(category, "OPERATOR") == 0)
+        return CAT_OPERATOR;
+
+    if (strcmp(category, "SPECIALCHAR") == 0)
+       return CAT_SPECIALCHAR;;
+
+    if (strcmp(category, "NONRECOGNIZED") == 0)
+        return CAT_NONRECOGNIZED;
+
+    return CAT_NONRECOGNIZED;  // fallback
+}
 // Function to create a new token with specified line and column. This only stores the 
 // position information; the lexeme and category will be set later, adding one character at a time.
-Token *t_token_create(int line, int column) {
+Token *t_token_create() {
     Token *t = (Token*) malloc(sizeof(Token));
 
     // Allocate memory for the lexeme and initialize it.
@@ -45,8 +71,6 @@ Token *t_token_create(int line, int column) {
     t->lexeme[0] = '\0';
 
     t->category = CAT_NONRECOGNIZED;
-    t->line = line;
-    t->column = column;
 
     return t;
 }
@@ -71,6 +95,38 @@ void t_token_append_char(Token *t, char c) {
     t->lexeme[t->length++] = c;
     t->lexeme[t->length] = '\0';
 }
+
+void t_token_set_lexeme(Token *t, const char *str) {
+    if (!t || !str) return;
+
+    size_t str_len = strlen(str);
+
+    // Ensure enough capacity for the new string + null terminator
+    if (str_len + 1 > t->capacity) {
+        size_t new_capacity = t->capacity;
+
+        while (str_len + 1 > new_capacity) {
+            new_capacity *= 2;
+        }
+
+        char *new_lexeme = realloc(t->lexeme, new_capacity);
+        if (!new_lexeme) return; // allocation failed
+
+        t->lexeme = new_lexeme;
+        t->capacity = new_capacity;
+    }
+
+    // Copy the string at the end
+    memcpy(t->lexeme, str, str_len);
+
+    
+    t->lexeme[t->length] = '\0';
+    t->length = str_len;
+}
+
+
+
+
 
 // Function to update the category of a token. This allows us to set the token's category after we have built its lexeme and determined its type.
 void t_token_update_category(Token *t, TokenCategory cat) {
@@ -173,40 +229,38 @@ void t_token_print_debug(FILE *out, const Token *t) {
     if (!out || !t) return;
 
     fprintf(out,
-        "<lexeme=\"%s\", category=%s, line=%d, column=%d, length=%zu, capacity=%zu>",
+        "<lexeme=\"%s\", category=%s, length=%zu, capacity=%zu>",
         t->lexeme ? t->lexeme : "",
         token_category_to_string(t->category),
-        t->line,
-        t->column,
         t->length,
         t->capacity
     );
 }
 
-// Function to print all tokens in a token list in a format suitable for release output. 
-void tl_token_list_print_release(FILE *out, const TokenList *list) {
-    if (!out || !list || !list->head) return;
+// // Function to print all tokens in a token list in a format suitable for release output. 
+// void tl_token_list_print_release(FILE *out, const TokenList *list) {
+//     if (!out || !list || !list->head) return;
 
-    TokenNode *current = list->head;
-    int current_line = current->token.line;
+//     TokenNode *current = list->head;
+//     int current_line = current->token.line;
 
-    while (current) {
-        //New line when line number changes 
-        if (current->token.line != current_line) {
-            fprintf(out, "\n");
-            current_line = current->token.line;
-        }
+//     while (current) {
+//         //New line when line number changes 
+//         if (current->token.line != current_line) {
+//             fprintf(out, "\n");
+//             current_line = current->token.line;
+//         }
 
-        t_token_print_release(out, &current->token);
+//         t_token_print_release(out, &current->token);
 
-        if (current->next && current->next->token.line == current_line)
-            fprintf(out, " ");
+//         if (current->next && current->next->token.line == current_line)
+//             fprintf(out, " ");
 
-        current = current->next;
-    }
+//         current = current->next;
+//     }
 
-    fprintf(out, "\n");
-}
+//     fprintf(out, "\n");
+// }
 
 // Function to print all tokens in a token list in a detailed format suitable for debugging. 
 void tl_token_list_print_debug(FILE *out, const TokenList *list) {

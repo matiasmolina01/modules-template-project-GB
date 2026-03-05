@@ -9,7 +9,7 @@
   "cmake.buildDirectory": "${workspaceFolder}/build",
 
   // Root of the source project (where top-level CMakeLists.txt is)
-  "cmake.sourceDirectory": "C:/Users/folan/OneDrive/Escritorio/Universidad/Compilers/modules-template-project-GB/P3PAR",
+  "cmake.sourceDirectory": "C:/Users/marcs/OneDrive/Documentos/GitHub/modules-template-project-GB/P3PAR",
 
   // Where `make install` will copy built outputs (optional)
   "cmake.installPrefix": "${workspaceFolder}/install",

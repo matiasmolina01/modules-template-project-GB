@@ -21,8 +21,6 @@ typedef struct Token{
     size_t length;
     size_t capacity;
     TokenCategory category;
-    int line;
-    int column;
 } Token;
 
 typedef struct TokenNode {
@@ -37,8 +35,12 @@ typedef struct TokenList{
 } TokenList;
 
 // Token functions
-Token* t_token_create(int line, int column);
+Token* t_token_create();
 void t_token_append_char(Token *t, char c);
+
+void t_token_set_lexeme(Token *t, const char *str);
+
+TokenCategory t_string_to_category(const char *category);
 void t_token_update_category(Token *t, TokenCategory cat);
 void t_token_destroy(Token *t);
 
@@ -50,7 +52,7 @@ int  tl_token_list_size(const TokenList *list);
 void tl_token_list_destroy(TokenList *list);
 
 // Useful functions for the output module
-void t_token_print_release(FILE *out, const Token *t);
+// void t_token_print_release(FILE *out, const Token *t);
 void t_token_print_debug(FILE *out, const Token *t);
 
 void tl_token_list_print_release(FILE *out, const TokenList *list);
