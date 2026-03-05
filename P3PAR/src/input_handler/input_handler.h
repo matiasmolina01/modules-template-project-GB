@@ -20,7 +20,7 @@ typedef struct Input {
 } Input;
 
 
-void i_read_elements_from_file(Input *input, GlobalContext *global_context);
+TokenList* i_read_elements_from_file(Input *input, GlobalContext *global_context);
 
 void i_init(Input *input);
 
