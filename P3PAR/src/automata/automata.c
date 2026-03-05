@@ -22,13 +22,13 @@
         
         NULL --> failure (invalid parameters or memory allocation failure).
 */
-Automata* a_create_automata(int numsymbols, int numstates, Action** action_table , Symbol *alphabet, int initial_state){
+Automata* a_create_automata(int numsymbols, int numstates, Action** action_table , Symbol *alphabet){
     // validations for the parameters...
 	if(numstates <= 0 || numstates > MAXLEN) return NULL;
     if(numsymbols <= 0 || numsymbols > MAXCOLS) return NULL;
     if(action_table == NULL) return NULL;
     if(alphabet == NULL) return NULL;
-    if(initial_state < 0 || initial_state >= numstates) return NULL; 
+    if(INITIAL_STATE < 0 || INITIAL_STATE >= numstates) return NULL; 
 
     // AUTOMATA CREATION
     Automata *a = (Automata*)malloc(sizeof(Automata)); // allocate memory for the automata
@@ -38,9 +38,9 @@ Automata* a_create_automata(int numsymbols, int numstates, Action** action_table
     memset(a, 0, sizeof(*a)); // initialize all fields to 0
     a->numstates = numstates;
     a->numsymbols = numsymbols;
-    a->initial_state = initial_state;
+    // a->initial_state = initial_state;
 	a->alphabet = alphabet;
-    a->current_state = initial_state; // set the current state to the initial state
+    a->current_state = INITIAL_STATE; // set the current state to the initial state
     a->action_table = action_table;
 
     return a; // return the created automata
@@ -69,9 +69,9 @@ Action a_get_action(Automata *automata, int state, int symbol_id){
         A_EMPTY_ERROR --> if the automata is NULL (empty).
         0 --> if the automata was successfully reset.
 */
-int a_reset_automata(Automata *automata){
+int a_reset_automata(Automata *automata, int initial_state){
     if(automata == NULL) return A_EMPTY_ERROR;
-    automata->current_state = automata->initial_state;
+    automata->current_state = initial_state;
     return 0; // success
 }
 

@@ -10,6 +10,8 @@ typedef struct Language Language;
  */
 typedef struct GlobalContext {
     Language* language;
+    SRA* sra;
+    TokenList* tokenlist;
 } GlobalContext;
 
 /* Allocates memory for a new GlobalContext and initializes its pointers to NULL. 
