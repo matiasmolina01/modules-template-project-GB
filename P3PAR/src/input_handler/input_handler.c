@@ -18,13 +18,15 @@
 //Para leer carácter por carácter
 
 
-void i_read_elements_from_file(Input *input, GlobalContext *global_context){
+TokenList *i_read_elements_from_file(Input *input, GlobalContext *global_context){
     
     
    int r;
     char value[MAX_LEN];
     char string_category[MAX_LEN];
     TokenCategory category;
+    TokenList* tokenList;
+    tokenList = tl_token_list_init();
     while ((r = fscanf(input->input_file, " < %[^,] , %[^>] > ", value, string_category)) == 2) { //%[] means read everythin and ^ means NOT so %[^,] means read everything except ,
 
         // printf("Value: %s | Category: %s\n", value, category);
@@ -33,7 +35,7 @@ void i_read_elements_from_file(Input *input, GlobalContext *global_context){
         t_token_set_lexeme(token, value);
         category= t_string_to_category(string_category);
         t_token_update_category(token, category);
-        tl_token_list_add(global_context->tokenlist, *token);
+        tl_token_list_add(tokenList, *token);
     
         
         
@@ -42,6 +44,8 @@ void i_read_elements_from_file(Input *input, GlobalContext *global_context){
     if (r == EOF) {
     input->is_eof = IS_EOF; 
     }
+
+    return tokenList;
 }
 
 

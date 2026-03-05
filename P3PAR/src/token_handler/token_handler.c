@@ -163,8 +163,7 @@ void tl_token_list_add(TokenList *list, Token t) {
     TokenNode *node = (TokenNode *)malloc(sizeof(TokenNode));
 
     node->token = t;
-    node->next = NULL;
-
+    node->token.lexeme = strdup(t.lexeme); // Esto lo hacemos para que la copia de token->lexeme no apunte a la misma memoria que el token->lexeme original, porque si por ejemplo hicieramos un free token original, la copia, que está en el token list crashearía
     if (!list->head) {
         list->head = node;
         list->tail = node;
