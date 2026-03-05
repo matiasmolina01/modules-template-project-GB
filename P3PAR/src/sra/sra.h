@@ -18,6 +18,11 @@
 
 #include "../main.h"
 
+typedef struct Stack Stack;
+typedef struct Symbol Symbol;
+typedef struct Automata Automata;
+typedef struct Rule Rule;
+
 typedef struct SRA{
 	Automata* automata;
 	Stack* stack;

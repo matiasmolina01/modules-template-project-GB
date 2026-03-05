@@ -13,6 +13,7 @@
 #include "./global_context/global_context.h"
 #include "./stack/stack.h"
 #include "./sra/sra.h"
+#include "./parser/parser.h"
 
 
 // Output file of project run: either a stdout or a filename with log extension (comment one out)
