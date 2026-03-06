@@ -68,16 +68,17 @@ int parser_run(Parser* parser, Language* language, FILE *output_file){
 
     TokenNode* node = parser->token->head;
     while(node != NULL){
-        
+        printf("TOP: %d\n", parser->SRA->stack->top);
         Token* tok = &node->token;
         
         Symbol* sym = parser_token_to_symbol(*tok, language);
-
+        int prev_state = parser->SRA->automata->current_state;
+        Stack prev_stack = *(parser->SRA->stack);
         int action = sra_action(parser->SRA, *sym);
-
-        o_output_handler(output_file, current_input_token, parser->SRA->stack, get_name_operation(action),
-            parser->SRA->automata->current_state, language, parser->token);
         
+        o_output_handler(output_file, current_input_token, &prev_stack, get_name_operation(action),
+            prev_state, language, parser->token);
+
         if(action == ACT_SHIFT){
             node = node->next;
             current_input_token++;

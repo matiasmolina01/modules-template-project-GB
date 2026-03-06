@@ -19,7 +19,7 @@
 void sra_shift(SRA* sra, int state, Symbol input_symbol){
 	//push stackitem int state, int symbolid
 	stack_push(sra->stack, input_symbol.id, state);
-	
+	sra->automata->current_state = state;
 }
 
 void sra_reduce(SRA* sra, Rule* rule){
@@ -49,6 +49,7 @@ void sra_accept(SRA* sra){
 }
 
 int sra_action(SRA* sra, Symbol input_symbol){
+	printf("checking action table for state %d, symbol %s\n", stack_top_state(sra->stack), input_symbol.name);
 	Action action = check_table(sra, stack_top_state(sra->stack), input_symbol);
 	//just to tell the parser which action was performed, for the input to advance
 	int performed_action = -1;

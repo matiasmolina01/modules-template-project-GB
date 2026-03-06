@@ -54,6 +54,8 @@ int stack_push(Stack *stack, int symbol_id, int state)
     if (!stack || stack_is_full(stack))
         return 0;
 
+    printf("pushing(%d, %d)\n", symbol_id, state);
+    
     stack->top++;
     stack->stack_list[stack->top].symbol_id = symbol_id;
     stack->stack_list[stack->top].state = state;

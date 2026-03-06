@@ -4,6 +4,7 @@
 #include "../main.h"
 
 
+#define INITIAL_SYMBOL_ID 0
 
 /* * Holds the overarching data structures required throughout the parsing process.
  * Currently contains the loaded Language definitions.
@@ -17,6 +18,7 @@ typedef struct GlobalContext {
     SRA* sra;
     TokenList* tokenlist;
 } GlobalContext;
+
 
 /* Allocates memory for a new GlobalContext and initializes its pointers to NULL. 
  * Returns a pointer to the newly created GlobalContext. */

@@ -14,12 +14,12 @@
 
 #include "./output_handler.h"
 
-// char* stack_string(const Stack *stack){
+// char* stack_string( Stack *stack){
 
 // }
 
 
-// const char *symbol_to_string(SymbolCategory s) {
+//  char *symbol_to_string(SymbolCategory s) {
 //     switch (s) {
 //         case CAT_NUMBER: return "NUM";
 //         case CAT_PLUS:   return "+";
@@ -34,20 +34,20 @@
 //     }
 // }
 
-const char *symbol_to_string(Language *language, int symbol_id){
+char *symbol_to_string(Language *language, int symbol_id){
 
     return language->symbols[symbol_id]->name;
 }
 
-void stack_instance_to_string(const Stack *stack, char* string, Language *language){
+void stack_instance_to_string(Stack *stack, char* string, Language *language){
     int pos = 0;
-    for(int i= 0; i< stack->top; i++){ // te cambio size por top
+    for(int i= 0; i<= stack->top; i++){ // te cambio size por top
         pos += snprintf(string+pos, MAX_LEN-pos, "(%s, %d) ", symbol_to_string(language, stack->stack_list[i].symbol_id), stack->stack_list[i].state );
         if(pos >= MAX_LEN) break;
     }
 }
 
-FILE *o_open_output_file(const char *input_filename) {
+FILE *o_open_output_file( char *input_filename) {
     char output_filename[512];
     char temp_name[512];
 
@@ -104,7 +104,7 @@ char *input_process(int index, TokenList *token_list, char *input){
 
 }
 
-int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const int state, Language *language, TokenList *token_list) {
+int o_output_handler(FILE* fp, int index, Stack *stack, char *operation, int state, Language *language, TokenList *token_list) {
    
 
     char buffer[MAX_LEN];

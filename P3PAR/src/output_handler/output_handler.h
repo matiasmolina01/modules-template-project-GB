@@ -28,8 +28,8 @@ typedef struct Language Language;
 typedef struct TokenList TokenList;
 
 
-void stack_instance_to_string(const Stack *stack, char* string, Language *language);
-FILE *o_open_output_file(const char *input_filename);
-int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const int state, Language *language, TokenList *token_list);
+void stack_instance_to_string(Stack *stack, char* string, Language *language);
+FILE *o_open_output_file(char *input_filename);
+int o_output_handler(FILE* fp, int index, Stack *stack, char *operation, int state, Language *language, TokenList *token_list);
 
 #endif
