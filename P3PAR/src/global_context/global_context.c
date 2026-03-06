@@ -51,7 +51,6 @@ GlobalContext* init_global_context(const char* language_file_path) {
 
     context->sra->automata = a_create_automata(context->language->num_symbols, context->language->num_states, context->language->action_table, context->language->symbols);
     context->sra->stack = create_stack(CAPACITY_STACK_H);
-    printf("%d\n", context->language->start_symbol);
     stack_push(context->sra->stack, context->language->start_symbol, INITIAL_STATE); // Push the start symbol and initial state onto the stack
     
     context->tokenlist = tl_token_list_init();

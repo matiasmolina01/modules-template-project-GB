@@ -34,13 +34,9 @@
 //     }
 // }
 
-const char *symbol_to_string(Language *language, int symbol_id){ // te cambio la firma por Language* language
-    for(int i = 0; i < language->num_symbols; i++){  // por lo tanto usamos language->num_symbols
-        if(language->symbols[i]->id == symbol_id){
-            return language->symbols[i]->name;
-        }
-    }
-    return NULL;
+const char *symbol_to_string(Language *language, int symbol_id){
+
+    return language->symbols[symbol_id]->name;
 }
 
 void stack_instance_to_string(const Stack *stack, char* string, Language *language){
@@ -53,9 +49,24 @@ void stack_instance_to_string(const Stack *stack, char* string, Language *langua
 
 FILE *o_open_output_file(const char *input_filename) {
     char output_filename[512];
+    char temp_name[512];
 
-    generate_timestamped_log_filename(input_filename, output_filename, sizeof(output_filename));
+    // Copy input to a temporary buffer to avoid modifying the original string
+    strncpy(temp_name, input_filename, sizeof(temp_name) - 1);
+    temp_name[sizeof(temp_name) - 1] = '\0';
 
+    // Find the last occurrence of '.' to identify the extension
+    char *dot = strrchr(temp_name, '.');
+    
+    if (dot != NULL) {
+        // Terminate the string at the dot to "remove" the extension
+        *dot = '\0';
+    }
+
+    // Format the new filename: <infilename>_p3dbg.txt 
+    snprintf(output_filename, sizeof(output_filename), "%s_p3dbg.txt", temp_name);
+
+    // Open the file for writing ("w")
     FILE *fp = fopen(output_filename, "w");
     if (!fp) {
         perror("fopen");
@@ -93,7 +104,7 @@ char *input_process(int index, TokenList *token_list, char *input){
 
 }
 
-int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state, Language *language, TokenList *token_list) {
+int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const int state, Language *language, TokenList *token_list) {
    
 
     char buffer[MAX_LEN];
@@ -108,7 +119,7 @@ int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operat
     input_process(index, token_list, input);
 
     char input_left[MAX_LEN] = "temporal"; // te pongo esto temporal para que lo veas
-    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input);
+    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s\n", state, operation, buffer, input);
 
     // fclose(fp); ----------- esto deberia cerrarlo el main.
 

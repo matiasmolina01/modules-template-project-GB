@@ -33,44 +33,65 @@ void parser_destroy(Parser* parser){
 
 Symbol* parser_token_to_symbol(Token token, Language *language)
 {
-
+    
     for(int i = 0; i < language->num_symbols; i++){
-        if(strcmp(token.lexeme, language->symbols[i]) == 0)
+        if(strcmp(token.lexeme, language->symbols[i]->name) == 0)
             return language->symbols[i];
     }
 
     return NULL;
 }
 
-int parser_run(Parser* parser, Language* language){
-    if(!parser || !parser->SRA || !parser->token) return -1;
+char* get_name_operation(int action){
+    switch(action){
+        case ACT_REDUCE:
+            return ACT_REDUCE_NAME;
+            break;
+        case ACT_SHIFT:
+            return ACT_SHIFT_NAME;
+            break;
+        case ACT_ACCEPT:
+            return ACT_ACCEPT_NAME;
+            break;
+        break;
+        case ACT_ERROR:
+            return ACT_ERROR_NAME;
+            break;
+        break;
+    }
+}
+
+int parser_run(Parser* parser, Language* language, FILE *output_file){
+    if(!parser || !parser->SRA || !parser->token) return PARSE_ERROR;
+
+    int current_input_token = 0;
 
     TokenNode* node = parser->token->head;
-    
-    while(node){
+    while(node != NULL){
         
         Token* tok = &node->token;
         
         Symbol* sym = parser_token_to_symbol(*tok, language);
-        
+
         int action = sra_action(parser->SRA, *sym);
+
+        o_output_handler(output_file, current_input_token, parser->SRA->stack, get_name_operation(action),
+            parser->SRA->automata->current_state, language, parser->token);
         
         if(action == ACT_SHIFT){
             node = node->next;
+            current_input_token++;
         }
         
         else if(action == ACT_REDUCE){
             continue;
         }
         
-        else if(action == ACT_ACCEPT){
-            return 1;
+        else if(action == ACT_ACCEPT || action == ACT_ERROR){
+            return action;
         }
 
-        else if(action == ACT_ERROR){
-            printf("Parser error");
-            return -1;
-        }
+
     }
 
     return 0;
