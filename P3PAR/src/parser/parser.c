@@ -63,28 +63,26 @@ Symbol parser_token_to_symbol(Token token)
 }
 
 int parser_run(Parser* parser){
-
-    if(!parser || !parser->SRA || !parser->token)
-        return -1;
+    if(!parser || !parser->SRA || !parser->token) return -1;
 
     TokenNode* node = parser->token->head;
-
+    
     while(node){
-
+        
         Token* tok = &node->token;
-
+        
         Symbol sym = parser_token_to_symbol(*tok);
-
+        
         int action = sra_action(parser->SRA, sym);
-
+        
         if(action == ACT_SHIFT){
             node = node->next;
         }
-
+        
         else if(action == ACT_REDUCE){
             continue;
         }
-
+        
         else if(action == ACT_ACCEPT){
             return 1;
         }

@@ -36,6 +36,13 @@ target_include_directories(test_module_global_context PRIVATE ${PROJECT_SOURCE_D
 add_test(NAME TestModuleGlobalContext COMMAND test_module_global_context)
 message(STATUS " - (${PROJECT_NAME}) Test for module_global_context added")
 
+# # Test for parser
+# add_executable(test_module_parser test_module_parser.c)
+# target_link_libraries(test_module_parser PRIVATE parser utils)
+# target_include_directories(test_module_parser PRIVATE ${PROJECT_SOURCE_DIR}/src)
+# add_test(NAME TestModuleParser COMMAND test_module_parser)
+# message(STATUS " - (${PROJECT_NAME}) Test for module_parser added")
+
 # Test for sra
 add_executable(test_module_sra test_module_sra.c)
 target_link_libraries(test_module_sra PRIVATE sra stack automata utils)

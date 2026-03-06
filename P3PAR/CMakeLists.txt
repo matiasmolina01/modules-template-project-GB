@@ -62,5 +62,7 @@ target_link_libraries(modules_template_main PRIVATE
   output_handler
   token_handler
   global_context
+  parser
+  stack
 )
 message(STATUS " - (${PROJECT_NAME}) Modules Template Main executable 'modules_template_main' linked with module_args and module_2")

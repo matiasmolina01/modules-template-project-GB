@@ -24,15 +24,22 @@
 void print_arguments(Arguments* args) {
     printf("Arguments received:\n");
     printf("Input path: %s\n", args->input_path);
+    printf("Language path: %s\n", args->language_path);
 }
 
 Arguments* process_arguments(int argc, char *argv[]) {
+    if(argc < 3) {
+        fprintf(stderr, "Usage: %s <input_path> <language_path>\n", argv[0]);
+        exit(1);
+    }
 
     Arguments* args = (Arguments*) malloc(sizeof(Arguments));
     args->input_path = NULL;
+    args->language_path = NULL;
 
     //INPUT AND OUTPUT FILEPATHS
     args->input_path = argv[1];
+    args->language_path = argv[2];
 
     //DEBUG FUNCTION
     //print_arguments(args);
@@ -43,6 +50,9 @@ void args_free(Arguments *args){
     if(args != NULL){
         if(args->input_path != NULL){
             free((void*)args->input_path);
+        }
+        if(args->language_path != NULL){
+            free((void*)args->language_path);
         }
         free(args);
     }

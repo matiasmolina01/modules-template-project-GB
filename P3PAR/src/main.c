@@ -5,16 +5,11 @@
 int main(int argc, char *argv[]) {
     
     Arguments* args = process_arguments(argc, argv);
-	// TODO: Error handling for arguments processing (e.g., check if input_path is valid) -> or in the module_args.c
-
     
-    char* language_file = "../tests/test_files/language.txt"; // Relative path from build directory
-    
-    
-    GlobalContext* global_context = init_global_context(language_file);
+    GlobalContext* global_context = init_global_context(args->language_path);
     
     if (global_context == NULL) {
-        printf("Error: Could not initialize global context. Check if file exists: %s\n", language_file);
+        printf("Error: Could not initialize global context. Check if file exists: %s\n", args->language_path);
         exit(1);
     }
 
@@ -25,29 +20,22 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    fflush(stdout);
-    
-    global_context->tokenlist = i_read_elements_from_file(input, global_context);
+    global_context->tokenlist = i_read_elements_from_file(input, global_context); // read tokens
+    Parser* parser = parser_create(global_context->sra, global_context->tokenlist);
 
+    printf("Starting parsing process...\n");
+    if(parser_run(parser) != 0){
+        printf("Parsing failed.\n");
+    } else {
+        printf("Parsing completed successfully.\n");
+    }
+    printf("Starting parsing process...\n");
 
-
-    // Parser* parser = parser_create(global_context->sra, global_context->tokenlist);
-
-    // int accepted = parser_run(parser);
-
-    // parser_destroy(parser);
-    printf("FINISH\n");
-    
+    parser_destroy(parser);
     i_close_input(input);
-    printf("FINISH\n");
     free(input);
-    printf("FINISH\n");
     destroy_global_context(global_context);
-    printf("FINISH\n");
     free(args);
-    printf("FINISH\n");
-	
-	//gc_destroy(global_context);
 
     return 0;
 }

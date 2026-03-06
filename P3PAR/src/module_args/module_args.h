@@ -29,6 +29,7 @@
 
 typedef struct Arguments{
 	char *input_path;
+	char *language_path;
 } Arguments;
 
 Arguments* process_arguments(int argc, char *argv[]);
