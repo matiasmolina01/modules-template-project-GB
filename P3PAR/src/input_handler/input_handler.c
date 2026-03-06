@@ -54,33 +54,6 @@ TokenList *i_read_elements_from_file(Input *input, GlobalContext *global_context
 
 
 
-// char i_read_char(Input *input) {
-//     int c;
-
-
-//     if (input->input_file == NULL) {
-// 		// e_error_report(ERR_I_FILE_NOT_FOUND);
-//         return NULL;
-//     }
-
-//     input->column++;
-//     c = fgetc(input->input_file);
-
-//     if (c == EOF) {
-//         input->is_eof = IS_EOF;
-
-//         return NULL;   // indica EOF
-//     }
-
-//     if (c == '\n') {
-//         input->line_number++;
-//         input->column = 0;
-//     }
-
-
-//     return c;  // return del carácter 
-// }
-
 void i_init(Input *input) {
 	input->input_file = NULL;
     // input->line_number = 0;
