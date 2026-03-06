@@ -46,32 +46,39 @@ char* get_name_operation(int action){
     switch(action){
         case ACT_REDUCE:
             return ACT_REDUCE_NAME;
-            break;
         case ACT_SHIFT:
             return ACT_SHIFT_NAME;
-            break;
         case ACT_ACCEPT:
             return ACT_ACCEPT_NAME;
-            break;
-        break;
         case ACT_ERROR:
             return ACT_ERROR_NAME;
-            break;
-        break;
+        default:
+            return ACT_ERROR_NAME;
     }
 }
 
 int parser_run(Parser* parser, Language* language, FILE *output_file){
-    if(!parser || !parser->SRA || !parser->token) return PARSE_ERROR;
+    if(!parser || !parser->SRA || !parser->token || !language) return PARSE_ERROR;
 
     int current_input_token = 0;
 
     TokenNode* node = parser->token->head;
-    while(node != NULL){
+    while(1){
         printf("TOP: %d\n", parser->SRA->stack->top);
-        Token* tok = &node->token;
-        
-        Symbol* sym = parser_token_to_symbol(*tok, language);
+
+        Symbol* sym = NULL;
+        if(node != NULL){
+            Token* tok = &node->token;
+            sym = parser_token_to_symbol(*tok, language);
+            if(sym == NULL){
+                return ACT_ERROR;
+            }
+        } else {
+            sym = language->symbols[0];
+            if(sym == NULL){
+                return ACT_ERROR;
+            }
+        }
 
         Action action = sra_get_next_action(parser->SRA, *sym);
 
@@ -79,22 +86,24 @@ int parser_run(Parser* parser, Language* language, FILE *output_file){
             parser->SRA->automata->current_state, language, parser->token);
         
         sra_do_action(parser->SRA, *sym, action);
-
         switch(action.type){
             case ACT_SHIFT:
-            node = node->next;
-            current_input_token++;
-            break;
+                if(node != NULL){
+                    node = node->next;
+                    current_input_token++;
+                }
+                break;
 
             case ACT_REDUCE:
-            continue;
-            break;
+                continue;
 
-            case ACT_ACCEPT: case ACT_ERROR:
-            return action.type;
+            case ACT_ACCEPT:
+            case ACT_ERROR:
+                return action.type;
+
+            default:
+                return ACT_ERROR;
         }
 
     }
-
-    return 0;
 }
