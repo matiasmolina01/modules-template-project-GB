@@ -3,12 +3,11 @@
  * language.c 
  *
  * Usage:
- *     Implement the functions to load the language.txt into the Language data structures
+ * Implement the functions to load the language.txt into the Language data structures
  *
  * Status:
- *     Finished - all functionalities work.
+ * Finished - all functionalities work.
  *
- * 
  * Author: [Franco Olano Melo]
  * -----------------------------------------------------------------------------
  */
@@ -36,13 +35,16 @@ int get_next_valid_line(FILE *file, char *line) {
 }
 
 /* Helper function to construct a single Symbol struct from a text line. 
- * Returns a pointer to the newly allocated Symbol. */
+ * Returns a pointer to the newly allocated Symbol, shifting the ID by +1. */
 Symbol* create_symbol(char *line, Language *lang) {
     char name[MAX_NAME_LEN];
     char type[MAX_NAME_LEN];
+    int parsed_id;
     Symbol *sym = malloc(sizeof(Symbol));
     
-    sscanf(line, FMT_SYMBOL, &sym->id, name, type);
+    sscanf(line, FMT_SYMBOL, &parsed_id, name, type);
+    
+    sym->id = parsed_id + 1; // Shift ID by +1 to leave index 0 for $
     sym->name = strdup(name);
     sym->is_terminal = (strcmp(type, STR_TERMINAL) == 0) ? 1 : 0;
     
@@ -56,7 +58,8 @@ Symbol* create_symbol(char *line, Language *lang) {
 void parse_symbols(FILE *file, Language *lang) {
     char line[MAX_LINE_LEN];
     int capacity = DEFAULT_CAPACITY;
-    lang->symbols = malloc(capacity * sizeof(Symbol*));
+    
+    // Note: lang->symbols is already allocated by get_language() for the $ symbol
 
     while (get_next_valid_line(file, line)) {
         if (lang->num_symbols >= capacity) {
@@ -68,19 +71,22 @@ void parse_symbols(FILE *file, Language *lang) {
 }
 
 /* Helper function to construct a single Rule struct from a text line. 
- * Returns a pointer to the newly allocated Rule. */
+ * Returns a pointer to the newly allocated Rule, shifting LHS and RHS IDs by +1. */
 Rule* create_rule(char *line) {
     Rule *rule = malloc(sizeof(Rule));
     rule->rhs = malloc(MAX_RHS_LEN * sizeof(int));
     rule->rhs_length = 0;
 
     int offset = 0, read_chars = 0;
-    sscanf(line, FMT_RULE_HDR, &rule->id, &rule->lhs, &read_chars);
+    int parsed_lhs;
+    
+    sscanf(line, FMT_RULE_HDR, &rule->id, &parsed_lhs, &read_chars);
+    rule->lhs = parsed_lhs + 1; // Shift LHS symbol ID by +1
     offset += read_chars;
 
     int rhs_val;
     while (sscanf(line + offset, FMT_RHS_ITEM, &rhs_val, &read_chars) == 1) {
-        rule->rhs[rule->rhs_length++] = rhs_val;
+        rule->rhs[rule->rhs_length++] = rhs_val + 1; // Shift RHS symbol ID by +1
         offset += read_chars;
     }
     return rule;
@@ -168,6 +174,17 @@ Language* get_language(const char* language_file_path) {
     if (!file) return NULL;
 
     Language *lang = calloc(1, sizeof(Language));
+    
+    // Inject the implicit '$' symbol as the very first symbol (ID: 0)
+    lang->symbols = malloc(DEFAULT_CAPACITY * sizeof(Symbol*));
+    Symbol *dollar_sym = malloc(sizeof(Symbol));
+    dollar_sym->id = 0;
+    dollar_sym->name = strdup(STR_DOLLAR);
+    dollar_sym->is_terminal = 0; // Defined as non-terminal per specific requirement
+    lang->symbols[0] = dollar_sym;
+    lang->num_symbols = 1;
+    lang->num_nonterminals = 1;
+    
     char line[MAX_LINE_LEN];
 
     // Read headers and dispatch to corresponding parsers
@@ -176,7 +193,7 @@ Language* get_language(const char* language_file_path) {
             parse_symbols(file, lang);
         } else if (strncmp(line, SEC_START, strlen(SEC_START) - 1) == 0) {
             if (get_next_valid_line(file, line)) {
-                lang->start_symbol = atoi(line);
+                lang->start_symbol = atoi(line) + 1; // Shift start symbol ID by +1
             }
         } else if (strncmp(line, SEC_RULES, strlen(SEC_RULES) - 1) == 0) {
             parse_rules(file, lang);

@@ -3,29 +3,21 @@
 
 #include "../main.h"
 
+typedef struct Language Language;
+typedef struct SRA SRA;
+typedef struct TokenList TokenList;
+typedef struct Token Token;
+typedef struct TokenNode TokenNode;
+
+
 typedef struct Parser {
     SRA* SRA;
     TokenList* token;
 } Parser;
 
-typedef enum {
-    SYM_S = 0,
-    SYM_LPAREN,
-    SYM_RPAREN,
-    SYM_PLUS,
-    SYM_STAR,
-    SYM_NUM,
-    SYM_EOF,
-
-    SYM_e,
-    SYM_t,
-    SYM_f
-
-} SymbolID;
 
 Parser* parser_create(SRA* sra, TokenList* tokens);
 void parser_destroy(Parser* parser);
-Symbol parser_token_to_symbol(Token token);
-int parser_run(Parser* parser);
+int parser_run(Parser* parser, Language *language);
 
 #endif

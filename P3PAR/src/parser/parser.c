@@ -31,38 +31,18 @@ void parser_destroy(Parser* parser){
     free(parser);
 }
 
-Symbol parser_token_to_symbol(Token token)
+Symbol* parser_token_to_symbol(Token token, Language *language)
 {
-    Symbol sym;
 
-    sym.name = token.lexeme;
-    sym.is_terminal = 1;
-
-    if (token.category == CAT_NUMBER)
-        sym.id = SYM_NUM;
-
-    else if (token.category == CAT_OPERATOR)
-    {
-        if (strcmp(token.lexeme, "+") == 0)
-            sym.id = SYM_PLUS;
-
-        else if (strcmp(token.lexeme, "*") == 0)
-            sym.id = SYM_STAR;
+    for(int i = 0; i < language->num_symbols; i++){
+        if(strcmp(token.lexeme, language->symbols[i]) == 0)
+            return language->symbols[i];
     }
 
-    else if (token.category == CAT_SPECIALCHAR)
-    {
-        if (strcmp(token.lexeme, "(") == 0)
-            sym.id = SYM_LPAREN;
-
-        else if (strcmp(token.lexeme, ")") == 0)
-            sym.id = SYM_RPAREN;
-    }
-
-    return sym;
+    return NULL;
 }
 
-int parser_run(Parser* parser){
+int parser_run(Parser* parser, Language* language){
     if(!parser || !parser->SRA || !parser->token) return -1;
 
     TokenNode* node = parser->token->head;
@@ -71,9 +51,9 @@ int parser_run(Parser* parser){
         
         Token* tok = &node->token;
         
-        Symbol sym = parser_token_to_symbol(*tok);
+        Symbol* sym = parser_token_to_symbol(*tok, language);
         
-        int action = sra_action(parser->SRA, sym);
+        int action = sra_action(parser->SRA, *sym);
         
         if(action == ACT_SHIFT){
             node = node->next;

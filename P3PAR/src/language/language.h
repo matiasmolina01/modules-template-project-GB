@@ -3,12 +3,11 @@
  * language.h
  *
  * Usage:
- *     Data structures and function definitios of the laguange module.
- *      In charge of loading the language information into the program
+ * Data structures and function definitions of the language module.
+ * In charge of loading the language information into the program.
  *
  * Status:
- *     Finished.
- *
+ * Finished 
  * 
  * Author: [Franco Olano Melo]
  * -----------------------------------------------------------------------------
@@ -77,6 +76,7 @@ typedef struct Language {
 
 /* String Literals */
 #define STR_TERMINAL "TERMINAL"
+#define STR_DOLLAR   "$"
 
 /* Action Characters */
 #define CHAR_SHIFT  'S'
