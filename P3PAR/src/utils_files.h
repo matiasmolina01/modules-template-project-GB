@@ -16,5 +16,6 @@
 
 // Function prototypes
 FILE* set_output_test_file(const char* filename);
+void generate_timestamped_log_filename(const char* base_name, char* output, size_t maxlen);
 
 #endif // UTILS_FILES_H

@@ -25,11 +25,12 @@
 typedef struct Token Token;
 typedef struct Stack Stack;
 typedef struct Language Language;
+typedef struct TokenList TokenList;
 
 
-void stack_instance_to_string( Stack *stack, char* string, Language *language);
+void stack_instance_to_string(const Stack *stack, char* string, Language *language);
 const char *symbol_to_string(Language *language, int symbol_id);
 FILE *o_open_output_file(const char *input_filename);
-int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state);
+int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state, Language *language, TokenList *token_list);
 
 #endif

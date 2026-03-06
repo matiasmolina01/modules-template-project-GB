@@ -42,7 +42,7 @@ typedef struct Action Action;
 typedef struct Automata{
     int numsymbols; // actual number of symbols of the alphabet of the automata
     int numstates; // actual number of states of the automata
-    Symbol *alphabet; // the alphabet of the automata
+    Symbol **alphabet; // the alphabet symbols array of the automata
     Action** action_table; // the action table of the automata
     int initial_state; // to indicate the initial state of the automata    
     int current_state; // to indicate the current state of the automata
@@ -56,7 +56,7 @@ typedef struct Automata{
 
 // functions:
 
-Automata* a_create_automata(int numsymbols, int numstates, Action** action_table ,Symbol *alphabet); // to create an automata with the parameters.
+Automata* a_create_automata(int numsymbols, int numstates, Action** action_table ,Symbol **alphabet); // to create an automata with the parameters.
 Action a_get_action(Automata *automata, int state, int symbol_id); // to get the action of the automata given a state (row) and a symbol id (column).
 int a_reset_automata(Automata *automata, int initial_state); // to reset the automata to the initial state.
 int a_destroy_automata(Automata *automata); // to free the memory of the automata 

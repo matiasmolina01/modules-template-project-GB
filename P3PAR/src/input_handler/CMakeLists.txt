@@ -11,12 +11,15 @@
 # Create the static library from the input_handler source file
 add_library(input_handler input_handler.c)
 
+# Backward-compatible alias for older references
+add_library(input ALIAS input_handler)
+
 # Include the current source directory for header file access
 # Since it is PRIVATE, the includes must include the path to the headers
 target_include_directories(input_handler PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Link utils because input_handler depends on utils
-target_link_libraries(input_handler PRIVATE utils)
+target_link_libraries(input_handler PUBLIC utils token_handler)
 
 # Print a status message during CMake configuration to confirm input_handler is processed
-message(STATUS "(${PROJECT_NAME}) input_handler configured: Added as static library")
+message(STATUS "(${PROJECT_NAME}) input configured: Added as static library")
 # Optionally, you can set properties or compile options specific to this module

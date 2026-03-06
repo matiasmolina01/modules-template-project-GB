@@ -22,7 +22,7 @@
         
         NULL --> failure (invalid parameters or memory allocation failure).
 */
-Automata* a_create_automata(int numsymbols, int numstates, Action** action_table , Symbol *alphabet){
+Automata* a_create_automata(int numsymbols, int numstates, Action** action_table , Symbol **alphabet){
     // validations for the parameters...
 	if(numstates <= 0 || numstates > MAXLEN) return NULL;
     if(numsymbols <= 0 || numsymbols > MAXCOLS) return NULL;

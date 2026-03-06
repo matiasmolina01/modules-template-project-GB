@@ -54,7 +54,7 @@ void stack_instance_to_string(const Stack *stack, char* string, Language *langua
 FILE *o_open_output_file(const char *input_filename) {
     char output_filename[512];
 
-    build_output_filename(input_filename, output_filename, sizeof(output_filename));
+    generate_timestamped_log_filename(input_filename, output_filename, sizeof(output_filename));
 
     FILE *fp = fopen(output_filename, "w");
     if (!fp) {
