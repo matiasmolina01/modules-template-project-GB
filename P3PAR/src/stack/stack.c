@@ -9,7 +9,7 @@
  *     Finished.
  *
  * 
- * Author: [Alex Ruiz Lopez]
+ * Author: [Marti Ponsa Ramila]
  * -----------------------------------------------------------------------------
  */
 
