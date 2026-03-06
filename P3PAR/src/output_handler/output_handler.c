@@ -43,7 +43,7 @@ const char *symbol_to_string(Language *language, int symbol_id){ // te cambio la
     return NULL;
 }
 
-void stack_instance_to_string(Stack *stack, char* string, Language *language){
+void stack_instance_to_string(const Stack *stack, char* string, Language *language){
     int pos = 0;
     for(int i= 0; i< stack->top; i++){ // te cambio size por top
         pos += snprintf(string+pos, MAX_LEN-pos, "(%s, %d) ", symbol_to_string(language, stack->stack_list[i].symbol_id), stack->stack_list[i].state );
@@ -66,10 +66,38 @@ FILE *o_open_output_file(const char *input_filename) {
 }
 
 
-int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state, Language *language) {
+char *input_process(int index, TokenList *token_list, char *input){
+     if (token_list == NULL || input == NULL || index < 0) {
+        return NULL;
+    }
+    TokenNode *current = token_list->head;
+    int i = 0;
+    int pos = 0;
+
+     /* Concatenar los lexemas desde index hasta el final */
+    while (current != NULL && pos < MAX_LEN - 1) {
+        if(i == index){
+            input[pos++] = '.';
+            
+        }
+        for (size_t j = 0; j < current->token.length && pos < MAX_LEN - 1; j++) {
+            input[pos++] = current->token.lexeme[j];
+        }
+
+        current = current->next;
+        i++;
+    }
+
+    input[pos] = '\0';
+    return input;
+
+}
+
+int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operation, const char *input_filename, const int state, Language *language, TokenList *token_list) {
    
 
     char buffer[MAX_LEN];
+    char input[MAX_LEN];
     
     stack_instance_to_string(stack, buffer, language);
     // Printing the operations
@@ -77,8 +105,10 @@ int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operat
 
     // We need to go though tokenList from index to the end to get remaining input left
 
+    input_process(index, token_list, input);
+
     char input_left[MAX_LEN] = "temporal"; // te pongo esto temporal para que lo veas
-    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_filename);
+    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input);
 
     // fclose(fp); ----------- esto deberia cerrarlo el main.
 
