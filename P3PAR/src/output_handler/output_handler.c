@@ -34,28 +34,20 @@
 //     }
 // }
 
- const char *symbol_to_string(Language language, int symbol_id){
-    for(i = 0; i < num_symbols; i++){
+const char *symbol_to_string(Language *language, int symbol_id){ // te cambio la firma por Language* language
+    for(int i = 0; i < language->num_symbols; i++){  // por lo tanto usamos language->num_symbols
         if(language->symbols[i]->id == symbol_id){
             return language->symbols[i]->name;
         }
-
     }
+    return NULL;
+}
 
-
-
- }
-
-void stack_instance_to_string( Stack *stack, char* string, Language *language){
+void stack_instance_to_string(Stack *stack, char* string, Language *language){
     int pos = 0;
-    for(int i= 0; i< stack->size; i++){
-        pos += snprintf(string+pos, MAX_LEN-pos, "(%s, %d) ", symbol_to_string(language, stack->stacklist[i].symbol_id), stack->stacklist[i].state );
-
+    for(int i= 0; i< stack->top; i++){ // te cambio size por top
+        pos += snprintf(string+pos, MAX_LEN-pos, "(%s, %d) ", symbol_to_string(language, stack->stack_list[i].symbol_id), stack->stack_list[i].state );
         if(pos >= MAX_LEN) break;
-        
-        
-        
-
     }
 }
 
@@ -80,16 +72,15 @@ int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operat
     char buffer[MAX_LEN];
     
     stack_instance_to_string(stack, buffer, language);
-    //Printing the operations
+    // Printing the operations
     // stack_string = o_stack_to_string(stack);
 
-    //We need to go though tokenList from index to the end to get remaining input left
+    // We need to go though tokenList from index to the end to get remaining input left
 
-
-
+    char input_left[MAX_LEN] = "temporal"; // te pongo esto temporal para que lo veas
     fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_left);
 
-    fclose(fp);
+    // fclose(fp); ----------- esto deberia cerrarlo el main.
 
     return 0;
 

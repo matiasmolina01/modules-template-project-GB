@@ -59,7 +59,7 @@ static SraFixture create_fixture(int num_states, int num_symbols) {
     fixture.stack = create_stack(32);
     assert(fixture.stack != NULL);
 
-    fixture.automata = a_create_automata(num_symbols, num_states, fixture.action_table, fixture.alphabet, 0);
+    fixture.automata = a_create_automata(num_symbols, num_states, fixture.action_table, fixture.alphabet);
     assert(fixture.automata != NULL);
 
     fixture.sra.automata = fixture.automata;
