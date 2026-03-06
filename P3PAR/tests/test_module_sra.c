@@ -154,7 +154,7 @@ static void test_sra_action_shift_case(void) {
     assert(stack_push(fixture.stack, -1, 0) == 1);
 
     Symbol input_symbol = {.id = 0, .name = NULL, .is_terminal = 1};
-    int result = sra_action(&fixture.sra, input_symbol);
+    int result = sra_do_action(&fixture.sra, input_symbol, sra_get_next_action(&fixture.sra, input_symbol));
 
     StackItem *top = stack_peek(fixture.stack);
     assert(result == ACT_SHIFT);
@@ -183,7 +183,7 @@ static void test_sra_action_reduce_case(void) {
     assert(stack_push(fixture.stack, 0, 1) == 1);
 
     Symbol input_symbol = {.id = 1, .name = NULL, .is_terminal = 1};
-    int result = sra_action(&fixture.sra, input_symbol);
+    int result = sra_do_action(&fixture.sra, input_symbol, sra_get_next_action(&fixture.sra, input_symbol));
 
     StackItem *top = stack_peek(fixture.stack);
     assert(result == ACT_REDUCE);
@@ -201,13 +201,13 @@ static void test_sra_action_accept_and_error_cases(void) {
 
     assert(stack_push(fixture.stack, -1, 2) == 1);
     Symbol accept_symbol = {.id = 1, .name = NULL, .is_terminal = 1};
-    int accept_result = sra_action(&fixture.sra, accept_symbol);
+    int accept_result = sra_do_action(&fixture.sra, accept_symbol, sra_get_next_action(&fixture.sra, accept_symbol));
     assert(accept_result == ACT_ACCEPT);
 
     stack_clear(fixture.stack);
     assert(stack_push(fixture.stack, -1, 1) == 1);
     Symbol error_symbol = {.id = 0, .name = NULL, .is_terminal = 1};
-    int error_result = sra_action(&fixture.sra, error_symbol);
+    int error_result = sra_do_action(&fixture.sra, error_symbol, sra_get_next_action(&fixture.sra, error_symbol));
     assert(error_result == ACT_ERROR);
 
     destroy_fixture(&fixture);

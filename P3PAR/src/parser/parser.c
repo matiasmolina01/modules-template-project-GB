@@ -72,26 +72,27 @@ int parser_run(Parser* parser, Language* language, FILE *output_file){
         Token* tok = &node->token;
         
         Symbol* sym = parser_token_to_symbol(*tok, language);
-        int prev_state = parser->SRA->automata->current_state;
-        Stack prev_stack = *(parser->SRA->stack);
-        int action = sra_action(parser->SRA, *sym);
-        
-        o_output_handler(output_file, current_input_token, &prev_stack, get_name_operation(action),
-            prev_state, language, parser->token);
 
-        if(action == ACT_SHIFT){
+        Action action = sra_get_next_action(parser->SRA, *sym);
+
+        o_output_handler(output_file, current_input_token, parser->SRA->stack, get_name_operation(action.type),
+            parser->SRA->automata->current_state, language, parser->token);
+        
+        sra_do_action(parser->SRA, *sym, action);
+
+        switch(action.type){
+            case ACT_SHIFT:
             node = node->next;
             current_input_token++;
-        }
-        
-        else if(action == ACT_REDUCE){
-            continue;
-        }
-        
-        else if(action == ACT_ACCEPT || action == ACT_ERROR){
-            return action;
-        }
+            break;
 
+            case ACT_REDUCE:
+            continue;
+            break;
+
+            case ACT_ACCEPT: case ACT_ERROR:
+            return action.type;
+        }
 
     }
 

@@ -48,10 +48,15 @@ void sra_accept(SRA* sra){
 	return;
 }
 
-int sra_action(SRA* sra, Symbol input_symbol){
+Action sra_get_next_action(SRA* sra, Symbol input_symbol){
 	printf("checking action table for state %d, symbol %s\n", stack_top_state(sra->stack), input_symbol.name);
 	Action action = check_table(sra, stack_top_state(sra->stack), input_symbol);
 	//just to tell the parser which action was performed, for the input to advance
+	return action;
+}
+
+int sra_do_action(SRA* sra, Symbol input_symbol, Action action){
+	
 	int performed_action = -1;
 	switch(action.type){
 		case ACT_SHIFT:
