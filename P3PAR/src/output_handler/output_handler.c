@@ -78,7 +78,7 @@ int o_output_handler(FILE* fp, int index, const Stack *stack, const char *operat
     // We need to go though tokenList from index to the end to get remaining input left
 
     char input_left[MAX_LEN] = "temporal"; // te pongo esto temporal para que lo veas
-    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_left);
+    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s", state, operation, buffer, input_filename);
 
     // fclose(fp); ----------- esto deberia cerrarlo el main.
 
