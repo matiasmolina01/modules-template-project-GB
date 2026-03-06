@@ -116,12 +116,10 @@ void t_token_set_lexeme(Token *t, const char *str) {
         t->capacity = new_capacity;
     }
 
-    // Copy the string at the end
+    // Copy lexeme and ensure null terminator is written at the new length.
     memcpy(t->lexeme, str, str_len);
-
-    
-    t->lexeme[t->length] = '\0';
     t->length = str_len;
+    t->lexeme[t->length] = '\0';
 }
 
 
@@ -164,6 +162,7 @@ void tl_token_list_add(TokenList *list, Token t) {
 
     node->token = t;
     node->token.lexeme = strdup(t.lexeme); // Esto lo hacemos para que la copia de token->lexeme no apunte a la misma memoria que el token->lexeme original, porque si por ejemplo hicieramos un free token original, la copia, que está en el token list crashearía
+    node->next = NULL;
     if (!list->head) {
         list->head = node;
         list->tail = node;

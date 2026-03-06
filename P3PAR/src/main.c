@@ -25,30 +25,27 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    printf("LLEGA AQUI 5 - File opened: %s\n", args->input_path);
     fflush(stdout);
     
     global_context->tokenlist = i_read_elements_from_file(input, global_context);
 
 
-    TokenNode* current = global_context->tokenlist->head;
-    while (current != NULL) {
-        printf("lexeme='%s', category=%d\n",
-               current->token.lexeme,
-               current->token.category);
-        current = current->next;
-    }
 
     // Parser* parser = parser_create(global_context->sra, global_context->tokenlist);
 
     // int accepted = parser_run(parser);
 
     // parser_destroy(parser);
-
+    printf("FINISH\n");
+    
     i_close_input(input);
+    printf("FINISH\n");
     free(input);
+    printf("FINISH\n");
     destroy_global_context(global_context);
+    printf("FINISH\n");
     free(args);
+    printf("FINISH\n");
 	
 	//gc_destroy(global_context);
 
