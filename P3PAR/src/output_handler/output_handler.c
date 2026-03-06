@@ -119,8 +119,8 @@ int o_output_handler(FILE* fp, int index, Stack *stack, char *operation, int sta
     input_process(index, token_list, input);
 
     char input_left[MAX_LEN] = "temporal"; // te pongo esto temporal para que lo veas
-    fprintf(fp,  "STATE %d | OPERATIONS %s | STACK %s| INPUT %s\n", state, operation, buffer, input);
 
+    fprintf(fp,  "STATE %d\t | INPUT %s\t | OPERATIONS: %s\t | STACK %s\n", state, input, operation, buffer, input);
     // fclose(fp); ----------- esto deberia cerrarlo el main.
 
     return 0;
